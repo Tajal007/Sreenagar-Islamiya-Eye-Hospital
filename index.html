@@ -33,7 +33,12 @@
         @media print { 
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
-            .print-receipt-container { display: flex !important; width: 100%; justify-content: space-between; gap: 10px; }
+            .print-receipt-container { 
+                display: flex !important; 
+                width: 100%; 
+                justify-content: space-between; 
+                gap: 15px; 
+            }
         }
         .print-receipt-container { display: none; }
     </style>
@@ -221,42 +226,46 @@
 
     </main>
 
-    <!-- Printable Receipt Layout -->
+    <!-- Printable Receipt Layout with Professional Styling -->
     <div id="printReceiptArea" class="print-receipt-container">
         
         <!-- Copy 1: Patient Copy -->
-        <div style="width: 48%; border: 1.5px dashed #333; padding: 10px; font-size: 10px; font-family: Arial, sans-serif;">
-            <div style="text-align: right; font-weight: bold; font-size: 9px; border-bottom: 1px solid #333; padding-bottom: 1px; margin-bottom: 3px;">
-                Patient Copy
+        <div style="width: 48%; border: 2px solid #1e3a8a; border-radius: 6px; padding: 12px; font-size: 10px; font-family: 'Inter', Arial, sans-serif; background: #fff; color: #111;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #1e3a8a; padding-bottom: 4px; margin-bottom: 6px;">
+                <span style="font-size: 9px; font-weight: bold; color: #1e3a8a; text-transform: uppercase;"><i class="fa-solid fa-eye"></i> Sreenagar Islamia Eye Hospital</span>
+                <span style="font-size: 8.5px; background: #e0f2fe; color: #0369a1; padding: 1px 6px; border-radius: 4px; font-weight: bold;">Patient Copy</span>
             </div>
-            <div style="text-align: center; font-weight: bold; font-size: 13px; color: #1e3a8a;">
+
+            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a; margin-bottom: 1px;">
                 শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল
             </div>
-            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 5px;">
+            <div style="text-align: center; font-size: 8.5px; color: #555; margin-bottom: 8px;">
                 মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
-                <span><strong>Date:</strong> <span class="r-date"></span></span>
-                <span><strong>Receipt No:</strong> <span class="r-id"></span></span>
-            </div>
-            <div style="margin-bottom: 3px;">
-                <strong>Patient Name:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 70%;"></span>
-            </div>
-            <div style="margin-bottom: 3px;">
-                <strong>Address:</strong> <span class="r-address" style="border-bottom: 1px dotted #333; display: inline-block; width: 78%;"></span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span><strong>Mobile:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 105px;"></span></span>
-                <span><strong>Doctor:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 120px;"></span></span>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 6px; margin-bottom: 8px; font-size: 9.5px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                    <span><strong>Date:</strong> <span class="r-date"></span></span>
+                    <span><strong>Receipt No:</strong> <span class="r-id" style="color: #0284c7; font-weight: bold;"></span></span>
+                </div>
+                <div style="margin-bottom: 3px;">
+                    <strong>Patient Name:</strong> <span class="r-name" style="font-weight: 600; color: #0f172a;"></span>
+                </div>
+                <div style="margin-bottom: 3px;">
+                    <strong>Address:</strong> <span class="r-address"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span><strong>Mobile:</strong> <span class="r-phone"></span></span>
+                    <span><strong>Doctor:</strong> <span class="r-doctor" style="font-weight: 600;"></span></span>
+                </div>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 9px;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 9.5px;">
                 <thead>
-                    <tr style="border: 1px solid #333; background: #eee;">
-                        <th style="border: 1px solid #333; padding: 2px; width: 25px; text-align: center;">SL</th>
-                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">Visit / Test Description</th>
-                        <th style="border: 1px solid #333; padding: 2px; width: 50px; text-align: right;">Fee (BDT)</th>
+                    <tr style="background: #1e3a8a; color: white;">
+                        <th style="border: 1px solid #1e3a8a; padding: 4px; width: 25px; text-align: center;">SL</th>
+                        <th style="border: 1px solid #1e3a8a; padding: 4px; text-align: left;">Visit / Test Description</th>
+                        <th style="border: 1px solid #1e3a8a; padding: 4px; width: 60px; text-align: right;">Fee (BDT)</th>
                     </tr>
                 </thead>
                 <tbody class="r-services-table-body">
@@ -264,49 +273,57 @@
                 </tbody>
             </table>
             
-            <div style="text-align: right; font-weight: bold; margin-bottom: 10px; font-size: 11px;">
-                Total Amount: ৳ <span class="r-amount-total">0</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 5px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 15px; font-size: 11px;">
+                <span>Total Amount:</span>
+                <span style="color: #0369a1;">৳ <span class="r-amount-total">0</span></span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 15px;">
-                <span>Receiver's Signature</span>
-                <span>Authorized Signature</span>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 25px; text-align: center;">
+                <div style="border-top: 1px dashed #64748b; width: 110px; padding-top: 3px; color: #475569;">Receiver's Signature</div>
+                <div style="border-top: 1.5px solid #1e3a8a; width: 140px; padding-top: 3px;">
+                    <div style="font-weight: bold; font-size: 9px; color: #1e3a8a;">Sreenagar Islamia Eye Hospital</div>
+                    <div style="font-size: 8px; color: #475569; font-weight: 600;">Managing Director</div>
+                </div>
             </div>
         </div>
 
         <!-- Copy 2: Hospital Counterfoil Copy -->
-        <div style="width: 48%; border: 1.5px dashed #333; padding: 10px; font-size: 10px; font-family: Arial, sans-serif;">
-            <div style="text-align: right; font-weight: bold; font-size: 9px; border-bottom: 1px solid #333; padding-bottom: 1px; margin-bottom: 3px;">
-                Hospital Counterfoil
+        <div style="width: 48%; border: 2px solid #1e3a8a; border-radius: 6px; padding: 12px; font-size: 10px; font-family: 'Inter', Arial, sans-serif; background: #fff; color: #111;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #1e3a8a; padding-bottom: 4px; margin-bottom: 6px;">
+                <span style="font-size: 9px; font-weight: bold; color: #1e3a8a; text-transform: uppercase;"><i class="fa-solid fa-eye"></i> Sreenagar Islamia Eye Hospital</span>
+                <span style="font-size: 8.5px; background: #fef3c7; color: #d97706; padding: 1px 6px; border-radius: 4px; font-weight: bold;">Hospital Counterfoil</span>
             </div>
-            <div style="text-align: center; font-weight: bold; font-size: 13px; color: #1e3a8a;">
+
+            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a; margin-bottom: 1px;">
                 শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল
             </div>
-            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 5px;">
+            <div style="text-align: center; font-size: 8.5px; color: #555; margin-bottom: 8px;">
                 মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
-                <span><strong>Date:</strong> <span class="r-date"></span></span>
-                <span><strong>Receipt No:</strong> <span class="r-id"></span></span>
-            </div>
-            <div style="margin-bottom: 3px;">
-                <strong>Patient Name:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 70%;"></span>
-            </div>
-            <div style="margin-bottom: 3px;">
-                <strong>Address:</strong> <span class="r-address" style="border-bottom: 1px dotted #333; display: inline-block; width: 78%;"></span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span><strong>Mobile:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 105px;"></span></span>
-                <span><strong>Doctor:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 120px;"></span></span>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 6px; margin-bottom: 8px; font-size: 9.5px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                    <span><strong>Date:</strong> <span class="r-date"></span></span>
+                    <span><strong>Receipt No:</strong> <span class="r-id" style="color: #0284c7; font-weight: bold;"></span></span>
+                </div>
+                <div style="margin-bottom: 3px;">
+                    <strong>Patient Name:</strong> <span class="r-name" style="font-weight: 600; color: #0f172a;"></span>
+                </div>
+                <div style="margin-bottom: 3px;">
+                    <strong>Address:</strong> <span class="r-address"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span><strong>Mobile:</strong> <span class="r-phone"></span></span>
+                    <span><strong>Doctor:</strong> <span class="r-doctor" style="font-weight: 600;"></span></span>
+                </div>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 9px;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 9.5px;">
                 <thead>
-                    <tr style="border: 1px solid #333; background: #eee;">
-                        <th style="border: 1px solid #333; padding: 2px; width: 25px; text-align: center;">SL</th>
-                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">Visit / Test Description</th>
-                        <th style="border: 1px solid #333; padding: 2px; width: 50px; text-align: right;">Fee (BDT)</th>
+                    <tr style="background: #1e3a8a; color: white;">
+                        <th style="border: 1px solid #1e3a8a; padding: 4px; width: 25px; text-align: center;">SL</th>
+                        <th style="border: 1px solid #1e3a8a; padding: 4px; text-align: left;">Visit / Test Description</th>
+                        <th style="border: 1px solid #1e3a8a; padding: 4px; width: 60px; text-align: right;">Fee (BDT)</th>
                     </tr>
                 </thead>
                 <tbody class="r-services-table-body">
@@ -314,13 +331,17 @@
                 </tbody>
             </table>
             
-            <div style="text-align: right; font-weight: bold; margin-bottom: 10px; font-size: 11px;">
-                Total Amount: ৳ <span class="r-amount-total">0</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 5px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 15px; font-size: 11px;">
+                <span>Total Amount:</span>
+                <span style="color: #0369a1;">৳ <span class="r-amount-total">0</span></span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 15px;">
-                <span>Receiver's Signature</span>
-                <span>Authorized Signature</span>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 25px; text-align: center;">
+                <div style="border-top: 1px dashed #64748b; width: 110px; padding-top: 3px; color: #475569;">Receiver's Signature</div>
+                <div style="border-top: 1.5px solid #1e3a8a; width: 140px; padding-top: 3px;">
+                    <div style="font-weight: bold; font-size: 9px; color: #1e3a8a;">Sreenagar Islamia Eye Hospital</div>
+                    <div style="font-size: 8px; color: #475569; font-weight: 600;">Managing Director</div>
+                </div>
             </div>
         </div>
 
@@ -517,9 +538,9 @@
             const servicesList = b.services || [];
             const rowsHtml = servicesList.map((s, index) => `
                 <tr>
-                    <td style="border: 1px solid #333; padding: 2px; text-align: center;">${index + 1}</td>
-                    <td style="border: 1px solid #333; padding: 2px;">${s.name}</td>
-                    <td style="border: 1px solid #333; padding: 2px; text-align: right;">${s.price}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 4px; text-align: center; color: #334155;">${index + 1}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 4px; color: #0f172a;">${s.name}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 4px; text-align: right; font-weight: 600; color: #0f172a;">${s.price}</td>
                 </tr>
             `).join('');
 
@@ -600,7 +621,7 @@
             const exp = {
                 id: Date.now(),
                 date: new Date().toLocaleDateString('en-GB'),
-                reason: document.getElementById('expReason').value,
+                reason: document.getElementById('expReason5').value || document.getElementById('expReason').value,
                 amount: parseFloat(document.getElementById('expAmount').value)
             };
             expenses.unshift(exp);
