@@ -1,48 +1,71 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল - Enterprise Pro Max</title>
+    <title>Sreenagar Islamia Eye Hospital</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.2s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Pro Animation Classes */
+        .tab-content { 
+            display: none; 
+            opacity: 0;
+            transform: translateY(12px) scale(0.99);
+        }
+        .tab-content.active { 
+            display: block; 
+            animation: proEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+        @keyframes proEnter {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hover-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(30, 144, 255, 0.15), 0 10px 10px -5px rgba(30, 144, 255, 0.05);
+            border-color: rgba(30, 144, 255, 0.4);
+        }
+
+        .smooth-transition {
+            transition: all 0.25s ease-in-out;
+        }
+
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
+<body class="bg-[#0b1329] text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
     <!-- Header -->
-    <header class="bg-slate-900 border-b border-slate-800 shadow-2xl no-print sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+    <header class="bg-[#111c38]/90 backdrop-blur-md border-b border-blue-900/40 shadow-2xl no-print sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-emerald-600 p-2.5 rounded-xl shadow-lg shadow-emerald-950 text-white">
-                    <i class="fa-solid fa-hospital text-xl"></i>
+                <div class="bg-gradient-to-tr from-blue-600 to-sky-400 p-2.5 rounded-xl shadow-lg shadow-blue-950/50 text-white transform hover:rotate-6 transition-transform duration-300">
+                    <i class="fa-solid fa-eye text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-white tracking-wide">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h1>
-                    <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot text-emerald-400 mr-1"></i> এম. রহমান কমপ্লেক্স, মক্কা কমপ্লেক্সের নিচতলা, শ্রীনগর</p>
+                    <h1 class="text-xl font-bold text-white tracking-wide">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল <span class="text-xs text-amber-400 block font-normal">Sreenagar Islamia Eye Hospital</span></h1>
+                    <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-amber-400 mr-1 animate-bounce"></i> এম. রহমান কমপ্লেক্স-এর উত্তর পার্শ্বে, মক্কা কমপ্লেক্সের নিচতলা, শ্রীনগর</p>
                 </div>
-            </div>
-            <div class="flex items-center gap-2 text-xs bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-emerald-400 font-medium">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Pro Max Engine Active
             </div>
         </div>
     </header>
 
     <!-- Nav -->
-    <nav class="bg-slate-900/80 backdrop-blur border-b border-slate-800 no-print sticky top-[57px] z-40">
+    <nav class="bg-[#111c38]/60 backdrop-blur-lg border-b border-blue-900/40 no-print sticky top-[65px] z-40">
         <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2.5">
-            <button onclick="switchTab(event, 'dashboard')" class="nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 text-white whitespace-nowrap flex items-center gap-2 transition-all shadow-md"><i class="fa-solid fa-chart-pie"></i> ড্যাশবোর্ড</button>
-            <button onclick="switchTab(event, 'billing')" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-file-invoice-dollar"></i> বিলিং</button>
-            <button onclick="switchTab(event, 'prescription')" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-prescription"></i> প্রেসক্রিপশন</button>
-            <button onclick="switchTab(event, 'stock')" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-box-archive"></i> অপটিক্যাল স্টক</button>
-            <button onclick="switchTab(event, 'expense')" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-wallet"></i> খরচ ও হিসাব</button>
+            <button onclick="switchTab(event, 'dashboard')" class="nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 shadow-md shadow-blue-950/40 hover:scale-[1.02] active:scale-95"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
+            <button onclick="switchTab(event, 'billing')" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95"><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Fees</button>
+            <button onclick="switchTab(event, 'expense')" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95"><i class="fa-solid fa-wallet"></i> Expenses</button>
         </div>
     </nav>
 
@@ -52,331 +75,267 @@
         <!-- DASHBOARD -->
         <section id="dashboard" class="tab-content active space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-                    <p class="text-xs text-slate-400 font-semibold uppercase">মোট রোগী</p>
-                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-2" id="dashPatientCount">০ জন</h3>
+                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Patients</p>
+                    <h3 class="text-3xl font-extrabold text-sky-400 mt-2 transition-all duration-500" id="dashPatientCount">0</h3>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-                    <p class="text-xs text-slate-400 font-semibold uppercase">মোট আয়</p>
-                    <h3 class="text-3xl font-extrabold text-teal-400 mt-2" id="dashIncome">৳ ০</h3>
+                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Income</p>
+                    <h3 class="text-3xl font-extrabold text-blue-400 mt-2 transition-all duration-500" id="dashIncome">৳ 0</h3>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-                    <p class="text-xs text-slate-400 font-semibold uppercase">মোট খরচ</p>
-                    <h3 class="text-3xl font-extrabold text-rose-400 mt-2" id="dashExpense">৳ ০</h3>
+                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Expense</p>
+                    <h3 class="text-3xl font-extrabold text-rose-400 mt-2 transition-all duration-500" id="dashExpense">৳ 0</h3>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-                    <p class="text-xs text-slate-400 font-semibold uppercase">নেট ক্যাশ ব্যালেন্স</p>
-                    <h3 class="text-3xl font-extrabold text-sky-400 mt-2" id="dashBalance">৳ ০</h3>
+                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Net Cash Balance</p>
+                    <h3 class="text-3xl font-extrabold text-amber-400 mt-2 transition-all duration-500" id="dashBalance">৳ 0</h3>
                 </div>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-emerald-400"></i> হসপিটাল ওভারভিউ ও সুবিধাসমূহ</h3>
+            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400 animate-pulse"></i> আমাদের সেবাসমূহ ও ফি</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
-                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> নরমাল ছানি অপারেশন SICS এবং ফাকো অপারেশন</div>
-                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> গ্লুকোমা ও মাংস বৃদ্ধি অপারেশন</div>
-                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> আধুনিক NCT মেশিনের সাহায্যে চোখের প্রেসার মাপা</div>
-                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> চশমা প্রদান ও পাওয়ার পরীক্ষা</div>
+                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> SPT</span> <span class="font-bold text-amber-400">৳300</span></div>
+                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Fluorescein Test</span> <span class="font-bold text-amber-400">৳200</span></div>
+                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Schirmer Tear Test</span> <span class="font-bold text-amber-400">৳200</span></div>
+                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> NCT, IOP</span> <span class="font-bold text-amber-400">৳200</span></div>
                 </div>
             </div>
         </section>
 
         <!-- BILLING -->
         <section id="billing" class="tab-content space-y-6">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-file-invoice text-emerald-400 mr-2"></i> নতুন রোগীর বিল ও ফিস এন্ট্রি</h3>
+            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-file-invoice text-blue-400 mr-2"></i> New Patient Bill & Service Entry</h3>
                 <form id="billingForm" onsubmit="saveBill(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">তারিখ</label>
-                        <input type="date" id="billDate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
+                        <input type="date" id="billDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">রোগীর নাম</label>
-                        <input type="text" id="patientName" required placeholder="নাম লিখুন" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Patient Name</label>
+                        <input type="text" id="patientName" required placeholder="Enter name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">মোবাইল নম্বর</label>
-                        <input type="text" id="patientPhone" placeholder="017xxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Number</label>
+                        <input type="text" id="patientPhone" placeholder="017xxxxxxxx" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">ডাক্তারের নাম</label>
-                        <input type="text" id="doctorName" value="ডাঃ বিশেষজ্ঞ সার্জন" required placeholder="ডাক্তারের নাম লিখুন" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor Name</label>
+                        <input type="text" id="doctorName" value="Dr. Specialist Surgeon" required placeholder="Enter doctor name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">সেবা বা টেস্ট নির্বাচন করুন</label>
-                        <select id="serviceSelect" onchange="updateServiceFee()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none mb-1">
-                            <option value="সাধারণ চক্ষু পরীক্ষা ও পরামর্শ|100">সাধারণ চক্ষু পরীক্ষা ও পরামর্শ - ১০০৳</option>
-                            <option value="NCT (চোখের প্রেসার পরীক্ষা)|150">NCT (চোখের প্রেসার পরীক্ষা) - ১৫০৳</option>
-                            <option value="রিফ্র্যাকশন / চশমার পাওয়ার পরীক্ষা|200">রিফ্র্যাকশন / চশমার পাওয়ার পরীক্ষা - ২০০৳</option>
-                            <option value="ছানি অপারেশন প্যাকেজ|5000">ছানি অপারেশন প্যাকেজ - ৫০০০৳</option>
-                            <option value="অন্যান্য কাস্টম সেবা|0">অন্যান্য কাস্টম সেবা</option>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Select Service / Test</label>
+                        <select id="serviceSelect" onchange="updateServiceFee()" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition mb-1">
+                            <option value="SPT|300">SPT - ৳300</option>
+                            <option value="Fluorescein Test|200">Fluorescein Test - ৳200</option>
+                            <option value="Schirmer Tear Test|200">Schirmer Tear Test - ৳200</option>
+                            <option value="NCT, IOP|200">NCT, IOP - ৳200</option>
+                            <option value="Foreign Body Remove Normal|200">Foreign Body Remove Normal - ৳200</option>
+                            <option value="Foreign Body Remove OT|1500">Foreign Body Remove OT - ৳1500</option>
+                            <option value="Bandage|150">Bandage - ৳150</option>
+                            <option value="Custom Service|0">Custom Service</option>
                         </select>
-                        <input type="text" id="serviceName" value="সাধারণ চক্ষু পরীক্ষা ও পরামর্শ" required placeholder="সেবার বিবরণ" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none">
+                        <input type="text" id="serviceName" value="SPT" required placeholder="Service description" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">ফি / পরিমাণ (টাকা)</label>
-                        <input type="number" id="billAmount" value="100" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Fee / Amount (BDT)</label>
+                        <input type="number" id="billAmount" value="300" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
                     </div>
                     <div class="md:col-span-3 flex justify-end">
-                        <button type="submit" id="saveBillBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition shadow-lg shadow-emerald-950">বিল সেভ করুন</button>
+                        <button type="submit" id="saveBillBtn" class="bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-blue-950 hover:scale-[1.02] active:scale-95">Save Bill</button>
                     </div>
                 </form>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4">রোগীর কালেকশন তালিকা</h3>
+            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
+                <h3 class="text-lg font-bold text-white mb-4">Patient Collection Records</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase">
-                                <th class="p-3">তারিখ</th>
-                                <th class="p-3">রোগীর নাম</th>
-                                <th class="p-3">ডাক্তার</th>
-                                <th class="p-3">সেবা / টেস্ট</th>
-                                <th class="p-3">টাকা</th>
-                                <th class="p-3 text-center">অ্যাকশন</th>
+                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Patient Name</th>
+                                <th class="p-3">Doctor</th>
+                                <th class="p-3">Service / Test</th>
+                                <th class="p-3">Amount</th>
+                                <th class="p-3 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="billTableBody" class="divide-y divide-slate-800/60"></tbody>
+                        <tbody id="billTableBody" class="divide-y divide-blue-900/20"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- PRESCRIPTION -->
-        <section id="prescription" class="tab-content space-y-6">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-glasses text-emerald-400 mr-2"></i> ডিজিটাল প্রেসক্রিপশন ও পাওয়ার রেকর্ড</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <input type="text" id="rxName" placeholder="রোগীর নাম" class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white outline-none">
-                    <input type="text" id="rxAge" placeholder="বয়স ও লিঙ্গ" class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white outline-none">
-                </div>
-                <div class="border border-slate-800 p-4 rounded-xl bg-slate-950 mb-4">
-                    <h4 class="font-bold text-sm text-emerald-400 mb-3">চোখের পাওয়ার (Visual Acuity)</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                        <input type="text" class="bg-slate-900 border border-slate-800 rounded-lg p-2 text-white" placeholder="RE SPH">
-                        <input type="text" class="bg-slate-900 border border-slate-800 rounded-lg p-2 text-white" placeholder="RE CYL">
-                        <input type="text" class="bg-slate-900 border border-slate-800 rounded-lg p-2 text-white" placeholder="LE SPH">
-                        <input type="text" class="bg-slate-900 border border-slate-800 rounded-lg p-2 text-white" placeholder="LE CYL">
-                    </div>
-                </div>
-                <textarea id="rxAdvice" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white outline-none mb-4" placeholder="ওষুধ ও পরামর্শ লিখুন..."></textarea>
-                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm transition shadow-lg shadow-emerald-950"><i class="fa-solid fa-print mr-2"></i> প্রিন্ট করুন</button>
-            </div>
-        </section>
-
-        <!-- STOCK -->
-        <section id="stock" class="tab-content space-y-6">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-box text-emerald-400 mr-2"></i> অপটিক্যাল স্টক</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <input type="text" id="itemName" placeholder="আইটেমের নাম" class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white outline-none">
-                    <input type="number" id="itemQty" placeholder="পরিমাণ" class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white outline-none">
-                    <button onclick="addItem()" class="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-2.5 text-sm transition shadow-lg shadow-emerald-950">স্টক যোগ করুন</button>
-                </div>
-                <div id="stockList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm"></div>
-            </div>
-        </section>
-
         <!-- EXPENSE -->
         <section id="expense" class="tab-content space-y-6">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-wallet text-rose-400 mr-2"></i> হসপিটাল খরচ ও ব্যয়</h3>
+            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-wallet text-rose-400 mr-2"></i> Hospital Expenses</h3>
                 <form onsubmit="saveExpense(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <input type="text" id="expReason" placeholder="খরচের বিবরণ" required class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white outline-none">
-                    <input type="number" id="expAmount" placeholder="টাকা" required class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white outline-none">
-                    <button type="submit" class="bg-rose-600 hover:bg-rose-500 text-white rounded-xl py-2.5 text-sm transition shadow-lg shadow-emerald-950">খরচ এন্ট্রি করুন</button>
+                    <input type="text" id="expReason" placeholder="Expense description" required class="bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 focus:ring-1 focus:ring-rose-500 outline-none smooth-transition">
+                    <input type="number" id="expAmount" placeholder="Amount (BDT)" required class="bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 focus:ring-1 focus:ring-rose-500 outline-none smooth-transition">
+                    <button type="submit" class="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-xl py-2.5 text-sm transition-all duration-300 shadow-lg shadow-rose-950 hover:scale-[1.02] active:scale-95">Add Expense</button>
                 </form>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase">
-                                <th class="p-3">তারিখ</th>
-                                <th class="p-3">বিবরণ</th>
-                                <th class="p-3">টাকা</th>
+                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Description</th>
+                                <th class="p-3">Amount</th>
                             </tr>
                         </thead>
-                        <tbody id="expenseTableBody" class="divide-y divide-slate-800/60"></tbody>
+                        <tbody id="expenseTableBody" class="divide-y divide-blue-900/20"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
     </main>
-        <!-- JavaScript code -->
-    <script>
-        document.getElementById('billDate').valueAsDate = new Date();
 
-        function switchTab(event, id) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all";
-            });
-            event.currentTarget.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 text-white whitespace-nowrap flex items-center gap-2 transition-all shadow-md";
-        }
-
-        let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
-        let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
-        let stocks = JSON.parse(localStorage.getItem('max_stocks')) || [
-            {id: 1, name: 'প্রিমিয়াম চশমার ফ্রেম', qty: 25},
-            {id: 2, name: 'আই ড্রপ', qty: 50}
-        ];
-        let editingBillId = null;
-
-        function updateServiceFee() {
-            const select = document.getElementById('serviceSelect');
-            const val = select.value.split('|');
-            document.getElementById('serviceName').value = val[0];
-            document.getElementById('billAmount').value = val[1];
-        }
-
-        function saveBill(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('billDate').value;
-            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('bn-BD') : new Date().toLocaleDateString('bn-BD');
-
-            const billData = {
-                id: editingBillId ? editingBillId : Date.now(),
-                date: formattedDate,
-                rawDate: rawDate,
-                name: document.getElementById('patientName').value,
-                phone: document.getElementById('patientPhone').value,
-                doctor: document.getElementById('doctorName').value,
-                service: document.getElementById('serviceName').value,
-                amount: parseFloat(document.getElementById('billAmount').value)
-            };
-
-            if (editingBillId) {
-                bills = bills.map(b => b.id === editingBillId ? billData : b);
-                editingBillId = null;
-                document.getElementById('saveBillBtn').innerText = "বিল সেভ করুন";
-            } else {
-                bills.unshift(billData);
-            }
-
-            localStorage.setItem('max_bills', JSON.stringify(bills));
-            document.getElementById('billingForm').reset();
-            document.getElementById('billDate').valueAsDate = new Date();
-            document.getElementById('serviceName').value = "সাধারণ চক্ষু পরীক্ষা ও পরামর্শ";
-            document.getElementById('billAmount').value = "100";
-            
-            renderBills();
-            updateDashboard();
-        }
-
-        function renderBills() {
-            const tbody = document.getElementById('billTableBody');
-            tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-500">কোনো রেকর্ড নেই</td></tr>` : 
-            bills.map(b => `
-                <tr class="hover:bg-slate-950/40">
-                    <td class="p-3 text-slate-400 text-xs">${b.date}</td>
-                    <td class="p-3 font-medium text-white">${b.name} <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
-                    <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
-                    <td class="p-3 text-slate-300 text-xs">${b.service}</td>
-                    <td class="p-3 font-bold text-emerald-400">৳ ${b.amount}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteBill(id) {
-            bills = bills.filter(b => b.id !== id);
-            localStorage.setItem('max_bills', JSON.stringify(bills));
-            renderBills();
-            updateDashboard();
-        }
-
-        function editBill(id) {
-            const b = bills.find(item => item.id === id);
-            if (!b) return;
-            editingBillId = b.id;
-            document.getElementById('billDate').value = b.rawDate || '';
-            document.getElementById('patientName').value = b.name;
-            document.getElementById('patientPhone').value = b.phone || '';
-            document.getElementById('doctorName').value = b.doctor;
-            document.getElementById('serviceName').value = b.service;
-            document.getElementById('billAmount').value = b.amount;
-            document.getElementById('saveBillBtn').innerText = "বিল আপডেট করুন";
-            switchTab({ currentTarget: document.querySelectorAll('.nav-btn')[1] }, 'billing');
-        }
-
-        function saveExpense(e) {
-            e.preventDefault();
-            const exp = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString('bn-BD'),
-                reason: document.getElementById('expReason').value,
-                amount: parseFloat(document.getElementById('expAmount').value)
-            };
-            expenses.unshift(exp);
-            localStorage.setItem('max_expenses', JSON.stringify(expenses));
-            e.target.reset();
-            renderExpenses();
-            updateDashboard();
-        }
-
-        function renderExpenses() {
-            const tbody = document.getElementById('expenseTableBody');
-            tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="3" class="p-4 text-center text-slate-500">কোনো খরচ এন্ট্রি করা হয়নি</td></tr>` :
-            expenses.map(ex => `
-                <tr class="hover:bg-slate-950/40">
-                    <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
-                    <td class="p-3 text-white">${ex.reason}</td>
-                    <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
-                </tr>
-            `).join('');
-        }
-
-        function addItem() {
-            const name = document.getElementById('itemName').value;
-            const qty = parseInt(document.getElementById('itemQty').value);
-            if(!name || isNaN(qty)) return alert('সঠিক তথ্য দিন');
-            stocks.push({ id: Date.now(), name, qty });
-            localStorage.setItem('max_stocks', JSON.stringify(stocks));
-            document.getElementById('itemName').value = '';
-            document.getElementById('itemQty').value = '';
-            renderStocks();
-        }
-
-        function renderStocks() {
-            const container = document.getElementById('stockList');
-            container.innerHTML = stocks.map(st => `
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
-                    <div>
-                        <h4 class="font-bold text-white">${st.name}</h4>
-                        <p class="text-xs text-slate-400">মজুদ: <span class="text-emerald-400 font-semibold">${st.qty} পিস</span></p>
-                    </div>
-                    <button onclick="removeStock(${st.id})" class="text-rose-400 hover:text-rose-300 text-sm"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('');
-        }
-
-        function removeStock(id) {
-            stocks = stocks.filter(s => s.id !== id);
-            localStorage.setItem('max_stocks', JSON.stringify(stocks));
-            renderStocks();
-        }
-
-        function updateDashboard() {
-            const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
-            const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
-            const balance = totalIncome - totalExpense;
-
-            document.getElementById('dashPatientCount').innerText = bills.length + ' জন';
-            document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
-            document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
-            document.getElementById('dashBalance').innerText = '৳ ' + balance;
-        }
-
-        // Initial render
-        renderBills();
-        renderExpenses();
-        renderStocks();
-        updateDashboard();
-    </script>
+    <!-- External JavaScript File Connection -->
+    <script src="script.js"></script>
 </body>
 </html>
+document.getElementById('billDate').valueAsDate = new Date();
+
+function switchTab(event, id) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    const targetTab = document.getElementById(id);
+    targetTab.classList.add('active');
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95";
+    });
+    event.currentTarget.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 shadow-md shadow-blue-950/40 hover:scale-[1.02] active:scale-95";
+}
+
+let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
+let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
+let editingBillId = null;
+
+function updateServiceFee() {
+    const select = document.getElementById('serviceSelect');
+    const val = select.value.split('|');
+    document.getElementById('serviceName').value = val[0];
+    document.getElementById('billAmount').value = val[1];
+}
+
+function saveBill(e) {
+    e.preventDefault();
+    const rawDate = document.getElementById('billDate').value;
+    const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+
+    const billData = {
+        id: editingBillId ? editingBillId : Date.now(),
+        date: formattedDate,
+        rawDate: rawDate,
+        name: document.getElementById('patientName').value,
+        phone: document.getElementById('patientPhone').value,
+        doctor: document.getElementById('doctorName').value,
+        service: document.getElementById('serviceName').value,
+        amount: parseFloat(document.getElementById('billAmount').value)
+    };
+
+    if (editingBillId) {
+        bills = bills.map(b => b.id === editingBillId ? billData : b);
+        editingBillId = null;
+        document.getElementById('saveBillBtn').innerText = "Save Bill";
+    } else {
+        bills.unshift(billData);
+    }
+
+    localStorage.setItem('max_bills', JSON.stringify(bills));
+    document.getElementById('billingForm').reset();
+    document.getElementById('billDate').valueAsDate = new Date();
+    document.getElementById('serviceName').value = "SPT";
+    document.getElementById('billAmount').value = "300";
+    
+    renderBills();
+    updateDashboard();
+}
+
+function renderBills() {
+    const tbody = document.getElementById('billTableBody');
+    tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No records found</td></tr>` : 
+    bills.map(b => `
+        <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
+            <td class="p-3 text-slate-400 text-xs">${b.date}</td>
+            <td class="p-3 font-medium text-white">${b.name} <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
+            <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
+            <td class="p-3 text-slate-300 text-xs">${b.service}</td>
+            <td class="p-3 font-bold text-sky-400">৳ ${b.amount}</td>
+            <td class="p-3 text-center">
+                <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2 transition-transform hover:scale-110"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300 transition-transform hover:scale-110"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function deleteBill(id) {
+    bills = bills.filter(b => b.id !== id);
+    localStorage.setItem('max_bills', JSON.stringify(bills));
+    renderBills();
+    updateDashboard();
+}
+
+function editBill(id) {
+    const b = bills.find(item => item.id === id);
+    if (!b) return;
+    editingBillId = b.id;
+    document.getElementById('billDate').value = b.rawDate || '';
+    document.getElementById('patientName').value = b.name;
+    document.getElementById('patientPhone').value = b.phone || '';
+    document.getElementById('doctorName').value = b.doctor;
+    document.getElementById('serviceName').value = b.service;
+    document.getElementById('billAmount').value = b.amount;
+    document.getElementById('saveBillBtn').innerText = "Update Bill";
+    switchTab({ currentTarget: document.querySelectorAll('.nav-btn')[1] }, 'billing');
+}
+
+function saveExpense(e) {
+    e.preventDefault();
+    const exp = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('en-GB'),
+        reason: document.getElementById('expReason').value,
+        amount: parseFloat(document.getElementById('expAmount').value)
+    };
+    expenses.unshift(exp);
+    localStorage.setItem('max_expenses', JSON.stringify(expenses));
+    e.target.reset();
+    renderExpenses();
+    updateDashboard();
+}
+
+function renderExpenses() {
+    const tbody = document.getElementById('expenseTableBody');
+    tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="3" class="p-6 text-center text-slate-500">No expense records found</td></tr>` :
+    expenses.map(ex => `
+        <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
+            <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
+            <td class="p-3 text-white">${ex.reason}</td>
+            <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
+        </tr>
+    `).join('');
+}
+
+function updateDashboard() {
+    const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
+    const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const balance = totalIncome - totalExpense;
+
+    document.getElementById('dashPatientCount').innerText = bills.length;
+    document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
+    document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
+    document.getElementById('dashBalance').innerText = '৳ ' + balance;
+}
+
+// Initial render
+renderBills();
+renderExpenses();
+updateDashboard();
+
