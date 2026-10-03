@@ -203,173 +203,180 @@
         </section>
 
     </main>
+        <!-- JavaScript code -->
+    <script>
+        document.getElementById('billDate').valueAsDate = new Date();
 
-    <!-- External Script Link -->
-    <script src="app.js"></script>
-</body>
-                        </html>
-                        // Set today's date by default on load
-document.getElementById('billDate').valueAsDate = new Date();
+        function switchTab(event, id) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all";
+            });
+            event.currentTarget.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 text-white whitespace-nowrap flex items-center gap-2 transition-all shadow-md";
+        }
 
-function switchTab(event, id) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all";
-    });
-    event.currentTarget.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 text-white whitespace-nowrap flex items-center gap-2 transition-all shadow-md";
-}
+        let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
+        let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
+        let stocks = JSON.parse(localStorage.getItem('max_stocks')) || [
+            {id: 1, name: 'প্রিমিয়াম চশমার ফ্রেম', qty: 25},
+            {id: 2, name: 'আই ড্রপ', qty: 50}
+        ];
+        let editingBillId = null;
 
-let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
-let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
-let stocks = JSON.parse(localStorage.getItem('max_stocks')) || [
-    {id: 1, name: 'প্রিমিয়াম চশমার ফ্রেম', qty: 25},
-    {id: 2, name: 'আই ড্রপ', qty: 50}
-];
-let editingBillId = null;
+        function updateServiceFee() {
+            const select = document.getElementById('serviceSelect');
+            const val = select.value.split('|');
+            document.getElementById('serviceName').value = val[0];
+            document.getElementById('billAmount').value = val[1];
+        }
 
-function updateServiceFee() {
-    const select = document.getElementById('serviceSelect');
-    const val = select.value.split('|');
-    document.getElementById('serviceName').value = val[0];
-    document.getElementById('billAmount').value = val[1];
-}
+        function saveBill(e) {
+            e.preventDefault();
+            const rawDate = document.getElementById('billDate').value;
+            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('bn-BD') : new Date().toLocaleDateString('bn-BD');
 
-function saveBill(e) {
-    e.preventDefault();
-    const rawDate = document.getElementById('billDate').value;
-    const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('bn-BD') : new Date().toLocaleDateString('bn-BD');
+            const billData = {
+                id: editingBillId ? editingBillId : Date.now(),
+                date: formattedDate,
+                rawDate: rawDate,
+                name: document.getElementById('patientName').value,
+                phone: document.getElementById('patientPhone').value,
+                doctor: document.getElementById('doctorName').value,
+                service: document.getElementById('serviceName').value,
+                amount: parseFloat(document.getElementById('billAmount').value)
+            };
 
-    const billData = {
-        id: editingBillId ? editingBillId : Date.now(),
-        date: formattedDate,
-        rawDate: rawDate,
-        name: document.getElementById('patientName').value,
-        phone: document.getElementById('patientPhone').value,
-        doctor: document.getElementById('doctorName').value,
-        service: document.getElementById('serviceName').value,
-        amount: parseFloat(document.getElementById('billAmount').value)
-    };
+            if (editingBillId) {
+                bills = bills.map(b => b.id === editingBillId ? billData : b);
+                editingBillId = null;
+                document.getElementById('saveBillBtn').innerText = "বিল সেভ করুন";
+            } else {
+                bills.unshift(billData);
+            }
 
-    if (editingBillId) {
-        bills = bills.map(b => b.id === editingBillId ? billData : b);
-        editingBillId = null;
-        document.getElementById('saveBillBtn').innerText = "বিল সেভ করুন";
-    } else {
-        bills.unshift(billData);
-    }
+            localStorage.setItem('max_bills', JSON.stringify(bills));
+            document.getElementById('billingForm').reset();
+            document.getElementById('billDate').valueAsDate = new Date();
+            document.getElementById('serviceName').value = "সাধারণ চক্ষু পরীক্ষা ও পরামর্শ";
+            document.getElementById('billAmount').value = "100";
+            
+            renderBills();
+            updateDashboard();
+        }
 
-    localStorage.setItem('max_bills', JSON.stringify(bills));
-    document.getElementById('billingForm').reset();
-    document.getElementById('billDate').valueAsDate = new Date();
-    document.getElementById('serviceName').value = "সাধারণ চক্ষু পরীক্ষা ও পরামর্শ";
-    document.getElementById('billAmount').value = "100";
-    
-    renderBills();
-    updateDashboard();
-}
+        function renderBills() {
+            const tbody = document.getElementById('billTableBody');
+            tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-500">কোনো রেকর্ড নেই</td></tr>` : 
+            bills.map(b => `
+                <tr class="hover:bg-slate-950/40">
+                    <td class="p-3 text-slate-400 text-xs">${b.date}</td>
+                    <td class="p-3 font-medium text-white">${b.name} <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
+                    <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
+                    <td class="p-3 text-slate-300 text-xs">${b.service}</td>
+                    <td class="p-3 font-bold text-emerald-400">৳ ${b.amount}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
-function renderBills() {
-    const tbody = document.getElementById('billTableBody');
-    tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-500">কোনো রেকর্ড নেই</td></tr>` : 
-    bills.map(b => `
-        <tr class="hover:bg-slate-950/40">
-            <td class="p-3 text-slate-400 text-xs">${b.date}</td>
-            <td class="p-3 font-semibold text-white">${b.name}<br><span class="text-xs text-slate-400 font-normal">${b.phone || ''}</span></td>
-            <td class="p-3 text-slate-300 text-xs">${b.doctor || '-'}</td>
-            <td class="p-3 text-slate-300 text-xs">${b.service}</td>
-            <td class="p-3 font-bold text-emerald-400">৳ ${b.amount}</td>
-            <td class="p-3 text-center space-x-1">
-                <button onclick="editBill(${b.id})" class="text-sky-400 bg-sky-950/40 border border-sky-900 px-2 py-0.5 rounded text-xs">এডিট</button>
-                <button onclick="deleteBill(${b.id})" class="text-rose-400 bg-rose-950/40 border border-rose-900 px-2 py-0.5 rounded text-xs">ডিলিট</button>
-            </td>
-        </tr>
-    `).join('');
-}
+        function deleteBill(id) {
+            bills = bills.filter(b => b.id !== id);
+            localStorage.setItem('max_bills', JSON.stringify(bills));
+            renderBills();
+            updateDashboard();
+        }
 
-function editBill(id) {
-    const b = bills.find(item => item.id === id);
-    if (!b) return;
+        function editBill(id) {
+            const b = bills.find(item => item.id === id);
+            if (!b) return;
+            editingBillId = b.id;
+            document.getElementById('billDate').value = b.rawDate || '';
+            document.getElementById('patientName').value = b.name;
+            document.getElementById('patientPhone').value = b.phone || '';
+            document.getElementById('doctorName').value = b.doctor;
+            document.getElementById('serviceName').value = b.service;
+            document.getElementById('billAmount').value = b.amount;
+            document.getElementById('saveBillBtn').innerText = "বিল আপডেট করুন";
+            switchTab({ currentTarget: document.querySelectorAll('.nav-btn')[1] }, 'billing');
+        }
 
-    document.getElementById('billDate').value = b.rawDate || new Date().toISOString().split('T')[0];
-    document.getElementById('patientName').value = b.name;
-    document.getElementById('patientPhone').value = b.phone || '';
-    document.getElementById('doctorName').value = b.doctor || 'ডাঃ বিশেষজ্ঞ সার্জন';
-    document.getElementById('serviceName').value = b.service;
-    document.getElementById('billAmount').value = b.amount;
+        function saveExpense(e) {
+            e.preventDefault();
+            const exp = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('bn-BD'),
+                reason: document.getElementById('expReason').value,
+                amount: parseFloat(document.getElementById('expAmount').value)
+            };
+            expenses.unshift(exp);
+            localStorage.setItem('max_expenses', JSON.stringify(expenses));
+            e.target.reset();
+            renderExpenses();
+            updateDashboard();
+        }
 
-    editingBillId = id;
-    document.getElementById('saveBillBtn').innerText = "বিল আপডেট করুন";
-    
-    document.getElementById('billingForm').scrollIntoView({ behavior: 'smooth' });
-}
+        function renderExpenses() {
+            const tbody = document.getElementById('expenseTableBody');
+            tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="3" class="p-4 text-center text-slate-500">কোনো খরচ এন্ট্রি করা হয়নি</td></tr>` :
+            expenses.map(ex => `
+                <tr class="hover:bg-slate-950/40">
+                    <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
+                    <td class="p-3 text-white">${ex.reason}</td>
+                    <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
+                </tr>
+            `).join('');
+        }
 
-function deleteBill(id) {
-    if(confirm('মুছে ফেলতে চান?')) {
-        bills = bills.filter(b => b.id !== id);
-        localStorage.setItem('max_bills', JSON.stringify(bills));
+        function addItem() {
+            const name = document.getElementById('itemName').value;
+            const qty = parseInt(document.getElementById('itemQty').value);
+            if(!name || isNaN(qty)) return alert('সঠিক তথ্য দিন');
+            stocks.push({ id: Date.now(), name, qty });
+            localStorage.setItem('max_stocks', JSON.stringify(stocks));
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQty').value = '';
+            renderStocks();
+        }
+
+        function renderStocks() {
+            const container = document.getElementById('stockList');
+            container.innerHTML = stocks.map(st => `
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-white">${st.name}</h4>
+                        <p class="text-xs text-slate-400">মজুদ: <span class="text-emerald-400 font-semibold">${st.qty} পিস</span></p>
+                    </div>
+                    <button onclick="removeStock(${st.id})" class="text-rose-400 hover:text-rose-300 text-sm"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function removeStock(id) {
+            stocks = stocks.filter(s => s.id !== id);
+            localStorage.setItem('max_stocks', JSON.stringify(stocks));
+            renderStocks();
+        }
+
+        function updateDashboard() {
+            const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
+            const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            document.getElementById('dashPatientCount').innerText = bills.length + ' জন';
+            document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
+            document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
+            document.getElementById('dashBalance').innerText = '৳ ' + balance;
+        }
+
+        // Initial render
         renderBills();
-        updateDashboard();
-    }
-}
-
-function saveExpense(e) {
-    e.preventDefault();
-    expenses.unshift({
-        date: new Date().toLocaleDateString('bn-BD'),
-        reason: document.getElementById('expReason').value,
-        amount: parseFloat(document.getElementById('expAmount').value)
-    });
-    localStorage.setItem('max_expenses', JSON.stringify(expenses));
-    document.querySelector('#expense form').reset();
-    renderExpenses();
-    updateDashboard();
-}
-
-function renderExpenses() {
-    const tbody = document.getElementById('expenseTableBody');
-    tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="3" class="p-4 text-center text-slate-500">কোনো খরচ নেই</td></tr>` :
-    expenses.map(ex => `<tr class="hover:bg-slate-950/40"><td class="p-3 text-slate-400 text-xs">${ex.date}</td><td class="p-3 text-slate-300">${ex.reason}</td><td class="p-3 text-rose-400 font-bold">৳ ${ex.amount}</td></tr>`).join('');
-}
-
-function addItem() {
-    const name = document.getElementById('itemName').value;
-    const qty = document.getElementById('itemQty').value;
-    if(name && qty) {
-        stocks.push({id: Date.now(), name, qty: parseInt(qty)});
-        localStorage.setItem('max_stocks', JSON.stringify(stocks));
-        document.getElementById('itemName').value = '';
-        document.getElementById('itemQty').value = '';
+        renderExpenses();
         renderStocks();
-    }
-}
-
-function renderStocks() {
-    const container = document.getElementById('stockList');
-    container.innerHTML = stocks.map(st => `
-        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-            <div>
-                <p class="font-medium text-white">${st.name}</p>
-                <p class="text-xs text-slate-400">মজুদ: <span class="text-emerald-400 font-bold">${st.qty}</span> টি</p>
-            </div>
-        </div>
-    `).join('');
-}
-
-function updateDashboard() {
-    const totalPatients = bills.length;
-    const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
-    const totalExpense = expenses.reduce((sum, ex) => sum + ex.amount, 0);
-    const netBalance = totalIncome - totalExpense;
-
-    document.getElementById('dashPatientCount').innerText = totalPatients + ' জন';
-    document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
-    document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
-    document.getElementById('dashBalance').innerText = '৳ ' + netBalance;
-}
-
-// Initial Load
-renderBills();
-renderExpenses();
-renderStocks();
-updateDashboard();
+        updateDashboard();
+    </script>
+</body>
+</html>
