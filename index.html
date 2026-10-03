@@ -140,7 +140,7 @@
                         </div>
                     </div>
 
-                    <!-- Services Checkboxes matching the exact Price List Image -->
+                    <!-- Services Checkboxes -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-2">Select Services / Tests (As per official price list):</label>
                         <div id="servicesCheckboxContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
@@ -155,7 +155,13 @@
             </div>
 
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4">Patient Collection Records</h3>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
+                    <h3 class="text-lg font-bold text-white">Patient Collection Records</h3>
+                    <div class="flex gap-2">
+                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+                        <button onclick="exportAllBillsPDF()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-rose-950 transition-all"><i class="fa-solid fa-file-pdf"></i> Print All Report PDF</button>
+                    </div>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead>
@@ -239,7 +245,7 @@
                     </tr>
                 </thead>
                 <tbody class="r-services-table-body">
-                    <!-- Dynamic -->
+                    <!-- Dynamic Multiple Rows -->
                 </tbody>
             </table>
             
@@ -289,7 +295,7 @@
                     </tr>
                 </thead>
                 <tbody class="r-services-table-body">
-                    <!-- Dynamic -->
+                    <!-- Dynamic Multiple Rows -->
                 </tbody>
             </table>
             
@@ -309,7 +315,6 @@
     <script>
         document.getElementById('billDate').valueAsDate = new Date();
 
-        // Exact services from the second image price list
         const servicesList = [
             { id: 1, name: "SPT", price: 300 },
             { id: 2, name: "Fluorescein Test", price: 200 },
@@ -375,8 +380,9 @@
 
             const selectedServices = [];
             const checkboxes = document.querySelectorAll('input[name="service"]:checked');
-            checkboxes.forEach(cb => {
+            checkboxes.forEach((cb, idx) => {
                 selectedServices.push({
+                    serial: idx + 1,
                     id: cb.getAttribute('data-index'),
                     name: cb.value,
                     price: parseFloat(cb.getAttribute('data-price'))
@@ -412,6 +418,7 @@
             document.getElementById('billingForm').reset();
             document.getElementById('billDate').valueAsDate = new Date();
             document.getElementById('billAmount').value = "";
+            document.querySelectorAll('input[name="service"]').forEach(cb => cb.checked = false);
             
             renderBills();
             updateDashboard();
@@ -421,7 +428,7 @@
             const tbody = document.getElementById('billTableBody');
             tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No records found</td></tr>` : 
             bills.map(b => {
-                const serviceListStr = b.services ? b.services.map(s => `${s.name}`).join(', ') : '';
+                const serviceListStr = b.services ? b.services.map(s => `${s.name} (৳${s.price})`).join(', ') : '';
                 return `
                     <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
                         <td class="p-3 text-slate-400 text-xs">${b.date}</td>
@@ -454,7 +461,7 @@
             const servicesList = b.services || [];
             const rowsHtml = servicesList.map((s, index) => `
                 <tr>
-                    <td style="border: 1px solid #333; padding: 2px; text-align: center;">${s.id || index + 1}</td>
+                    <td style="border: 1px solid #333; padding: 2px; text-align: center;">${index + 1}</td>
                     <td style="border: 1px solid #333; padding: 2px;">${s.name}</td>
                     <td style="border: 1px solid #333; padding: 2px; text-align: right;">${s.price}</td>
                 </tr>
@@ -465,6 +472,42 @@
             });
 
             window.print();
+        }
+
+        function exportAllBillsPDF() {
+            window.print();
+        }
+
+        function exportToExcel() {
+            if (bills.length === 0) {
+                alert('Export korar moto kono data nei!');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            csvContent += "Date,Patient Name,Phone,Address,Doctor,Services,Amount (BDT)\n";
+
+            bills.forEach(b => {
+                const servicesStr = b.services ? b.services.map(s => `${s.name}(${s.price})`).join('; ') : '';
+                const row = [
+                    b.date,
+                    `"${b.name}"`,
+                    `"${b.phone || ''}"`,
+                    `"${b.address || ''}"`,
+                    `"${b.doctor}"`,
+                    `"${servicesStr}"`,
+                    b.amount
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "patient_collection_records.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function deleteBill(id) {
