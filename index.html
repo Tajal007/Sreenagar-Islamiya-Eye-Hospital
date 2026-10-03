@@ -10,7 +10,6 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         
-        /* Pro Animation Classes */
         .tab-content { 
             display: none; 
             opacity: 0;
@@ -40,7 +39,12 @@
             transition: all 0.25s ease-in-out;
         }
 
-        @media print { .no-print { display: none !important; } }
+        @media print { 
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .print-receipt-container { display: flex !important; width: 100%; justify-content: space-between; }
+        }
+        .print-receipt-container { display: none; }
     </style>
 </head>
 <body class="bg-[#0b1329] text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
@@ -70,7 +74,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-grow w-full">
+    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-grow w-full no-print">
 
         <!-- DASHBOARD -->
         <section id="dashboard" class="tab-content active space-y-6">
@@ -94,12 +98,15 @@
             </div>
 
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400 animate-pulse"></i> আমাদের সেবাসমূহ ও ফি</h3>
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400 animate-pulse"></i> Services & Fees Price List</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
                     <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> SPT</span> <span class="font-bold text-amber-400">৳300</span></div>
                     <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Fluorescein Test</span> <span class="font-bold text-amber-400">৳200</span></div>
                     <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Schirmer Tear Test</span> <span class="font-bold text-amber-400">৳200</span></div>
                     <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> NCT, IOP</span> <span class="font-bold text-amber-400">৳200</span></div>
+                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Foreign Body Remove Normal</span> <span class="font-bold text-amber-400">৳200</span></div>
+                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Foreign Body Remove OT</span> <span class="font-bold text-amber-400">৳1500</span></div>
+                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Bandage</span> <span class="font-bold text-amber-400">৳150</span></div>
                 </div>
             </div>
         </section>
@@ -195,146 +202,277 @@
 
     </main>
 
-    <!-- External JavaScript Connection -->
-    <script src="script.js"></script>
+    <!-- Printable Receipt Layout -->
+    <div id="printReceiptArea" class="print-receipt-container">
+        
+        <!-- Copy 1: Patient Copy -->
+        <div style="width: 48%; border: 1.5px dashed #333; padding: 12px; font-size: 11px; font-family: Arial, sans-serif;">
+            <div style="text-align: right; font-weight: bold; font-size: 10px; border-bottom: 1px solid #333; padding-bottom: 2px; margin-bottom: 4px;">
+                Patient Copy
+            </div>
+            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a;">
+                SREENAGAR ISLAMIA EYE HOSPITAL
+            </div>
+            <div style="text-align: center; font-size: 10px; font-weight: bold; margin-bottom: 2px;">
+                উন্নত চিকিৎসা, নিরাপদ দৃষ্টি
+            </div>
+            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 6px;">
+                এম. রহমান কমপ্লেক্স (নিচ তলা), মক্কা কমপ্লেক্সের উত্তর পার্শ্বে, শ্রীনগর, মুন্সিগঞ্জ।
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span><strong>Date:</strong> <span class="r-date"></span></span>
+                <span><strong>Receipt No:</strong> <span class="r-id"></span></span>
+            </div>
+            <div style="margin-bottom: 4px;">
+                <strong>Patient Name:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 75%;"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span><strong>Mobile:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 130px;"></span></span>
+                <span><strong>Doctor:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 140px;"></span></span>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px; font-size: 10px;">
+                <thead>
+                    <tr style="border: 1px solid #333; background: #eee;">
+                        <th style="border: 1px solid #333; padding: 2px; width: 25px;">No.</th>
+                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">Service / Test Description</th>
+                        <th style="border: 1px solid #333; padding: 2px; width: 50px; text-align: right;">Fee (৳)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid #333; padding: 3px; text-align: center;">1</td>
+                        <td style="border: 1px solid #333; padding: 3px;" class="r-service">SPT</td>
+                        <td style="border: 1px solid #333; padding: 3px; text-align: right;" class="r-amount">300</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="text-align: right; font-weight: bold; margin-bottom: 15px; font-size: 12px;">
+                Total Amount: ৳ <span class="r-amount-total">300</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-top: 20px;">
+                <span>Receiver Signature</span>
+                <span>Authorized Signature</span>
+            </div>
+        </div>
+
+        <!-- Copy 2: Hospital Counterfoil Copy -->
+        <div style="width: 48%; border: 1.5px dashed #333; padding: 12px; font-size: 11px; font-family: Arial, sans-serif;">
+            <div style="text-align: right; font-weight: bold; font-size: 10px; border-bottom: 1px solid #333; padding-bottom: 2px; margin-bottom: 4px;">
+                Hospital Counterfoil
+            </div>
+            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a;">
+                SREENAGAR ISLAMIA EYE HOSPITAL
+            </div>
+            <div style="text-align: center; font-size: 10px; font-weight: bold; margin-bottom: 2px;">
+                উন্নত চিকিৎসা, নিরাপদ দৃষ্টি
+            </div>
+            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 6px;">
+                এম. রহমান কমপ্লেক্স (নিচ তলা), মক্কা কমপ্লেক্সের উত্তর পার্শ্বে, শ্রীনগর, মুন্সিগঞ্জ।
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span><strong>Date:</strong> <span class="r-date"></span></span>
+                <span><strong>Receipt No:</strong> <span class="r-id"></span></span>
+            </div>
+            <div style="margin-bottom: 4px;">
+                <strong>Patient Name:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 75%;"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span><strong>Mobile:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 130px;"></span></span>
+                <span><strong>Doctor:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 140px;"></span></span>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px; font-size: 10px;">
+                <thead>
+                    <tr style="border: 1px solid #333; background: #eee;">
+                        <th style="border: 1px solid #333; padding: 2px; width: 25px;">No.</th>
+                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">Service / Test Description</th>
+                        <th style="border: 1px solid #333; padding: 2px; width: 50px; text-align: right;">Fee (৳)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid #333; padding: 3px; text-align: center;">1</td>
+                        <td style="border: 1px solid #333; padding: 3px;" class="r-service">SPT</td>
+                        <td style="border: 1px solid #333; padding: 3px; text-align: right;" class="r-amount">300</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="text-align: right; font-weight: bold; margin-bottom: 15px; font-size: 12px;">
+                Total Amount: ৳ <span class="r-amount-total">300</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-top: 20px;">
+                <span>Receiver Signature</span>
+                <span>Authorized Signature</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Script -->
+    <script>
+        document.getElementById('billDate').valueAsDate = new Date();
+
+        function switchTab(event, id) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            const targetTab = document.getElementById(id);
+            targetTab.classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95";
+            });
+            event.currentTarget.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 shadow-md shadow-blue-950/40 hover:scale-[1.02] active:scale-95";
+        }
+
+        let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
+        let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
+        let editingBillId = null;
+
+        function updateServiceFee() {
+            const select = document.getElementById('serviceSelect');
+            const val = select.value.split('|');
+            document.getElementById('serviceName').value = val[0];
+            document.getElementById('billAmount').value = val[1];
+        }
+
+        function saveBill(e) {
+            e.preventDefault();
+            const rawDate = document.getElementById('billDate').value;
+            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+
+            const billData = {
+                id: editingBillId ? editingBillId : Date.now(),
+                date: formattedDate,
+                rawDate: rawDate,
+                name: document.getElementById('patientName').value,
+                phone: document.getElementById('patientPhone').value,
+                doctor: document.getElementById('doctorName').value,
+                service: document.getElementById('serviceName').value,
+                amount: parseFloat(document.getElementById('billAmount').value)
+            };
+
+            if (editingBillId) {
+                bills = bills.map(b => b.id === editingBillId ? billData : b);
+                editingBillId = null;
+                document.getElementById('saveBillBtn').innerText = "Save Bill";
+            } else {
+                bills.unshift(billData);
+            }
+
+            localStorage.setItem('max_bills', JSON.stringify(bills));
+            document.getElementById('billingForm').reset();
+            document.getElementById('billDate').valueAsDate = new Date();
+            document.getElementById('serviceName').value = "SPT";
+            document.getElementById('billAmount').value = "300";
+            
+            renderBills();
+            updateDashboard();
+        }
+
+        function renderBills() {
+            const tbody = document.getElementById('billTableBody');
+            tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No records found</td></tr>` : 
+            bills.map(b => `
+                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
+                    <td class="p-3 text-slate-400 text-xs">${b.date}</td>
+                    <td class="p-3 font-medium text-white">${b.name} <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
+                    <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
+                    <td class="p-3 text-slate-300 text-xs">${b.service}</td>
+                    <td class="p-3 font-bold text-sky-400">৳ ${b.amount}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="printBill(${b.id})" class="text-amber-400 hover:text-amber-300 mr-2 transition-transform hover:scale-110" title="Print Money Receipt"><i class="fa-solid fa-print"></i></button>
+                        <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2 transition-transform hover:scale-110" title="Edit Bill"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300 transition-transform hover:scale-110" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function printBill(id) {
+            const b = bills.find(item => item.id === id);
+            if (!b) return;
+
+            document.querySelectorAll('.r-date').forEach(el => el.innerText = b.date);
+            document.querySelectorAll('.r-id').forEach(el => el.innerText = '#' + String(b.id).slice(-6));
+            document.querySelectorAll('.r-name').forEach(el => el.innerText = b.name);
+            document.querySelectorAll('.r-phone').forEach(el => el.innerText = b.phone || '-');
+            document.querySelectorAll('.r-doctor').forEach(el => el.innerText = b.doctor);
+            document.querySelectorAll('.r-service').forEach(el => el.innerText = b.service);
+            document.querySelectorAll('.r-amount').forEach(el => el.innerText = b.amount);
+            document.querySelectorAll('.r-amount-total').forEach(el => el.innerText = b.amount);
+
+            window.print();
+        }
+
+        function deleteBill(id) {
+            bills = bills.filter(b => b.id !== id);
+            localStorage.setItem('max_bills', JSON.stringify(bills));
+            renderBills();
+            updateDashboard();
+        }
+
+        function editBill(id) {
+            const b = bills.find(item => item.id === id);
+            if (!b) return;
+            editingBillId = b.id;
+            document.getElementById('billDate').value = b.rawDate || '';
+            document.getElementById('patientName').value = b.name;
+            document.getElementById('patientPhone').value = b.phone || '';
+            document.getElementById('doctorName').value = b.doctor;
+            document.getElementById('serviceName').value = b.service;
+            document.getElementById('billAmount').value = b.amount;
+            document.getElementById('saveBillBtn').innerText = "Update Bill";
+            switchTab({ currentTarget: document.querySelectorAll('.nav-btn')[1] }, 'billing');
+        }
+
+        function saveExpense(e) {
+            e.preventDefault();
+            const exp = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('en-GB'),
+                reason: document.getElementById('expReason').value,
+                amount: parseFloat(document.getElementById('expAmount').value)
+            };
+            expenses.unshift(exp);
+            localStorage.setItem('max_expenses', JSON.stringify(expenses));
+            e.target.reset();
+            renderExpenses();
+            updateDashboard();
+        }
+
+        function renderExpenses() {
+            const tbody = document.getElementById('expenseTableBody');
+            tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="3" class="p-6 text-center text-slate-500">No expense records found</td></tr>` :
+            expenses.map(ex => `
+                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
+                    <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
+                    <td class="p-3 text-white">${ex.reason}</td>
+                    <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateDashboard() {
+            const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
+            const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            document.getElementById('dashPatientCount').innerText = bills.length;
+            document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
+            document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
+            document.getElementById('dashBalance').innerText = '৳ ' + balance;
+        }
+
+        // Initial render
+        renderBills();
+        renderExpenses();
+        updateDashboard();
+    </script>
 </body>
 </html>
-document.getElementById('billDate').valueAsDate = new Date();
-
-function switchTab(event, id) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    const targetTab = document.getElementById(id);
-    targetTab.classList.add('active');
-
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95";
-    });
-    event.currentTarget.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300 shadow-md shadow-blue-950/40 hover:scale-[1.02] active:scale-95";
-}
-
-let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
-let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
-let editingBillId = null;
-
-function updateServiceFee() {
-    const select = document.getElementById('serviceSelect');
-    const val = select.value.split('|');
-    document.getElementById('serviceName').value = val[0];
-    document.getElementById('billAmount').value = val[1];
-}
-
-function saveBill(e) {
-    e.preventDefault();
-    const rawDate = document.getElementById('billDate').value;
-    const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
-
-    const billData = {
-        id: editingBillId ? editingBillId : Date.now(),
-        date: formattedDate,
-        rawDate: rawDate,
-        name: document.getElementById('patientName').value,
-        phone: document.getElementById('patientPhone').value,
-        doctor: document.getElementById('doctorName').value,
-        service: document.getElementById('serviceName').value,
-        amount: parseFloat(document.getElementById('billAmount').value)
-    };
-
-    if (editingBillId) {
-        bills = bills.map(b => b.id === editingBillId ? billData : b);
-        editingBillId = null;
-        document.getElementById('saveBillBtn').innerText = "Save Bill";
-    } else {
-        bills.unshift(billData);
-    }
-
-    localStorage.setItem('max_bills', JSON.stringify(bills));
-    document.getElementById('billingForm').reset();
-    document.getElementById('billDate').valueAsDate = new Date();
-    document.getElementById('serviceName').value = "SPT";
-    document.getElementById('billAmount').value = "300";
-    
-    renderBills();
-    updateDashboard();
-}
-
-function renderBills() {
-    const tbody = document.getElementById('billTableBody');
-    tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No records found</td></tr>` : 
-    bills.map(b => `
-        <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-            <td class="p-3 text-slate-400 text-xs">${b.date}</td>
-            <td class="p-3 font-medium text-white">${b.name} <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
-            <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
-            <td class="p-3 text-slate-300 text-xs">${b.service}</td>
-            <td class="p-3 font-bold text-sky-400">৳ ${b.amount}</td>
-            <td class="p-3 text-center">
-                <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2 transition-transform hover:scale-110"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300 transition-transform hover:scale-110"><i class="fa-solid fa-trash"></i></button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function deleteBill(id) {
-    bills = bills.filter(b => b.id !== id);
-    localStorage.setItem('max_bills', JSON.stringify(bills));
-    renderBills();
-    updateDashboard();
-}
-
-function editBill(id) {
-    const b = bills.find(item => item.id === id);
-    if (!b) return;
-    editingBillId = b.id;
-    document.getElementById('billDate').value = b.rawDate || '';
-    document.getElementById('patientName').value = b.name;
-    document.getElementById('patientPhone').value = b.phone || '';
-    document.getElementById('doctorName').value = b.doctor;
-    document.getElementById('serviceName').value = b.service;
-    document.getElementById('billAmount').value = b.amount;
-    document.getElementById('saveBillBtn').innerText = "Update Bill";
-    switchTab({ currentTarget: document.querySelectorAll('.nav-btn')[1] }, 'billing');
-}
-
-function saveExpense(e) {
-    e.preventDefault();
-    const exp = {
-        id: Date.now(),
-        date: new Date().toLocaleDateString('en-GB'),
-        reason: document.getElementById('expReason').value,
-        amount: parseFloat(document.getElementById('expAmount').value)
-    };
-    expenses.unshift(exp);
-    localStorage.setItem('max_expenses', JSON.stringify(expenses));
-    e.target.reset();
-    renderExpenses();
-    updateDashboard();
-}
-
-function renderExpenses() {
-    const tbody = document.getElementById('expenseTableBody');
-    tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="3" class="p-6 text-center text-slate-500">No expense records found</td></tr>` :
-    expenses.map(ex => `
-        <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-            <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
-            <td class="p-3 text-white">${ex.reason}</td>
-            <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
-        </tr>
-    `).join('');
-}
-
-function updateDashboard() {
-    const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
-    const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const balance = totalIncome - totalExpense;
-
-    document.getElementById('dashPatientCount').innerText = bills.length;
-    document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
-    document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
-    document.getElementById('dashBalance').innerText = '৳ ' + balance;
-}
-
-// Initial render
-renderBills();
-renderExpenses();
-updateDashboard();
