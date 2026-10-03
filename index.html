@@ -42,7 +42,7 @@
         @media print { 
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
-            .print-receipt-container { display: flex !important; width: 100%; justify-content: space-between; }
+            .print-receipt-container { display: flex !important; width: 100%; justify-content: space-between; gap: 10px; }
         }
         .print-receipt-container { display: none; }
     </style>
@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-wide">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল <span class="text-xs text-amber-400 block font-normal">Sreenagar Islamia Eye Hospital</span></h1>
-                    <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-amber-400 mr-1 animate-bounce"></i> এম. রহমান কমপ্লেক্স-এর উত্তর পার্শ্বে, মক্কা কমপ্লেক্সের নিচতলা, শ্রীনগর</p>
+                    <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-amber-400 mr-1 animate-bounce"></i> মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ</p>
                 </div>
             </div>
         </div>
@@ -98,15 +98,9 @@
             </div>
 
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400 animate-pulse"></i> Services & Fees Price List</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
-                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> SPT</span> <span class="font-bold text-amber-400">৳300</span></div>
-                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Fluorescein Test</span> <span class="font-bold text-amber-400">৳200</span></div>
-                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Schirmer Tear Test</span> <span class="font-bold text-amber-400">৳200</span></div>
-                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> NCT, IOP</span> <span class="font-bold text-amber-400">৳200</span></div>
-                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Foreign Body Remove Normal</span> <span class="font-bold text-amber-400">৳200</span></div>
-                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Foreign Body Remove OT</span> <span class="font-bold text-amber-400">৳1500</span></div>
-                    <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]"><span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Bandage</span> <span class="font-bold text-amber-400">৳150</span></div>
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400 animate-pulse"></i> পরীক্ষার মূল্য তালিকা (Price List)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-slate-300" id="priceListContainer">
+                    <!-- Dynamic -->
                 </div>
             </div>
         </section>
@@ -115,42 +109,46 @@
         <section id="billing" class="tab-content space-y-6">
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
                 <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-file-invoice text-blue-400 mr-2"></i> New Patient Bill & Service Entry</h3>
-                <form id="billingForm" onsubmit="saveBill(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
-                        <input type="date" id="billDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+                <form id="billingForm" onsubmit="saveBill(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
+                            <input type="date" id="billDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Patient Name</label>
+                            <input type="text" id="patientName" required placeholder="Enter name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Number</label>
+                            <input type="text" id="patientPhone" placeholder="017xxxxxxxx" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Address</label>
+                            <input type="text" id="patientAddress" placeholder="Enter patient address" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Patient Name</label>
-                        <input type="text" id="patientName" required placeholder="Enter name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor Name</label>
+                            <input type="text" id="doctorName" value="Dr. Specialist Surgeon" required placeholder="Enter doctor name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Total Fee / Amount (BDT) - Auto Calculated</label>
+                            <input type="number" id="billAmount" readonly required class="w-full bg-[#080e1e] border border-blue-900/40 rounded-xl px-3 py-2 text-sm font-bold text-amber-400 outline-none">
+                        </div>
                     </div>
+
+                    <!-- Services Checkboxes matching the exact Price List Image -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Number</label>
-                        <input type="text" id="patientPhone" placeholder="017xxxxxxxx" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Select Services / Tests (As per official price list):</label>
+                        <div id="servicesCheckboxContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
+                            <!-- Dynamic -->
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor Name</label>
-                        <input type="text" id="doctorName" value="Dr. Specialist Surgeon" required placeholder="Enter doctor name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Select Service / Test</label>
-                        <select id="serviceSelect" onchange="updateServiceFee()" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition mb-1">
-                            <option value="SPT|300">SPT - ৳300</option>
-                            <option value="Fluorescein Test|200">Fluorescein Test - ৳200</option>
-                            <option value="Schirmer Tear Test|200">Schirmer Tear Test - ৳200</option>
-                            <option value="NCT, IOP|200">NCT, IOP - ৳200</option>
-                            <option value="Foreign Body Remove Normal|200">Foreign Body Remove Normal - ৳200</option>
-                            <option value="Foreign Body Remove OT|1500">Foreign Body Remove OT - ৳1500</option>
-                            <option value="Bandage|150">Bandage - ৳150</option>
-                            <option value="Custom Service|0">Custom Service</option>
-                        </select>
-                        <input type="text" id="serviceName" value="SPT" required placeholder="Service description" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Fee / Amount (BDT)</label>
-                        <input type="number" id="billAmount" value="300" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                    </div>
-                    <div class="md:col-span-3 flex justify-end">
+
+                    <div class="flex justify-end">
                         <button type="submit" id="saveBillBtn" class="bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-blue-950 hover:scale-[1.02] active:scale-95">Save Bill</button>
                     </div>
                 </form>
@@ -163,9 +161,9 @@
                         <thead>
                             <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
                                 <th class="p-3">Date</th>
-                                <th class="p-3">Patient Name</th>
+                                <th class="p-3">Patient Name & Address</th>
                                 <th class="p-3">Doctor</th>
-                                <th class="p-3">Service / Test</th>
+                                <th class="p-3">Services / Tests</th>
                                 <th class="p-3">Amount</th>
                                 <th class="p-3 text-center">Action</th>
                             </tr>
@@ -206,110 +204,102 @@
     <div id="printReceiptArea" class="print-receipt-container">
         
         <!-- Copy 1: Patient Copy -->
-        <div style="width: 48%; border: 1.5px dashed #333; padding: 12px; font-size: 11px; font-family: Arial, sans-serif;">
-            <div style="text-align: right; font-weight: bold; font-size: 10px; border-bottom: 1px solid #333; padding-bottom: 2px; margin-bottom: 4px;">
+        <div style="width: 48%; border: 1.5px dashed #333; padding: 10px; font-size: 10px; font-family: Arial, sans-serif;">
+            <div style="text-align: right; font-weight: bold; font-size: 9px; border-bottom: 1px solid #333; padding-bottom: 1px; margin-bottom: 3px;">
                 Patient Copy
             </div>
-            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a;">
-                SREENAGAR ISLAMIA EYE HOSPITAL
+            <div style="text-align: center; font-weight: bold; font-size: 13px; color: #1e3a8a;">
+                শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল
             </div>
-            <div style="text-align: center; font-size: 10px; font-weight: bold; margin-bottom: 2px;">
-                উন্নত চিকিৎসা, নিরাপদ দৃষ্টি
-            </div>
-            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 6px;">
-                এম. রহমান কমপ্লেক্স (নিচ তলা), মক্কা কমপ্লেক্সের উত্তর পার্শ্বে, শ্রীনগর, মুন্সিগঞ্জ।
+            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 5px;">
+                মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span><strong>Date:</strong> <span class="r-date"></span></span>
-                <span><strong>Receipt No:</strong> <span class="r-id"></span></span>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                <span><strong>তারিখ:</strong> <span class="r-date"></span></span>
+                <span><strong>রসিদ নং:</strong> <span class="r-id"></span></span>
             </div>
-            <div style="margin-bottom: 4px;">
-                <strong>Patient Name:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 75%;"></span>
+            <div style="margin-bottom: 3px;">
+                <strong>রোগীর নাম:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 75%;"></span>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                <span><strong>Mobile:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 130px;"></span></span>
-                <span><strong>Doctor:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 140px;"></span></span>
+            <div style="margin-bottom: 3px;">
+                <strong>ঠিকানা:</strong> <span class="r-address" style="border-bottom: 1px dotted #333; display: inline-block; width: 80%;"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span><strong>মোবাইল:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 105px;"></span></span>
+                <span><strong>ডাক্তার:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 120px;"></span></span>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px; font-size: 10px;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 9px;">
                 <thead>
                     <tr style="border: 1px solid #333; background: #eee;">
-                        <th style="border: 1px solid #333; padding: 2px; width: 25px;">No.</th>
-                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">Service / Test Description</th>
-                        <th style="border: 1px solid #333; padding: 2px; width: 50px; text-align: right;">Fee (৳)</th>
+                        <th style="border: 1px solid #333; padding: 2px; width: 25px; text-align: center;">ক্র.</th>
+                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">সেবা / পরীক্ষার বিবরণ</th>
+                        <th style="border: 1px solid #333; padding: 2px; width: 45px; text-align: right;">ফি (টাকা)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td style="border: 1px solid #333; padding: 3px; text-align: center;">1</td>
-                        <td style="border: 1px solid #333; padding: 3px;" class="r-service">SPT</td>
-                        <td style="border: 1px solid #333; padding: 3px; text-align: right;" class="r-amount">300</td>
-                    </tr>
+                <tbody class="r-services-table-body">
+                    <!-- Dynamic -->
                 </tbody>
             </table>
             
-            <div style="text-align: right; font-weight: bold; margin-bottom: 15px; font-size: 12px;">
-                Total Amount: ৳ <span class="r-amount-total">300</span>
+            <div style="text-align: right; font-weight: bold; margin-bottom: 10px; font-size: 11px;">
+                মোট টাকা: ৳ <span class="r-amount-total">0</span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-top: 20px;">
-                <span>Receiver Signature</span>
-                <span>Authorized Signature</span>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 15px;">
+                <span>গ্রহীতার স্বাক্ষর</span>
+                <span>কর্তৃপক্ষের স্বাক্ষর</span>
             </div>
         </div>
 
         <!-- Copy 2: Hospital Counterfoil Copy -->
-        <div style="width: 48%; border: 1.5px dashed #333; padding: 12px; font-size: 11px; font-family: Arial, sans-serif;">
-            <div style="text-align: right; font-weight: bold; font-size: 10px; border-bottom: 1px solid #333; padding-bottom: 2px; margin-bottom: 4px;">
+        <div style="width: 48%; border: 1.5px dashed #333; padding: 10px; font-size: 10px; font-family: Arial, sans-serif;">
+            <div style="text-align: right; font-weight: bold; font-size: 9px; border-bottom: 1px solid #333; padding-bottom: 1px; margin-bottom: 3px;">
                 Hospital Counterfoil
             </div>
-            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a;">
-                SREENAGAR ISLAMIA EYE HOSPITAL
+            <div style="text-align: center; font-weight: bold; font-size: 13px; color: #1e3a8a;">
+                শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল
             </div>
-            <div style="text-align: center; font-size: 10px; font-weight: bold; margin-bottom: 2px;">
-                উন্নত চিকিৎসা, নিরাপদ দৃষ্টি
-            </div>
-            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 6px;">
-                এম. রহমান কমপ্লেক্স (নিচ তলা), মক্কা কমপ্লেক্সের উত্তর পার্শ্বে, শ্রীনগর, মুন্সিগঞ্জ।
+            <div style="text-align: center; font-size: 9px; color: #444; margin-bottom: 5px;">
+                মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span><strong>Date:</strong> <span class="r-date"></span></span>
-                <span><strong>Receipt No:</strong> <span class="r-id"></span></span>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                <span><strong>তারিখ:</strong> <span class="r-date"></span></span>
+                <span><strong>রসিদ নং:</strong> <span class="r-id"></span></span>
             </div>
-            <div style="margin-bottom: 4px;">
-                <strong>Patient Name:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 75%;"></span>
+            <div style="margin-bottom: 3px;">
+                <strong>রোগীর নাম:</strong> <span class="r-name" style="border-bottom: 1px dotted #333; display: inline-block; width: 75%;"></span>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                <span><strong>Mobile:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 130px;"></span></span>
-                <span><strong>Doctor:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 140px;"></span></span>
+            <div style="margin-bottom: 3px;">
+                <strong>ঠিকানা:</strong> <span class="r-address" style="border-bottom: 1px dotted #333; display: inline-block; width: 80%;"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span><strong>মোবাইল:</strong> <span class="r-phone" style="border-bottom: 1px dotted #333; display: inline-block; width: 105px;"></span></span>
+                <span><strong>ডাক্তার:</strong> <span class="r-doctor" style="border-bottom: 1px dotted #333; display: inline-block; width: 120px;"></span></span>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px; font-size: 10px;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 9px;">
                 <thead>
                     <tr style="border: 1px solid #333; background: #eee;">
-                        <th style="border: 1px solid #333; padding: 2px; width: 25px;">No.</th>
-                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">Service / Test Description</th>
-                        <th style="border: 1px solid #333; padding: 2px; width: 50px; text-align: right;">Fee (৳)</th>
+                        <th style="border: 1px solid #333; padding: 2px; width: 25px; text-align: center;">ক্র.</th>
+                        <th style="border: 1px solid #333; padding: 2px; text-align: left;">সেবা / পরীক্ষার বিবরণ</th>
+                        <th style="border: 1px solid #333; padding: 2px; width: 45px; text-align: right;">ফি (টাকা)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td style="border: 1px solid #333; padding: 3px; text-align: center;">1</td>
-                        <td style="border: 1px solid #333; padding: 3px;" class="r-service">SPT</td>
-                        <td style="border: 1px solid #333; padding: 3px; text-align: right;" class="r-amount">300</td>
-                    </tr>
+                <tbody class="r-services-table-body">
+                    <!-- Dynamic -->
                 </tbody>
             </table>
             
-            <div style="text-align: right; font-weight: bold; margin-bottom: 15px; font-size: 12px;">
-                Total Amount: ৳ <span class="r-amount-total">300</span>
+            <div style="text-align: right; font-weight: bold; margin-bottom: 10px; font-size: 11px;">
+                মোট টাকা: ৳ <span class="r-amount-total">0</span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-top: 20px;">
-                <span>Receiver Signature</span>
-                <span>Authorized Signature</span>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 15px;">
+                <span>গ্রহীতার স্বাক্ষর</span>
+                <span>কর্তৃপক্ষের স্বাক্ষর</span>
             </div>
         </div>
 
@@ -318,6 +308,41 @@
     <!-- JavaScript Script -->
     <script>
         document.getElementById('billDate').valueAsDate = new Date();
+
+        // Exact services from the second image price list
+        const servicesList = [
+            { id: 1, name: "SPT", price: 300 },
+            { id: 2, name: "Fluorescein Test", price: 200 },
+            { id: 3, name: "Schirmer Tear Test", price: 200 },
+            { id: 4, name: "NCT, IOP", price: 200 },
+            { id: 5, name: "ফরেন বডি রিমুভ নরমাল", price: 200 },
+            { id: 6, name: "ফরেন বডি রিমুভ OT", price: 1500 },
+            { id: 7, name: "ব্যান্ডেজ", price: 150 }
+        ];
+
+        function initServicesUI() {
+            const container = document.getElementById('servicesCheckboxContainer');
+            const priceContainer = document.getElementById('priceListContainer');
+            
+            container.innerHTML = '';
+            priceContainer.innerHTML = '';
+
+            servicesList.forEach(item => {
+                container.innerHTML += `
+                    <label class="flex items-center space-x-2 text-sm cursor-pointer hover:text-white">
+                        <input type="checkbox" name="service" value="${item.name}" data-price="${item.price}" data-index="${item.id}" onchange="calculateTotal()" class="rounded border-blue-900 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                        <span class="text-xs"><strong>${item.id}.</strong> ${item.name} (<span class="text-amber-400">৳${item.price}</span>)</span>
+                    </label>
+                `;
+
+                priceContainer.innerHTML += `
+                    <div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]">
+                        <span class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-blue-400"></i> ${item.id}. ${item.name}</span> 
+                        <span class="font-bold text-amber-400 text-xs">৳${item.price}</span>
+                    </div>
+                `;
+            });
+        }
 
         function switchTab(event, id) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -334,11 +359,13 @@
         let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
         let editingBillId = null;
 
-        function updateServiceFee() {
-            const select = document.getElementById('serviceSelect');
-            const val = select.value.split('|');
-            document.getElementById('serviceName').value = val[0];
-            document.getElementById('billAmount').value = val[1];
+        function calculateTotal() {
+            const checkboxes = document.querySelectorAll('input[name="service"]:checked');
+            let total = 0;
+            checkboxes.forEach(cb => {
+                total += parseFloat(cb.getAttribute('data-price')) || 0;
+            });
+            document.getElementById('billAmount').value = total;
         }
 
         function saveBill(e) {
@@ -346,14 +373,30 @@
             const rawDate = document.getElementById('billDate').value;
             const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
 
+            const selectedServices = [];
+            const checkboxes = document.querySelectorAll('input[name="service"]:checked');
+            checkboxes.forEach(cb => {
+                selectedServices.push({
+                    id: cb.getAttribute('data-index'),
+                    name: cb.value,
+                    price: parseFloat(cb.getAttribute('data-price'))
+                });
+            });
+
+            if (selectedServices.length === 0) {
+                alert('দয়া করে অন্তত একটি সেবা বা টেস্ট সিলেক্ট করুন!');
+                return;
+            }
+
             const billData = {
                 id: editingBillId ? editingBillId : Date.now(),
                 date: formattedDate,
                 rawDate: rawDate,
                 name: document.getElementById('patientName').value,
                 phone: document.getElementById('patientPhone').value,
+                address: document.getElementById('patientAddress').value,
                 doctor: document.getElementById('doctorName').value,
-                service: document.getElementById('serviceName').value,
+                services: selectedServices,
                 amount: parseFloat(document.getElementById('billAmount').value)
             };
 
@@ -368,8 +411,7 @@
             localStorage.setItem('max_bills', JSON.stringify(bills));
             document.getElementById('billingForm').reset();
             document.getElementById('billDate').valueAsDate = new Date();
-            document.getElementById('serviceName').value = "SPT";
-            document.getElementById('billAmount').value = "300";
+            document.getElementById('billAmount').value = "";
             
             renderBills();
             updateDashboard();
@@ -378,20 +420,23 @@
         function renderBills() {
             const tbody = document.getElementById('billTableBody');
             tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No records found</td></tr>` : 
-            bills.map(b => `
-                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-                    <td class="p-3 text-slate-400 text-xs">${b.date}</td>
-                    <td class="p-3 font-medium text-white">${b.name} <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
-                    <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
-                    <td class="p-3 text-slate-300 text-xs">${b.service}</td>
-                    <td class="p-3 font-bold text-sky-400">৳ ${b.amount}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="printBill(${b.id})" class="text-amber-400 hover:text-amber-300 mr-2 transition-transform hover:scale-110" title="Print Money Receipt"><i class="fa-solid fa-print"></i></button>
-                        <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2 transition-transform hover:scale-110" title="Edit Bill"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300 transition-transform hover:scale-110" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+            bills.map(b => {
+                const serviceListStr = b.services ? b.services.map(s => `${s.name}`).join(', ') : '';
+                return `
+                    <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
+                        <td class="p-3 text-slate-400 text-xs">${b.date}</td>
+                        <td class="p-3 font-medium text-white">${b.name} <br><span class="text-xs text-slate-400">${b.address || ''}</span> <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
+                        <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
+                        <td class="p-3 text-slate-300 text-xs">${serviceListStr}</td>
+                        <td class="p-3 font-bold text-sky-400">৳ ${b.amount}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="printBill(${b.id})" class="text-amber-400 hover:text-amber-300 mr-2 transition-transform hover:scale-110" title="Print Money Receipt"><i class="fa-solid fa-print"></i></button>
+                            <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2 transition-transform hover:scale-110" title="Edit Bill"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300 transition-transform hover:scale-110" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function printBill(id) {
@@ -401,11 +446,23 @@
             document.querySelectorAll('.r-date').forEach(el => el.innerText = b.date);
             document.querySelectorAll('.r-id').forEach(el => el.innerText = '#' + String(b.id).slice(-6));
             document.querySelectorAll('.r-name').forEach(el => el.innerText = b.name);
+            document.querySelectorAll('.r-address').forEach(el => el.innerText = b.address || '-');
             document.querySelectorAll('.r-phone').forEach(el => el.innerText = b.phone || '-');
             document.querySelectorAll('.r-doctor').forEach(el => el.innerText = b.doctor);
-            document.querySelectorAll('.r-service').forEach(el => el.innerText = b.service);
-            document.querySelectorAll('.r-amount').forEach(el => el.innerText = b.amount);
             document.querySelectorAll('.r-amount-total').forEach(el => el.innerText = b.amount);
+
+            const servicesList = b.services || [];
+            const rowsHtml = servicesList.map((s, index) => `
+                <tr>
+                    <td style="border: 1px solid #333; padding: 2px; text-align: center;">${s.id || index + 1}</td>
+                    <td style="border: 1px solid #333; padding: 2px;">${s.name}</td>
+                    <td style="border: 1px solid #333; padding: 2px; text-align: right;">${s.price}</td>
+                </tr>
+            `).join('');
+
+            document.querySelectorAll('.r-services-table-body').forEach(el => {
+                el.innerHTML = rowsHtml;
+            });
 
             window.print();
         }
@@ -424,9 +481,15 @@
             document.getElementById('billDate').value = b.rawDate || '';
             document.getElementById('patientName').value = b.name;
             document.getElementById('patientPhone').value = b.phone || '';
+            document.getElementById('patientAddress').value = b.address || '';
             document.getElementById('doctorName').value = b.doctor;
-            document.getElementById('serviceName').value = b.service;
             document.getElementById('billAmount').value = b.amount;
+
+            const serviceNames = b.services ? b.services.map(s => s.name) : [];
+            document.querySelectorAll('input[name="service"]').forEach(cb => {
+                cb.checked = serviceNames.includes(cb.value);
+            });
+
             document.getElementById('saveBillBtn').innerText = "Update Bill";
             switchTab({ currentTarget: document.querySelectorAll('.nav-btn')[1] }, 'billing');
         }
@@ -469,7 +532,7 @@
             document.getElementById('dashBalance').innerText = '৳ ' + balance;
         }
 
-        // Initial render
+        initServicesUI();
         renderBills();
         renderExpenses();
         updateDashboard();
