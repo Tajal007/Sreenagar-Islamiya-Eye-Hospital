@@ -161,159 +161,160 @@
         </div>
     </div>
 
-    <!-- External JavaScript File Link -->
-    <script src="script.js"></script>
+    <!-- Embedded JavaScript Code -->
+    <script>
+        function updateServiceFee() {
+            const select = document.getElementById('serviceSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            const fee = selectedOption.getAttribute('data-fee');
+            document.getElementById('billAmount').value = fee;
+        }
+
+        let bills = [];
+
+        function saveBill(event) {
+            event.preventDefault();
+            const editIndex = document.getElementById('editIndex').value;
+            const name = document.getElementById('patientName').value;
+            const phone = document.getElementById('patientPhone').value;
+            const doctor = document.getElementById('doctorName').value;
+            const service = document.getElementById('serviceSelect').value;
+            const amount = document.getElementById('billAmount').value;
+
+            if (editIndex === "-1") {
+                const newBill = { id: Date.now(), name, phone, doctor, service, amount };
+                bills.push(newBill);
+            } else {
+                bills[editIndex].name = name;
+                bills[editIndex].phone = phone;
+                bills[editIndex].doctor = doctor;
+                bills[editIndex].service = service;
+                bills[editIndex].amount = amount;
+            }
+
+            renderBills();
+            resetForm();
+        }
+
+        function renderBills() {
+            const tbody = document.getElementById('billTableBody');
+            tbody.innerHTML = '';
+            if (bills.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-500 text-xs">No records found</td></tr>`;
+                return;
+            }
+            bills.forEach((bill, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/30">
+                        <td class="py-3 px-4 font-medium text-white">${bill.name}</td>
+                        <td class="py-3 px-4 text-slate-400">${bill.phone || 'N/A'}</td>
+                        <td class="py-3 px-4 text-slate-300">${bill.doctor}</td>
+                        <td class="py-3 px-4 text-slate-300">${bill.service}</td>
+                        <td class="py-3 px-4 text-emerald-400 font-semibold">৳${bill.amount}</td>
+                        <td class="py-3 px-4 text-right space-x-1">
+                            <button onclick="editBill(${index})" class="bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-white px-2 py-1 rounded-lg text-xs transition">Edit</button>
+                            <button onclick="printBill(${index})" class="bg-sky-500/10 text-sky-400 hover:bg-sky-500 hover:text-white px-2 py-1 rounded-lg text-xs transition">Print</button>
+                            <button onclick="deleteBill(${bill.id})" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-2 py-1 rounded-lg text-xs transition">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function editBill(index) {
+            const bill = bills[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('patientName').value = bill.name;
+            document.getElementById('patientPhone').value = bill.phone;
+            document.getElementById('doctorName').value = bill.doctor;
+            document.getElementById('serviceSelect').value = bill.service;
+            document.getElementById('billAmount').value = bill.amount;
+
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-400 mr-2"></i> Edit Patient Bill`;
+            document.getElementById('submitBtn').innerText = "Update Bill";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('billingForm').reset();
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-file-invoice text-emerald-400 mr-2"></i> New Patient Bill & Fee Entry`;
+            document.getElementById('submitBtn').innerText = "Save Bill";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('doctorName').value = "Dr. Specialist Surgeon";
+            document.getElementById('billAmount').value = "100";
+        }
+
+        function deleteBill(id) {
+            bills = bills.filter(b => b.id !== id);
+            renderBills();
+        }
+
+        function printBill(index) {
+            const bill = bills[index];
+            document.getElementById('printName').innerText = bill.name;
+            document.getElementById('printPhone').innerText = bill.phone || 'N/A';
+            document.getElementById('printDoctor').innerText = bill.doctor;
+            document.getElementById('printService').innerText = bill.service;
+            document.getElementById('printAmount').innerText = bill.amount;
+
+            document.getElementById('printArea').classList.remove('hidden');
+            window.print();
+            document.getElementById('printArea').classList.add('hidden');
+        }
+
+        function downloadPDFReport() {
+            if (bills.length === 0) {
+                alert("No data available to generate report!");
+                return;
+            }
+            const reportTbody = document.getElementById('reportTableBody');
+            reportTbody.innerHTML = '';
+            let total = 0;
+            bills.forEach(b => {
+                total += parseFloat(b.amount || 0);
+                reportTbody.innerHTML += `
+                    <tr>
+                        <td class="p-2 border border-gray-300">${b.name}</td>
+                        <td class="p-2 border border-gray-300">${b.phone || 'N/A'}</td>
+                        <td class="p-2 border border-gray-300">${b.doctor}</td>
+                        <td class="p-2 border border-gray-300">${b.service}</td>
+                        <td class="p-2 border border-gray-300">৳${b.amount}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('reportTotalAmount').innerText = total;
+
+            let originalContent = document.body.innerHTML;
+            let reportContent = document.getElementById('reportPrintArea').innerHTML;
+            document.body.innerHTML = reportContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload();
+        }
+
+        function exportToExcel() {
+            if (bills.length === 0) {
+                alert("No data available to export!");
+                return;
+            }
+            let csv = 'Patient Name,Mobile,Doctor,Service,Amount (BDT)\n';
+            bills.forEach(b => {
+                csv += `"${b.name}","${b.phone || 'N/A'}","${b.doctor}","${b.service}","${b.amount}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Hospital_Collection_Report_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        renderBills();
+    </script>
 </body>
 </html>
-function updateServiceFee() {
-    const select = document.getElementById('serviceSelect');
-    const selectedOption = select.options[select.selectedIndex];
-    const fee = selectedOption.getAttribute('data-fee');
-    document.getElementById('billAmount').value = fee;
-}
-
-let bills = [];
-
-function saveBill(event) {
-    event.preventDefault();
-    const editIndex = document.getElementById('editIndex').value;
-    const name = document.getElementById('patientName').value;
-    const phone = document.getElementById('patientPhone').value;
-    const doctor = document.getElementById('doctorName').value;
-    const service = document.getElementById('serviceSelect').value;
-    const amount = document.getElementById('billAmount').value;
-
-    if (editIndex === "-1") {
-        const newBill = { id: Date.now(), name, phone, doctor, service, amount };
-        bills.push(newBill);
-    } else {
-        bills[editIndex].name = name;
-        bills[editIndex].phone = phone;
-        bills[editIndex].doctor = doctor;
-        bills[editIndex].service = service;
-        bills[editIndex].amount = amount;
-    }
-
-    renderBills();
-    resetForm();
-}
-
-function renderBills() {
-    const tbody = document.getElementById('billTableBody');
-    tbody.innerHTML = '';
-    if (bills.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-500 text-xs">No records found</td></tr>`;
-        return;
-    }
-    bills.forEach((bill, index) => {
-        tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/30">
-                <td class="py-3 px-4 font-medium text-white">${bill.name}</td>
-                <td class="py-3 px-4 text-slate-400">${bill.phone || 'N/A'}</td>
-                <td class="py-3 px-4 text-slate-300">${bill.doctor}</td>
-                <td class="py-3 px-4 text-slate-300">${bill.service}</td>
-                <td class="py-3 px-4 text-emerald-400 font-semibold">৳${bill.amount}</td>
-                <td class="py-3 px-4 text-right space-x-1">
-                    <button onclick="editBill(${index})" class="bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-white px-2 py-1 rounded-lg text-xs transition">Edit</button>
-                    <button onclick="printBill(${index})" class="bg-sky-500/10 text-sky-400 hover:bg-sky-500 hover:text-white px-2 py-1 rounded-lg text-xs transition">Print</button>
-                    <button onclick="deleteBill(${bill.id})" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-2 py-1 rounded-lg text-xs transition">Delete</button>
-                </td>
-            </tr>
-        `;
-    });
-}
-
-function editBill(index) {
-    const bill = bills[index];
-    document.getElementById('editIndex').value = index;
-    document.getElementById('patientName').value = bill.name;
-    document.getElementById('patientPhone').value = bill.phone;
-    document.getElementById('doctorName').value = bill.doctor;
-    document.getElementById('serviceSelect').value = bill.service;
-    document.getElementById('billAmount').value = bill.amount;
-
-    document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-400 mr-2"></i> Edit Patient Bill`;
-    document.getElementById('submitBtn').innerText = "Update Bill";
-    document.getElementById('cancelEditBtn').classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function resetForm() {
-    document.getElementById('billingForm').reset();
-    document.getElementById('editIndex').value = "-1";
-    document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-file-invoice text-emerald-400 mr-2"></i> New Patient Bill & Fee Entry`;
-    document.getElementById('submitBtn').innerText = "Save Bill";
-    document.getElementById('cancelEditBtn').classList.add('hidden');
-    document.getElementById('doctorName').value = "Dr. Specialist Surgeon";
-    document.getElementById('billAmount').value = "100";
-}
-
-function deleteBill(id) {
-    bills = bills.filter(b => b.id !== id);
-    renderBills();
-}
-
-function printBill(index) {
-    const bill = bills[index];
-    document.getElementById('printName').innerText = bill.name;
-    document.getElementById('printPhone').innerText = bill.phone || 'N/A';
-    document.getElementById('printDoctor').innerText = bill.doctor;
-    document.getElementById('printService').innerText = bill.service;
-    document.getElementById('printAmount').innerText = bill.amount;
-
-    document.getElementById('printArea').classList.remove('hidden');
-    window.print();
-    document.getElementById('printArea').classList.add('hidden');
-}
-
-function downloadPDFReport() {
-    if (bills.length === 0) {
-        alert("No data available to generate report!");
-        return;
-    }
-    const reportTbody = document.getElementById('reportTableBody');
-    reportTbody.innerHTML = '';
-    let total = 0;
-    bills.forEach(b => {
-        total += parseFloat(b.amount || 0);
-        reportTbody.innerHTML += `
-            <tr>
-                <td class="p-2 border border-gray-300">${b.name}</td>
-                <td class="p-2 border border-gray-300">${b.phone || 'N/A'}</td>
-                <td class="p-2 border border-gray-300">${b.doctor}</td>
-                <td class="p-2 border border-gray-300">${b.service}</td>
-                <td class="p-2 border border-gray-300">৳${b.amount}</td>
-            </tr>
-        `;
-    });
-    document.getElementById('reportTotalAmount').innerText = total;
-
-    let originalContent = document.body.innerHTML;
-    let reportContent = document.getElementById('reportPrintArea').innerHTML;
-    document.body.innerHTML = reportContent;
-    window.print();
-    document.body.innerHTML = originalContent;
-    window.location.reload();
-}
-
-function exportToExcel() {
-    if (bills.length === 0) {
-        alert("No data available to export!");
-        return;
-    }
-    let csv = 'Patient Name,Mobile,Doctor,Service,Amount (BDT)\n';
-    bills.forEach(b => {
-        csv += `"${b.name}","${b.phone || 'N/A'}","${b.doctor}","${b.service}","${b.amount}"\n`;
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Hospital_Collection_Report_${new Date().toISOString().slice(0,10)}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-renderBills();
