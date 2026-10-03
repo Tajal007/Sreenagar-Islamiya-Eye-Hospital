@@ -97,7 +97,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Visit Fee Card -->
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-sky-400"></i> ভিজিট ফি (Visit Fee)</h3>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-sky-400"></i> Visit Fee</h3>
                     <div id="visitFeeContainer" class="space-y-3 text-sm text-slate-300">
                         <!-- Dynamic -->
                     </div>
@@ -105,7 +105,7 @@
 
                 <!-- Test Fees Card -->
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400"></i> পরীক্ষার মূল্য তালিকা (Test Fees)</h3>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400"></i> Test & Service Fees</h3>
                     <div id="testListContainer" class="space-y-3 text-sm text-slate-300">
                         <!-- Dynamic -->
                     </div>
@@ -360,9 +360,9 @@
             { id: 2, name: "Fluorescein Test", price: 200 },
             { id: 3, name: "Schirmer Tear Test", price: 200 },
             { id: 4, name: "NCT, IOP", price: 200 },
-            { id: 5, name: "ফরেন বডি রিমুভ নরমাল", price: 200 },
-            { id: 6, name: "ফরেন বডি রিমুভ OT", price: 1500 },
-            { id: 7, name: "ব্যান্ডেজ", price: 150 }
+            { id: 5, name: "Foreign Body Removal (Normal)", price: 200 },
+            { id: 6, name: "Foreign Body Removal (OT)", price: 1500 },
+            { id: 7, name: "Bandage", price: 150 }
         ];
 
         function initServicesUI() {
@@ -456,7 +456,7 @@
             });
 
             if (selectedServices.length === 0) {
-                alert('দয়া করে অন্তত ভিজিট ফি অথবা একটি টেস্ট সিলেক্ট করুন!');
+                alert('Please select at least a visit fee or a test!');
                 return;
             }
 
@@ -557,7 +557,7 @@
 
         function exportToExcel() {
             if (bills.length === 0) {
-                alert('Export korar moto kono data nei!');
+                alert('No data available to export!');
                 return;
             }
 
@@ -621,7 +621,7 @@
             const exp = {
                 id: Date.now(),
                 date: new Date().toLocaleDateString('en-GB'),
-                reason: document.getElementById('expReason5').value || document.getElementById('expReason').value,
+                reason: document.getElementById('expReason').value,
                 amount: parseFloat(document.getElementById('expAmount').value)
             };
             expenses.unshift(exp);
