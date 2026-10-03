@@ -77,6 +77,7 @@
         <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2.5">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
             <button onclick="switchTab('billing')" id="nav-billing" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Fees</button>
+            <button onclick="switchTab('medicine')" id="nav-medicine" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-pills"></i> Medicine Sales</button>
             <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-chart-column"></i> Reports</button>
             <button onclick="switchTab('expense')" id="nav-expense" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-wallet"></i> Expenses</button>
         </div>
@@ -87,7 +88,7 @@
 
         <!-- DASHBOARD -->
         <section id="dashboard" class="tab-content active space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
                     <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Patients</p>
                     <h3 class="text-3xl font-extrabold text-sky-400 mt-2" id="dashPatientCount">0</h3>
@@ -95,6 +96,10 @@
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
                     <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Income</p>
                     <h3 class="text-3xl font-extrabold text-blue-400 mt-2" id="dashIncome">৳ 0</h3>
+                </div>
+                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Medicine Sales</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-2" id="dashMedicineIncome">৳ 0</h3>
                 </div>
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
                     <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Expense</p>
@@ -200,6 +205,59 @@
             </div>
         </section>
 
+        <!-- MEDICINE SALES TAB -->
+        <section id="medicine" class="tab-content space-y-6">
+            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-pills text-emerald-400 mr-2"></i> Medicine Sales Entry</h3>
+                <form id="medicineForm" onsubmit="saveMedicineSale(event)" class="space-y-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
+                            <input type="date" id="medDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Customer / Patient Name</label>
+                            <input type="text" id="medCustomer" placeholder="Customer name" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Medicine Name(s)</label>
+                            <input type="text" id="medName" placeholder="e.g. Moxiflox Eye Drop, Napa" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Quantity / Details</label>
+                            <input type="text" id="medQty" placeholder="e.g. 2 Pcs / 1 Box" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Total Amount (BDT)</label>
+                            <input type="number" id="medAmount" placeholder="Amount in BDT" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
+                        </div>
+                        <div class="flex gap-2 md:col-span-2 justify-end">
+                            <button type="button" onclick="resetMedicineForm()" id="cancelMedEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all">Cancel</button>
+                            <button type="submit" id="saveMedBtn" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-emerald-950">Save Medicine Sale</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Customer Name</th>
+                                <th class="p-3">Medicine Name</th>
+                                <th class="p-3">Quantity</th>
+                                <th class="p-3">Amount</th>
+                                <th class="p-3 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medicineTableBody" class="divide-y divide-blue-900/20"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <!-- REPORTS TAB -->
         <section id="reports" class="tab-content space-y-6">
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
@@ -216,14 +274,18 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
                     <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
                         <p class="text-xs text-slate-400">Filtered Patients</p>
                         <h4 class="text-2xl font-bold text-sky-400 mt-1" id="reportPatientCount">0</h4>
                     </div>
                     <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Filtered Collection</p>
-                        <h4 class="text-2xl font-bold text-emerald-400 mt-1" id="reportTotalIncome">৳ 0</h4>
+                        <p class="text-xs text-slate-400">Patient Collection</p>
+                        <h4 class="text-2xl font-bold text-blue-400 mt-1" id="reportTotalIncome">৳ 0</h4>
+                    </div>
+                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
+                        <p class="text-xs text-slate-400">Medicine Sales</p>
+                        <h4 class="text-2xl font-bold text-emerald-400 mt-1" id="reportTotalMedicine">৳ 0</h4>
                     </div>
                     <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
                         <p class="text-xs text-slate-400">Filtered Expenses</p>
@@ -386,7 +448,8 @@
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; font-weight: bold;">
             <span>Total Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
-            <span>Total Collection: <span id="pRepIncome" style="color: #16a34a;">৳ 0</span></span>
+            <span>Patient Collection: <span id="pRepIncome" style="color: #1e3a8a;">৳ 0</span></span>
+            <span>Medicine Sales: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
             <span>Total Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
         </div>
         <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
@@ -406,6 +469,7 @@
     <!-- JavaScript Script -->
     <script>
         document.getElementById('billDate').valueAsDate = new Date();
+        document.getElementById('medDate').valueAsDate = new Date();
 
         const visitList = [
             { id: "v1", name: "Doctor Visit Fee", price: 100 }
@@ -482,8 +546,10 @@
         }
 
         let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
+        let medicines = JSON.parse(localStorage.getItem('max_medicines')) || [];
         let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
         let editingBillId = null;
+        let editingMedId = null;
 
         function calculateTotal() {
             const checkboxes = document.querySelectorAll('input[name="service"]:checked');
@@ -578,14 +644,99 @@
             }).join('');
         }
 
+        // Medicine Sales Functions with separate Name, Quantity & Edit Support
+        function saveMedicineSale(e) {
+            e.preventDefault();
+            const rawDate = document.getElementById('medDate').value;
+            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+
+            const medData = {
+                id: editingMedId ? editingMedId : Date.now(),
+                date: formattedDate,
+                rawDate: rawDate,
+                customer: document.getElementById('medCustomer').value,
+                medName: document.getElementById('medName').value,
+                medQty: document.getElementById('medQty').value,
+                amount: parseFloat(document.getElementById('medAmount').value)
+            };
+
+            if (editingMedId) {
+                medicines = medicines.map(m => m.id === editingMedId ? medData : m);
+                editingMedId = null;
+                document.getElementById('saveMedBtn').innerText = "Save Medicine Sale";
+                document.getElementById('cancelMedEditBtn').classList.add('hidden');
+            } else {
+                medicines.unshift(medData);
+            }
+
+            localStorage.setItem('max_medicines', JSON.stringify(medicines));
+            
+            document.getElementById('medicineForm').reset();
+            document.getElementById('medDate').valueAsDate = new Date();
+
+            renderMedicines();
+            updateDashboard();
+        }
+
+        function resetMedicineForm() {
+            editingMedId = null;
+            document.getElementById('medicineForm').reset();
+            document.getElementById('medDate').valueAsDate = new Date();
+            document.getElementById('saveMedBtn').innerText = "Save Medicine Sale";
+            document.getElementById('cancelMedEditBtn').classList.add('hidden');
+        }
+
+        function renderMedicines() {
+            const tbody = document.getElementById('medicineTableBody');
+            tbody.innerHTML = medicines.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No medicine sales found</td></tr>` :
+            medicines.map(m => `
+                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
+                    <td class="p-3 text-slate-400 text-xs">${m.date}</td>
+                    <td class="p-3 font-medium text-white">${m.customer}</td>
+                    <td class="p-3 text-slate-200 text-xs font-semibold">${m.medName || '-'}</td>
+                    <td class="p-3 text-slate-300 text-xs">${m.medQty || '-'}</td>
+                    <td class="p-3 font-bold text-emerald-400">৳ ${m.amount}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="editMedicine(${m.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Medicine"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteMedicine(${m.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editMedicine(id) {
+            const m = medicines.find(item => item.id == id);
+            if (!m) return;
+            editingMedId = m.id;
+
+            document.getElementById('medDate').value = m.rawDate || new Date().toISOString().split('T')[0];
+            document.getElementById('medCustomer').value = m.customer || '';
+            document.getElementById('medName').value = m.medName || '';
+            document.getElementById('medQty').value = m.medQty || '';
+            document.getElementById('medAmount').value = m.amount || '';
+
+            document.getElementById('saveMedBtn').innerText = "Update Medicine Sale";
+            document.getElementById('cancelMedEditBtn').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteMedicine(id) {
+            medicines = medicines.filter(m => m.id != id);
+            localStorage.setItem('max_medicines', JSON.stringify(medicines));
+            renderMedicines();
+            updateDashboard();
+        }
+
         function generateReport() {
             const dateFilter = document.getElementById('reportDateFilter').value;
             let filteredBills = bills;
+            let filteredMeds = medicines;
             let filteredExpenses = expenses;
 
             if (dateFilter) {
                 const formattedFilterDate = new Date(dateFilter).toLocaleDateString('en-GB');
                 filteredBills = bills.filter(b => b.date === formattedFilterDate);
+                filteredMeds = medicines.filter(m => m.date === formattedFilterDate);
                 filteredExpenses = expenses.filter(e => e.date === formattedFilterDate);
                 document.getElementById('printReportTitle').innerText = `Hospital Report - Date: ${formattedFilterDate}`;
             } else {
@@ -593,50 +744,71 @@
             }
 
             const totalInc = filteredBills.reduce((sum, b) => sum + b.amount, 0);
+            const totalMedInc = filteredMeds.reduce((sum, m) => sum + m.amount, 0);
             const totalExp = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
 
             document.getElementById('reportPatientCount').innerText = filteredBills.length;
             document.getElementById('reportTotalIncome').innerText = '৳ ' + totalInc;
+            document.getElementById('reportTotalMedicine').innerText = '৳ ' + totalMedInc;
             document.getElementById('reportTotalExpense').innerText = '৳ ' + totalExp;
 
             document.getElementById('pRepCount').innerText = filteredBills.length;
             document.getElementById('pRepIncome').innerText = '৳ ' + totalInc;
+            document.getElementById('pRepMedicine').innerText = '৳ ' + totalMedInc;
             document.getElementById('pRepExpense').innerText = '৳ ' + totalExp;
 
             const tbody = document.getElementById('reportTableBody');
             const printTbody = document.getElementById('printReportTableBody');
 
-            if (filteredBills.length === 0) {
+            let combinedRows = [];
+            filteredBills.forEach(b => {
+                const servs = b.services ? b.services.map(s => s.name).join(', ') : '';
+                combinedRows.push({
+                    date: b.date,
+                    name: b.name,
+                    phone: b.phone || '-',
+                    services: 'Bill: ' + servs,
+                    amount: b.amount,
+                    type: 'Bill'
+                });
+            });
+
+            filteredMeds.forEach(m => {
+                combinedRows.push({
+                    date: m.date,
+                    name: m.customer,
+                    phone: '-',
+                    services: `Medicine: ${m.medName} (${m.medQty})`,
+                    amount: m.amount,
+                    type: 'Medicine'
+                });
+            });
+
+            if (combinedRows.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">No records found for the selected filter</td></tr>`;
                 printTbody.innerHTML = `<tr><td colspan="5" style="padding: 10px; text-align: center; color: #666;">No records found</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = filteredBills.map(b => {
-                const servs = b.services ? b.services.map(s => s.name).join(', ') : '';
-                return `
-                    <tr class="hover:bg-[#080e1e]/40">
-                        <td class="p-3 text-slate-400 text-xs">${b.date}</td>
-                        <td class="p-3 font-semibold text-white">${b.name}</td>
-                        <td class="p-3 text-slate-300 text-xs">${b.phone || '-'}</td>
-                        <td class="p-3 text-slate-300 text-xs">${servs}</td>
-                        <td class="p-3 text-right font-bold text-emerald-400">৳ ${b.amount}</td>
-                    </tr>
-                `;
-            }).join('');
+            tbody.innerHTML = combinedRows.map(r => `
+                <tr class="hover:bg-[#080e1e]/40">
+                    <td class="p-3 text-slate-400 text-xs">${r.date}</td>
+                    <td class="p-3 font-semibold text-white">${r.name}</td>
+                    <td class="p-3 text-slate-300 text-xs">${r.phone}</td>
+                    <td class="p-3 text-slate-300 text-xs">${r.services}</td>
+                    <td class="p-3 text-right font-bold ${r.type === 'Medicine' ? 'text-emerald-400' : 'text-sky-400'}">৳ ${r.amount}</td>
+                </tr>
+            `).join('');
 
-            printTbody.innerHTML = filteredBills.map(b => {
-                const servs = b.services ? b.services.map(s => s.name).join(', ') : '';
-                return `
-                    <tr>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${b.date}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px; font-weight: bold;">${b.name}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${b.phone || '-'}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${servs}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold;">${b.amount}</td>
-                    </tr>
-                `;
-            }).join('');
+            printTbody.innerHTML = combinedRows.map(r => `
+                <tr>
+                    <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.date}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 5px; font-weight: bold;">${r.name}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.phone}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.services}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold;">${r.amount}</td>
+                </tr>
+            `).join('');
         }
 
         function resetReportFilter() {
@@ -688,32 +860,27 @@
         }
 
         function exportToExcel() {
-            if (bills.length === 0) {
+            if (bills.length === 0 && medicines.length === 0) {
                 alert('No data available to export!');
                 return;
             }
 
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "Date,Patient Name,Phone,Address,Doctor,Visit & Tests,Amount (BDT)\n";
+            csvContent += "Type,Date,Name,Phone/Customer,Address/Medicine Name,Doctor/Qty,Amount (BDT)\n";
 
             bills.forEach(b => {
                 const servicesStr = b.services ? b.services.map(s => `${s.name}(${s.price})`).join('; ') : '';
-                const row = [
-                    b.date,
-                    `"${b.name}"`,
-                    `"${b.phone || ''}"`,
-                    `"${b.address || ''}"`,
-                    `"${b.doctor}"`,
-                    `"${servicesStr}"`,
-                    b.amount
-                ];
-                csvContent += row.join(",") + "\n";
+                csvContent += `"Bill",${b.date},"${b.name}","${b.phone || ''}","${b.address || ''}","${b.doctor} - ${servicesStr}",${b.amount}\n`;
+            });
+
+            medicines.forEach(m => {
+                csvContent += `"Medicine",${m.date},"${m.customer}","-","${m.medName || ''}","${m.medQty || ''}",${m.amount}\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "patient_collection_records.csv");
+            link.setAttribute("download", "hospital_sales_records.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -781,17 +948,21 @@
 
         function updateDashboard() {
             const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
+            const totalMedicine = medicines.reduce((sum, m) => sum + m.amount, 0);
             const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
-            const balance = totalIncome - totalExpense;
+            
+            const balance = (totalIncome + totalMedicine) - totalExpense;
 
             document.getElementById('dashPatientCount').innerText = bills.length;
             document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
+            document.getElementById('dashMedicineIncome').innerText = '৳ ' + totalMedicine;
             document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
             document.getElementById('dashBalance').innerText = '৳ ' + balance;
         }
 
         initServicesUI();
         renderBills();
+        renderMedicines();
         renderExpenses();
         updateDashboard();
     </script>
