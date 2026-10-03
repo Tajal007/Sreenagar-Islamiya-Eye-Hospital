@@ -65,7 +65,7 @@
                     <i class="fa-solid fa-eye text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-white tracking-wide">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল <span class="text-xs text-amber-400 block font-normal">Sreenagar Islamia Eye Hospital</span></h1>
+                    <h1 class="text-xl font-bold text-white tracking-wide">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল <span class="text-xs text-amber-400 block font-normal">Sreenagar Islamia Eye Hospital</span></h1>
                     <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ</p>
                 </div>
             </div>
@@ -274,7 +274,7 @@
 
     </main>
 
-    <!-- Printable Advanced Receipt Layout (No Receiver Signature, Modern Aesthetic) -->
+    <!-- Printable Advanced Receipt Layout -->
     <div id="printReceiptArea" class="print-receipt-container">
         <!-- Copy 1: Patient Copy -->
         <div style="width: 48%; border: 1.5px solid #0284c7; border-radius: 8px; padding: 14px; font-size: 10px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: #fff; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
@@ -286,7 +286,7 @@
                 <span style="font-size: 8.5px; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 20px; font-weight: 700; border: 1px solid #bae6fd;">Patient Copy</span>
             </div>
             
-            <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল</div>
+            <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
             <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357</div>
             
             <div style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 9.5px;">
@@ -336,7 +336,7 @@
                 <span style="font-size: 8.5px; background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 20px; font-weight: 700; border: 1px solid #fde68a;">Hospital Counterfoil</span>
             </div>
             
-            <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল</div>
+            <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
             <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357</div>
             
             <div style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 9.5px;">
@@ -380,7 +380,7 @@
     <!-- Printable Full Report Layout -->
     <div id="printReportArea" class="print-report-container p-6">
         <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 15px;">
-            <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল</h2>
+            <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h2>
             <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357</p>
             <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
         </div>
@@ -756,11 +756,9 @@
             const exp = {
                 id: Date.now(),
                 date: new Date().toLocaleDateString('en-GB'),
-                reason: document.getElementById('expReason5') || document.getElementById('expReason').value,
+                reason: document.getElementById('expReason').value,
                 amount: parseFloat(document.getElementById('expAmount').value)
             };
-            // Fixed input ID reference safety check
-            exp.reason = document.getElementById('expReason').value;
 
             expenses.unshift(exp);
             localStorage.setItem('max_expenses', JSON.stringify(expenses));
