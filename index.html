@@ -30,24 +30,35 @@
             transition: all 0.25s ease-in-out;
         }
 
+        /* Default hidden for print containers */
+        .print-receipt-container { display: none; }
+        .print-report-container { display: none; }
+
         @media print { 
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
-            .print-receipt-container { 
+            
+            /* Dynamic printing modes controlled via JS classes on body */
+            body.printing-receipt .print-receipt-container { 
                 display: flex !important; 
                 width: 100%; 
                 justify-content: space-between; 
                 gap: 15px; 
             }
-            .print-report-container {
+            body.printing-receipt .print-report-container { 
+                display: none !important; 
+            }
+
+            body.printing-report .print-report-container {
                 display: block !important;
                 width: 100%;
                 background: white !important;
                 color: black !important;
             }
+            body.printing-report .print-receipt-container { 
+                display: none !important; 
+            }
         }
-        .print-receipt-container { display: none; }
-        .print-report-container { display: none; }
     </style>
 </head>
 <body class="bg-[#0b1329] text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
@@ -630,7 +641,10 @@
         }
 
         function printReport() {
+            document.body.classList.remove('printing-receipt');
+            document.body.classList.add('printing-report');
             window.print();
+            document.body.classList.remove('printing-report');
         }
 
         function printBill(id) {
@@ -658,12 +672,15 @@
                 el.innerHTML = rowsHtml;
             });
 
+            document.body.classList.remove('printing-report');
+            document.body.classList.add('printing-receipt');
             window.print();
+            document.body.classList.remove('printing-receipt');
         }
 
         function exportAllBillsPDF() {
             switchTab('reports');
-            window.print();
+            printReport();
         }
 
         function exportToExcel() {
