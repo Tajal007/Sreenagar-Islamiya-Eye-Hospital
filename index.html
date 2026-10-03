@@ -39,8 +39,15 @@
                 justify-content: space-between; 
                 gap: 15px; 
             }
+            .print-report-container {
+                display: block !important;
+                width: 100%;
+                background: white !important;
+                color: black !important;
+            }
         }
         .print-receipt-container { display: none; }
+        .print-report-container { display: none; }
     </style>
 </head>
 <body class="bg-[#0b1329] text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
@@ -65,6 +72,7 @@
         <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2.5">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
             <button onclick="switchTab('billing')" id="nav-billing" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Fees</button>
+            <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-chart-column"></i> Reports</button>
             <button onclick="switchTab('expense')" id="nav-expense" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-wallet"></i> Expenses</button>
         </div>
     </nav>
@@ -95,20 +103,14 @@
 
             <!-- Price Lists -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Visit Fee Card -->
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-sky-400"></i> Visit Fee</h3>
-                    <div id="visitFeeContainer" class="space-y-3 text-sm text-slate-300">
-                        <!-- Dynamic -->
-                    </div>
+                    <div id="visitFeeContainer" class="space-y-3 text-sm text-slate-300"></div>
                 </div>
 
-                <!-- Test Fees Card -->
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400"></i> Test & Service Fees</h3>
-                    <div id="testListContainer" class="space-y-3 text-sm text-slate-300">
-                        <!-- Dynamic -->
-                    </div>
+                    <div id="testListContainer" class="space-y-3 text-sm text-slate-300"></div>
                 </div>
             </div>
         </section>
@@ -148,22 +150,15 @@
                         </div>
                     </div>
 
-                    <!-- Separate Selection Sections -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Visit Fee Selection -->
                         <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
                             <label class="block text-xs font-semibold text-sky-400 mb-2 uppercase tracking-wide">Select Visit Fee:</label>
-                            <div id="visitCheckboxContainer" class="space-y-2">
-                                <!-- Dynamic -->
-                            </div>
+                            <div id="visitCheckboxContainer" class="space-y-2"></div>
                         </div>
 
-                        <!-- Tests Selection -->
                         <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
                             <label class="block text-xs font-semibold text-amber-400 mb-2 uppercase tracking-wide">Select Tests / Services:</label>
-                            <div id="testCheckboxContainer" class="space-y-2">
-                                <!-- Dynamic -->
-                            </div>
+                            <div id="testCheckboxContainer" class="space-y-2"></div>
                         </div>
                     </div>
 
@@ -200,6 +195,57 @@
             </div>
         </section>
 
+        <!-- REPORTS TAB -->
+        <section id="reports" class="tab-content space-y-6">
+            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-chart-column text-sky-400 mr-2"></i> Hospital Revenue & Activity Report</h3>
+                
+                <!-- Filter Controls -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-[#080e1e]/60 p-4 rounded-xl border border-blue-900/30">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Filter By Date</label>
+                        <input type="date" id="reportDateFilter" onchange="generateReport()" class="w-full bg-[#111c38] border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button onclick="resetReportFilter()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px] transition-all">Show All</button>
+                        <button onclick="printReport()" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px] flex items-center gap-2 shadow-lg shadow-sky-950"><i class="fa-solid fa-print"></i> Print Report</button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards for Filtered Data -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
+                        <p class="text-xs text-slate-400">Filtered Patients</p>
+                        <h4 class="text-2xl font-bold text-sky-400 mt-1" id="reportPatientCount">0</h4>
+                    </div>
+                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
+                        <p class="text-xs text-slate-400">Filtered Collection</p>
+                        <h4 class="text-2xl font-bold text-emerald-400 mt-1" id="reportTotalIncome">৳ 0</h4>
+                    </div>
+                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
+                        <p class="text-xs text-slate-400">Filtered Expenses</p>
+                        <h4 class="text-2xl font-bold text-rose-400 mt-1" id="reportTotalExpense">৳ 0</h4>
+                    </div>
+                </div>
+
+                <!-- Report Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Patient Name</th>
+                                <th class="p-3">Mobile</th>
+                                <th class="p-3">Services Taken</th>
+                                <th class="p-3 text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody" class="divide-y divide-blue-900/20"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <!-- EXPENSE -->
         <section id="expense" class="tab-content space-y-6">
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
@@ -226,40 +272,28 @@
 
     </main>
 
-    <!-- Printable Receipt Layout with Professional Styling -->
+    <!-- Printable Receipt Layout -->
     <div id="printReceiptArea" class="print-receipt-container">
-        
         <!-- Copy 1: Patient Copy -->
         <div style="width: 48%; border: 2px solid #1e3a8a; border-radius: 6px; padding: 12px; font-size: 10px; font-family: 'Inter', Arial, sans-serif; background: #fff; color: #111;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #1e3a8a; padding-bottom: 4px; margin-bottom: 6px;">
                 <span style="font-size: 9px; font-weight: bold; color: #1e3a8a; text-transform: uppercase;"><i class="fa-solid fa-eye"></i> Sreenagar Islamia Eye Hospital</span>
                 <span style="font-size: 8.5px; background: #e0f2fe; color: #0369a1; padding: 1px 6px; border-radius: 4px; font-weight: bold;">Patient Copy</span>
             </div>
-
-            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a; margin-bottom: 1px;">
-                শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল
-            </div>
-            <div style="text-align: center; font-size: 8.5px; color: #555; margin-bottom: 8px;">
-                মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357
-            </div>
-            
+            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a; margin-bottom: 1px;">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল</div>
+            <div style="text-align: center; font-size: 8.5px; color: #555; margin-bottom: 8px;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357</div>
             <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 6px; margin-bottom: 8px; font-size: 9.5px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
                     <span><strong>Date:</strong> <span class="r-date"></span></span>
                     <span><strong>Receipt No:</strong> <span class="r-id" style="color: #0284c7; font-weight: bold;"></span></span>
                 </div>
-                <div style="margin-bottom: 3px;">
-                    <strong>Patient Name:</strong> <span class="r-name" style="font-weight: 600; color: #0f172a;"></span>
-                </div>
-                <div style="margin-bottom: 3px;">
-                    <strong>Address:</strong> <span class="r-address"></span>
-                </div>
+                <div style="margin-bottom: 3px;"><strong>Patient Name:</strong> <span class="r-name" style="font-weight: 600; color: #0f172a;"></span></div>
+                <div style="margin-bottom: 3px;"><strong>Address:</strong> <span class="r-address"></span></div>
                 <div style="display: flex; justify-content: space-between;">
                     <span><strong>Mobile:</strong> <span class="r-phone"></span></span>
                     <span><strong>Doctor:</strong> <span class="r-doctor" style="font-weight: 600;"></span></span>
                 </div>
             </div>
-
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 9.5px;">
                 <thead>
                     <tr style="background: #1e3a8a; color: white;">
@@ -268,16 +302,12 @@
                         <th style="border: 1px solid #1e3a8a; padding: 4px; width: 60px; text-align: right;">Fee (BDT)</th>
                     </tr>
                 </thead>
-                <tbody class="r-services-table-body">
-                    <!-- Dynamic Multiple Rows -->
-                </tbody>
+                <tbody class="r-services-table-body"></tbody>
             </table>
-            
             <div style="display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 5px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 15px; font-size: 11px;">
                 <span>Total Amount:</span>
                 <span style="color: #0369a1;">৳ <span class="r-amount-total">0</span></span>
             </div>
-            
             <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 25px; text-align: center;">
                 <div style="border-top: 1px dashed #64748b; width: 110px; padding-top: 3px; color: #475569;">Receiver's Signature</div>
                 <div style="border-top: 1.5px solid #1e3a8a; width: 140px; padding-top: 3px;">
@@ -293,31 +323,20 @@
                 <span style="font-size: 9px; font-weight: bold; color: #1e3a8a; text-transform: uppercase;"><i class="fa-solid fa-eye"></i> Sreenagar Islamia Eye Hospital</span>
                 <span style="font-size: 8.5px; background: #fef3c7; color: #d97706; padding: 1px 6px; border-radius: 4px; font-weight: bold;">Hospital Counterfoil</span>
             </div>
-
-            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a; margin-bottom: 1px;">
-                শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল
-            </div>
-            <div style="text-align: center; font-size: 8.5px; color: #555; margin-bottom: 8px;">
-                মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357
-            </div>
-            
+            <div style="text-align: center; font-weight: bold; font-size: 14px; color: #1e3a8a; margin-bottom: 1px;">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল</div>
+            <div style="text-align: center; font-size: 8.5px; color: #555; margin-bottom: 8px;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357</div>
             <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 6px; margin-bottom: 8px; font-size: 9.5px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
                     <span><strong>Date:</strong> <span class="r-date"></span></span>
                     <span><strong>Receipt No:</strong> <span class="r-id" style="color: #0284c7; font-weight: bold;"></span></span>
                 </div>
-                <div style="margin-bottom: 3px;">
-                    <strong>Patient Name:</strong> <span class="r-name" style="font-weight: 600; color: #0f172a;"></span>
-                </div>
-                <div style="margin-bottom: 3px;">
-                    <strong>Address:</strong> <span class="r-address"></span>
-                </div>
+                <div style="margin-bottom: 3px;"><strong>Patient Name:</strong> <span class="r-name" style="font-weight: 600; color: #0f172a;"></span></div>
+                <div style="margin-bottom: 3px;"><strong>Address:</strong> <span class="r-address"></span></div>
                 <div style="display: flex; justify-content: space-between;">
                     <span><strong>Mobile:</strong> <span class="r-phone"></span></span>
                     <span><strong>Doctor:</strong> <span class="r-doctor" style="font-weight: 600;"></span></span>
                 </div>
             </div>
-
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 9.5px;">
                 <thead>
                     <tr style="background: #1e3a8a; color: white;">
@@ -326,16 +345,12 @@
                         <th style="border: 1px solid #1e3a8a; padding: 4px; width: 60px; text-align: right;">Fee (BDT)</th>
                     </tr>
                 </thead>
-                <tbody class="r-services-table-body">
-                    <!-- Dynamic Multiple Rows -->
-                </tbody>
+                <tbody class="r-services-table-body"></tbody>
             </table>
-            
             <div style="display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 5px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 15px; font-size: 11px;">
                 <span>Total Amount:</span>
                 <span style="color: #0369a1;">৳ <span class="r-amount-total">0</span></span>
             </div>
-            
             <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 25px; text-align: center;">
                 <div style="border-top: 1px dashed #64748b; width: 110px; padding-top: 3px; color: #475569;">Receiver's Signature</div>
                 <div style="border-top: 1.5px solid #1e3a8a; width: 140px; padding-top: 3px;">
@@ -344,7 +359,32 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- Printable Full Report Layout -->
+    <div id="printReportArea" class="print-report-container p-6">
+        <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 15px;">
+            <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামিয়া চক্ষু হাসপাতাল</h2>
+            <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357</p>
+            <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; font-weight: bold;">
+            <span>Total Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
+            <span>Total Collection: <span id="pRepIncome" style="color: #16a34a;">৳ 0</span></span>
+            <span>Total Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+            <thead>
+                <tr style="background: #1e3a8a; color: white;">
+                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Date</th>
+                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Patient Name</th>
+                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Mobile</th>
+                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Services</th>
+                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">Amount (BDT)</th>
+                </tr>
+            </thead>
+            <tbody id="printReportTableBody"></tbody>
+        </table>
     </div>
 
     <!-- JavaScript Script -->
@@ -368,7 +408,6 @@
         function initServicesUI() {
             const visitContainer = document.getElementById('visitCheckboxContainer');
             const testContainer = document.getElementById('testCheckboxContainer');
-            
             const dashVisitContainer = document.getElementById('visitFeeContainer');
             const dashTestContainer = document.getElementById('testListContainer');
 
@@ -377,7 +416,6 @@
             dashVisitContainer.innerHTML = '';
             dashTestContainer.innerHTML = '';
 
-            // Visit Fee UI
             visitList.forEach(item => {
                 visitContainer.innerHTML += `
                     <label class="flex items-center space-x-2 text-sm cursor-pointer hover:text-white">
@@ -385,7 +423,6 @@
                         <span class="text-xs font-semibold">${item.name} (<span class="text-amber-400">৳${item.price}</span>)</span>
                     </label>
                 `;
-
                 dashVisitContainer.innerHTML += `
                     <div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]">
                         <span class="flex items-center gap-2 text-xs"><i class="fa-solid fa-user-doctor text-sky-400"></i> ${item.name}</span> 
@@ -394,7 +431,6 @@
                 `;
             });
 
-            // Tests UI
             testList.forEach(item => {
                 testContainer.innerHTML += `
                     <label class="flex items-center space-x-2 text-sm cursor-pointer hover:text-white">
@@ -402,7 +438,6 @@
                         <span class="text-xs"><strong>${item.id}.</strong> ${item.name} (<span class="text-amber-400">৳${item.price}</span>)</span>
                     </label>
                 `;
-
                 dashTestContainer.innerHTML += `
                     <div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]">
                         <span class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-blue-400"></i> ${item.id}. ${item.name}</span> 
@@ -423,6 +458,10 @@
             const activeBtn = document.getElementById('nav-' + tabId);
             if (activeBtn) {
                 activeBtn.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2";
+            }
+
+            if(tabId === 'reports') {
+                generateReport();
             }
         }
 
@@ -523,6 +562,77 @@
             }).join('');
         }
 
+        // REPORT LOGIC
+        function generateReport() {
+            const dateFilter = document.getElementById('reportDateFilter').value;
+            let filteredBills = bills;
+            let filteredExpenses = expenses;
+
+            if (dateFilter) {
+                const formattedFilterDate = new Date(dateFilter).toLocaleDateString('en-GB');
+                filteredBills = bills.filter(b => b.date === formattedFilterDate);
+                filteredExpenses = expenses.filter(e => e.date === formattedFilterDate);
+                document.getElementById('printReportTitle').innerText = `Hospital Report - Date: ${formattedFilterDate}`;
+            } else {
+                document.getElementById('printReportTitle').innerText = `Hospital Comprehensive Summary Report`;
+            }
+
+            const totalInc = filteredBills.reduce((sum, b) => sum + b.amount, 0);
+            const totalExp = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+            document.getElementById('reportPatientCount').innerText = filteredBills.length;
+            document.getElementById('reportTotalIncome').innerText = '৳ ' + totalInc;
+            document.getElementById('reportTotalExpense').innerText = '৳ ' + totalExp;
+
+            document.getElementById('pRepCount').innerText = filteredBills.length;
+            document.getElementById('pRepIncome').innerText = '৳ ' + totalInc;
+            document.getElementById('pRepExpense').innerText = '৳ ' + totalExp;
+
+            const tbody = document.getElementById('reportTableBody');
+            const printTbody = document.getElementById('printReportTableBody');
+
+            if (filteredBills.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">No records found for the selected filter</td></tr>`;
+                printTbody.innerHTML = `<tr><td colspan="5" style="padding: 10px; text-align: center; color: #666;">No records found</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredBills.map(b => {
+                const servs = b.services ? b.services.map(s => s.name).join(', ') : '';
+                return `
+                    <tr class="hover:bg-[#080e1e]/40">
+                        <td class="p-3 text-slate-400 text-xs">${b.date}</td>
+                        <td class="p-3 font-semibold text-white">${b.name}</td>
+                        <td class="p-3 text-slate-300 text-xs">${b.phone || '-'}</td>
+                        <td class="p-3 text-slate-300 text-xs">${servs}</td>
+                        <td class="p-3 text-right font-bold text-emerald-400">৳ ${b.amount}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            printTbody.innerHTML = filteredBills.map(b => {
+                const servs = b.services ? b.services.map(s => s.name).join(', ') : '';
+                return `
+                    <tr>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${b.date}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px; font-weight: bold;">${b.name}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${b.phone || '-'}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${servs}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold;">${b.amount}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function resetReportFilter() {
+            document.getElementById('reportDateFilter').value = '';
+            generateReport();
+        }
+
+        function printReport() {
+            window.print();
+        }
+
         function printBill(id) {
             const b = bills.find(item => item.id == id);
             if (!b) return;
@@ -552,6 +662,7 @@
         }
 
         function exportAllBillsPDF() {
+            switchTab('reports');
             window.print();
         }
 
@@ -592,6 +703,9 @@
             localStorage.setItem('max_bills', JSON.stringify(bills));
             renderBills();
             updateDashboard();
+            if(document.getElementById('reports').classList.contains('active')) {
+                generateReport();
+            }
         }
 
         function editBill(id) {
