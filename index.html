@@ -77,7 +77,7 @@
         <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2.5">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
             <button onclick="switchTab('billing')" id="nav-billing" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Fees</button>
-            <button onclick="switchTab('medicine')" id="nav-medicine" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-pills"></i> Medicine Sales</button>
+            <button onclick="switchTab('medicine')" id="nav-medicine" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-pills"></i> Medicine & Glass Sales</button>
             <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-chart-column"></i> Reports</button>
             <button onclick="switchTab('expense')" id="nav-expense" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2"><i class="fa-solid fa-wallet"></i> Expenses</button>
         </div>
@@ -98,7 +98,7 @@
                     <h3 class="text-3xl font-extrabold text-blue-400 mt-2" id="dashIncome">৳ 0</h3>
                 </div>
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Medicine Sales</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Medicine & Glass Sales</p>
                     <h3 class="text-3xl font-extrabold text-emerald-400 mt-2" id="dashMedicineIncome">৳ 0</h3>
                 </div>
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
@@ -205,12 +205,12 @@
             </div>
         </section>
 
-        <!-- MEDICINE SALES TAB -->
+        <!-- MEDICINE & GLASS SALES TAB -->
         <section id="medicine" class="tab-content space-y-6">
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-pills text-emerald-400 mr-2"></i> Medicine Sales Entry</h3>
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-pills text-emerald-400 mr-2"></i> Medicine & Glass Sales Entry</h3>
                 <form id="medicineForm" onsubmit="saveMedicineSale(event)" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
                             <input type="date" id="medDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
@@ -220,8 +220,15 @@
                             <input type="text" id="medCustomer" placeholder="Customer name" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Medicine Name(s)</label>
-                            <input type="text" id="medName" placeholder="e.g. Moxiflox Eye Drop, Napa" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Sales Type</label>
+                            <select id="medType" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
+                                <option value="Medicine">Medicine</option>
+                                <option value="Eyeglass (চশমা)">Eyeglass (চশমা)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Item Name(s)</label>
+                            <input type="text" id="medName" placeholder="e.g. Moxiflox / Reading Glass" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 mb-1">Quantity / Details</label>
@@ -235,7 +242,7 @@
                         </div>
                         <div class="flex gap-2 md:col-span-2 justify-end">
                             <button type="button" onclick="resetMedicineForm()" id="cancelMedEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all">Cancel</button>
-                            <button type="submit" id="saveMedBtn" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-emerald-950">Save Medicine Sale</button>
+                            <button type="submit" id="saveMedBtn" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-emerald-950">Save Sale Record</button>
                         </div>
                     </div>
                 </form>
@@ -246,7 +253,8 @@
                             <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
                                 <th class="p-3">Date</th>
                                 <th class="p-3">Customer Name</th>
-                                <th class="p-3">Medicine Name</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3">Item Name</th>
                                 <th class="p-3">Quantity</th>
                                 <th class="p-3">Amount</th>
                                 <th class="p-3 text-center">Action</th>
@@ -284,7 +292,7 @@
                         <h4 class="text-2xl font-bold text-blue-400 mt-1" id="reportTotalIncome">৳ 0</h4>
                     </div>
                     <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Medicine Sales</p>
+                        <p class="text-xs text-slate-400">Medicine & Glass Sales</p>
                         <h4 class="text-2xl font-bold text-emerald-400 mt-1" id="reportTotalMedicine">৳ 0</h4>
                     </div>
                     <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
@@ -455,7 +463,7 @@
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; font-weight: bold;">
             <span>Total Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
             <span>Patient Collection: <span id="pRepIncome" style="color: #1e3a8a;">৳ 0</span></span>
-            <span>Medicine Sales: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
+            <span>Medicine & Glass Sales: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
             <span>Total Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
         </div>
         <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
@@ -660,6 +668,7 @@
                 date: formattedDate,
                 rawDate: rawDate,
                 customer: document.getElementById('medCustomer').value,
+                medType: document.getElementById('medType').value,
                 medName: document.getElementById('medName').value,
                 medQty: document.getElementById('medQty').value,
                 amount: parseFloat(document.getElementById('medAmount').value)
@@ -668,7 +677,7 @@
             if (editingMedId) {
                 medicines = medicines.map(m => m.id === editingMedId ? medData : m);
                 editingMedId = null;
-                document.getElementById('saveMedBtn').innerText = "Save Medicine Sale";
+                document.getElementById('saveMedBtn').innerText = "Save Sale Record";
                 document.getElementById('cancelMedEditBtn').classList.add('hidden');
             } else {
                 medicines.unshift(medData);
@@ -687,22 +696,23 @@
             editingMedId = null;
             document.getElementById('medicineForm').reset();
             document.getElementById('medDate').valueAsDate = new Date();
-            document.getElementById('saveMedBtn').innerText = "Save Medicine Sale";
+            document.getElementById('saveMedBtn').innerText = "Save Sale Record";
             document.getElementById('cancelMedEditBtn').classList.add('hidden');
         }
 
         function renderMedicines() {
             const tbody = document.getElementById('medicineTableBody');
-            tbody.innerHTML = medicines.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No medicine sales found</td></tr>` :
+            tbody.innerHTML = medicines.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-slate-500">No records found</td></tr>` :
             medicines.map(m => `
                 <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
                     <td class="p-3 text-slate-400 text-xs">${m.date}</td>
                     <td class="p-3 font-medium text-white">${m.customer}</td>
+                    <td class="p-3 text-xs"><span class="px-2 py-1 rounded-md ${m.medType === 'Eyeglass (চশমা)' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}">${m.medType || 'Medicine'}</span></td>
                     <td class="p-3 text-slate-200 text-xs font-semibold">${m.medName || '-'}</td>
                     <td class="p-3 text-slate-300 text-xs">${m.medQty || '-'}</td>
                     <td class="p-3 font-bold text-emerald-400">৳ ${m.amount}</td>
                     <td class="p-3 text-center">
-                        <button onclick="editMedicine(${m.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Medicine"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="editMedicine(${m.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button onclick="deleteMedicine(${m.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
@@ -716,11 +726,12 @@
 
             document.getElementById('medDate').value = m.rawDate || new Date().toISOString().split('T')[0];
             document.getElementById('medCustomer').value = m.customer || '';
+            document.getElementById('medType').value = m.medType || 'Medicine';
             document.getElementById('medName').value = m.medName || '';
             document.getElementById('medQty').value = m.medQty || '';
             document.getElementById('medAmount').value = m.amount || '';
 
-            document.getElementById('saveMedBtn').innerText = "Update Medicine Sale";
+            document.getElementById('saveMedBtn').innerText = "Update Sale Record";
             document.getElementById('cancelMedEditBtn').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -779,11 +790,12 @@
             });
 
             filteredMeds.forEach(m => {
+                const categoryLabel = m.medType === 'Eyeglass (চশমা)' ? 'Eyeglass' : 'Medicine';
                 combinedRows.push({
                     date: m.date,
                     name: m.customer,
                     phone: '-',
-                    services: `Medicine: ${m.medName} (${m.medQty})`,
+                    services: `${categoryLabel}: ${m.medName} (${m.medQty})`,
                     amount: m.amount,
                     type: 'Medicine'
                 });
@@ -871,7 +883,7 @@
             }
 
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "Type,Date,Name,Phone/Customer,Address/Medicine Name,Doctor/Qty,Amount (BDT)\n";
+            csvContent += "Type,Date,Name,Phone/Customer,Address/Category,Doctor/Item Details,Amount (BDT)\n";
 
             bills.forEach(b => {
                 const servicesStr = b.services ? b.services.map(s => `${s.name}(${s.price})`).join('; ') : '';
@@ -879,7 +891,7 @@
             });
 
             medicines.forEach(m => {
-                csvContent += `"Medicine",${m.date},"${m.customer}","-","${m.medName || ''}","${m.medQty || ''}",${m.amount}\n`;
+                csvContent += `"Store Sale",${m.date},"${m.customer}","-","${m.medType || 'Medicine'}","${m.medName || ''} (${m.medQty || ''})",${m.amount}\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
@@ -945,6 +957,7 @@
             expenses.map(ex => `
                 <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
                     <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
+                    <option></option>
                     <td class="p-3 text-white">${ex.reason}</td>
                     <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
                 </tr>
