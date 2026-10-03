@@ -339,7 +339,10 @@
     <!-- Printable Advanced Receipt Layout -->
     <div id="printReceiptArea" class="print-receipt-container">
         <!-- Copy 1: Patient Copy -->
-        <div style="width: 48%; border: 1.5px solid #0284c7; border-radius: 8px; padding: 14px; font-size: 10px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: #fff; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <div style="width: 48%; border: 1.5px solid #0284c7; border-radius: 8px; padding: 14px; font-size: 10px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: #fff; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
+            <!-- PAID Stamp -->
+            <div style="position: absolute; top: 75px; right: 30px; border: 2.5px solid #16a34a; color: #16a34a; font-size: 16px; font-weight: 900; padding: 3px 12px; border-radius: 6px; transform: rotate(-12deg); letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; pointer-events: none;">PAID</div>
+
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 8px;">
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="background: #0284c7; color: white; width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px;"><i class="fa-solid fa-eye"></i></div>
@@ -382,14 +385,17 @@
 
             <div style="display: flex; justify-content: flex-end; font-size: 9px; margin-top: 20px; text-align: center;">
                 <div style="border-top: 1.5px solid #0284c7; width: 150px; padding-top: 4px;">
-                    <div style="font-weight: 800; font-size: 9px; color: #0f172a;">Sreenagar Islamia Eye Hospital</div>
-                    <div style="font-size: 7.5px; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Authorized Signature</div>
+                    <div style="font-weight: 800; font-size: 9px; color: #0f172a;">Manager</div>
+                    <div style="font-size: 7.5px; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sreenagar Islamia Eye Hospital</div>
                 </div>
             </div>
         </div>
 
         <!-- Copy 2: Hospital Counterfoil Copy -->
-        <div style="width: 48%; border: 1.5px solid #d97706; border-radius: 8px; padding: 14px; font-size: 10px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: #fff; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <div style="width: 48%; border: 1.5px solid #d97706; border-radius: 8px; padding: 14px; font-size: 10px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: #fff; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
+            <!-- PAID Stamp -->
+            <div style="position: absolute; top: 75px; right: 30px; border: 2.5px solid #16a34a; color: #16a34a; font-size: 16px; font-weight: 900; padding: 3px 12px; border-radius: 6px; transform: rotate(-12deg); letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; pointer-events: none;">PAID</div>
+
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d97706; padding-bottom: 6px; margin-bottom: 8px;">
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="background: #d97706; color: white; width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px;"><i class="fa-solid fa-eye"></i></div>
@@ -432,8 +438,8 @@
 
             <div style="display: flex; justify-content: flex-end; font-size: 9px; margin-top: 20px; text-align: center;">
                 <div style="border-top: 1.5px solid #d97706; width: 150px; padding-top: 4px;">
-                    <div style="font-weight: 800; font-size: 9px; color: #0f172a;">Sreenagar Islamia Eye Hospital</div>
-                    <div style="font-size: 7.5px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Authorized Signature</div>
+                    <div style="font-weight: 800; font-size: 9px; color: #0f172a;">Manager</div>
+                    <div style="font-size: 7.5px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sreenagar Islamia Eye Hospital</div>
                 </div>
             </div>
         </div>
@@ -644,7 +650,6 @@
             }).join('');
         }
 
-        // Medicine Sales Functions with separate Name, Quantity & Edit Support
         function saveMedicineSale(e) {
             e.preventDefault();
             const rawDate = document.getElementById('medDate').value;
