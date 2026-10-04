@@ -421,7 +421,7 @@
             </div>
             
             <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
-            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357</div>
+            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357[span_1](start_span)[span_1](end_span)</div>
             
             <div style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 9.5px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
@@ -473,7 +473,7 @@
             </div>
             
             <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
-            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357</div>
+            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357[span_2](start_span)[span_2](end_span)</div>
             
             <div style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 9.5px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
@@ -517,7 +517,7 @@
     <div id="printReportArea" class="print-report-container p-6">
         <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 15px;">
             <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h2>
-            <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357[span_1](start_span)[span_1](end_span)</p>
+            <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357[span_3](start_span)[span_3](end_span)</p>
             <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; font-weight: bold;">
@@ -985,7 +985,6 @@
                 });
             });
 
-            // Sorting combined records by Date (Ascending or Descending as preferred, using chronological order based on rawDate)
             combinedRows.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0));
 
             if (combinedRows.length === 0) {
@@ -1013,7 +1012,6 @@
                 `).join('');
             }
 
-            // Populate Expense Details in Print Report
             if (filteredExpenses.length === 0) {
                 printExpenseTbody.innerHTML = `<tr><td colspan="3" style="border: 1px solid #cbd5e1; padding: 6px; text-align: center; color: #666;">No expenses recorded</td></tr>`;
             } else {
