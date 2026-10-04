@@ -99,7 +99,7 @@
                     <h3 class="text-3xl font-extrabold text-rose-400 mt-2" id="dashExpense">৳ 0</h3>
                 </div>
                 <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Net Cash Balance</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Net Income / Balance</p>
                     <h3 class="text-3xl font-extrabold text-amber-400 mt-2" id="dashBalance">৳ 0</h3>
                 </div>
             </div>
@@ -324,7 +324,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-6 gap-4 mb-6">
                     <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
                         <p class="text-xs text-slate-400">Filtered Patients</p>
                         <h4 class="text-2xl font-bold text-sky-400 mt-1" id="reportPatientCount">0</h4>
@@ -344,6 +344,10 @@
                     <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
                         <p class="text-xs text-slate-400">Filtered Expenses</p>
                         <h4 class="text-2xl font-bold text-rose-400 mt-1" id="reportTotalExpense">৳ 0</h4>
+                    </div>
+                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
+                        <p class="text-xs text-slate-400">Net Income</p>
+                        <h4 class="text-2xl font-bold text-amber-400 mt-1" id="reportNetIncome">৳ 0</h4>
                     </div>
                 </div>
 
@@ -518,12 +522,13 @@
             <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357</p>
             <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; font-weight: bold;">
-            <span>Total Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
-            <span>Patient Collection: <span id="pRepIncome" style="color: #1e3a8a;">৳ 0</span></span>
-            <span>Medicine Sales: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
-            <span>Glasses Sales: <span id="pRepGlasses" style="color: #9333ea;">৳ 0</span></span>
-            <span>Total Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 10px; font-weight: bold; background: #f8fafc; padding: 6px; border: 1px solid #e2e8f0;">
+            <span>Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
+            <span>Collection: <span id="pRepIncome" style="color: #1e3a8a;">৳ 0</span></span>
+            <span>Medicine: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
+            <span>Glasses: <span id="pRepGlasses" style="color: #9333ea;">৳ 0</span></span>
+            <span>Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
+            <span>Net Income: <span id="pRepNetIncome" style="color: #d97706;">৳ 0</span></span>
         </div>
         
         <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
@@ -949,18 +954,24 @@
             const totalMedInc = filteredMeds.reduce((sum, m) => sum + m.amount, 0);
             const totalGlassInc = filteredGlasses.reduce((sum, g) => sum + g.amount, 0);
             const totalExp = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
+            
+            // Total Gross Income & Net Income calculation
+            const grossIncome = totalInc + totalMedInc + totalGlassInc;
+            const netIncome = grossIncome - totalExp;
 
             document.getElementById('reportPatientCount').innerText = filteredBills.length;
             document.getElementById('reportTotalIncome').innerText = '৳ ' + totalInc;
             document.getElementById('reportTotalMedicine').innerText = '৳ ' + totalMedInc;
             document.getElementById('reportTotalGlasses').innerText = '৳ ' + totalGlassInc;
             document.getElementById('reportTotalExpense').innerText = '৳ ' + totalExp;
+            document.getElementById('reportNetIncome').innerText = '৳ ' + netIncome;
 
             document.getElementById('pRepCount').innerText = filteredBills.length;
             document.getElementById('pRepIncome').innerText = '৳ ' + totalInc;
             document.getElementById('pRepMedicine').innerText = '৳ ' + totalMedInc;
             document.getElementById('pRepGlasses').innerText = '৳ ' + totalGlassInc;
             document.getElementById('pRepExpense').innerText = '৳ ' + totalExp;
+            document.getElementById('pRepNetIncome').innerText = '৳ ' + netIncome;
 
             const tbody = document.getElementById('reportTableBody');
             const printTbody = document.getElementById('printReportTableBody');
@@ -1179,7 +1190,7 @@
                 id: editingExpId ? editingExpId : Date.now(),
                 date: formattedDate,
                 rawDate: rawDate,
-                reason: document.getElementById('expReason').value,
+                reason: document.getElementById('expReason, reason').value || document.getElementById('expReason').value,
                 amount: parseFloat(document.getElementById('expAmount').value)
             };
 
