@@ -74,7 +74,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-wide">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল <span class="text-xs text-amber-400 block font-normal">Sreenagar Islamia Eye Hospital</span></h1>
-                    <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ</p>
+                    <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ[span_0](start_span)[span_0](end_span)</p>
                 </div>
             </div>
         </div>
@@ -271,7 +271,7 @@
             </div>
         </section>
 
-        <!-- GLASSES SALES TAB (NEW) -->
+        <!-- GLASSES SALES TAB -->
         <section id="glasses" class="tab-content space-y-6">
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
                 <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-glasses text-purple-400 mr-2"></i> Spectacles / Glasses Sales Entry</h3>
@@ -517,7 +517,7 @@
     <div id="printReportArea" class="print-report-container p-6">
         <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 15px;">
             <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h2>
-            <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357</p>
+            <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম.রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357[span_1](start_span)[span_1](end_span)</p>
             <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; font-weight: bold;">
@@ -527,7 +527,9 @@
             <span>Glasses Sales: <span id="pRepGlasses" style="color: #9333ea;">৳ 0</span></span>
             <span>Total Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
         </div>
-        <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+        
+        <!-- Summary Report Table -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
             <thead>
                 <tr style="background: #1e3a8a; color: white;">
                     <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Date</th>
@@ -539,6 +541,23 @@
             </thead>
             <tbody id="printReportTableBody"></tbody>
         </table>
+
+        <!-- Expense Details Section for Print Report -->
+        <div style="margin-top: 15px;">
+            <h4 style="font-size: 12px; font-weight: bold; color: #dc2626; margin-bottom: 6px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">Expense Details</h4>
+            <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                <thead>
+                    <tr style="background: #7f1d1d; color: white;">
+                        <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left; width: 80px;">Date</th>
+                        <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Description</th>
+                        <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right; width: 100px;">Amount (BDT)</th>
+                    </tr>
+                </thead>
+                <tbody id="printExpenseTableBody">
+                    <tr><td colspan="3" style="border: 1px solid #cbd5e1; padding: 6px; text-align: center; color: #666;">No expenses recorded</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- JavaScript Script -->
@@ -806,7 +825,7 @@
             updateDashboard();
         }
 
-        // Glasses Sales Functions (New)
+        // Glasses Sales Functions
         function saveGlassesSale(e) {
             e.preventDefault();
             const rawDate = document.getElementById('glassDate').value;
@@ -888,20 +907,20 @@
             updateDashboard();
         }
 
-        // Reports
+        // Reports (Sorted by Date & Updated Expense Details)
         function generateReport() {
             const dateFilter = document.getElementById('reportDateFilter').value;
-            let filteredBills = bills;
-            let filteredMeds = medicines;
-            let filteredGlasses = glasses;
-            let filteredExpenses = expenses;
+            let filteredBills = [...bills];
+            let filteredMeds = [...medicines];
+            let filteredGlasses = [...glasses];
+            let filteredExpenses = [...expenses];
 
             if (dateFilter) {
                 const formattedFilterDate = new Date(dateFilter).toLocaleDateString('en-GB');
-                filteredBills = bills.filter(b => b.date === formattedFilterDate);
-                filteredMeds = medicines.filter(m => m.date === formattedFilterDate);
-                filteredGlasses = glasses.filter(g => g.date === formattedFilterDate);
-                filteredExpenses = expenses.filter(e => e.date === formattedFilterDate);
+                filteredBills = filteredBills.filter(b => b.date === formattedFilterDate);
+                filteredMeds = filteredMeds.filter(m => m.date === formattedFilterDate);
+                filteredGlasses = filteredGlasses.filter(g => g.date === formattedFilterDate);
+                filteredExpenses = filteredExpenses.filter(e => e.date === formattedFilterDate);
                 document.getElementById('printReportTitle').innerText = `Hospital Report - Date: ${formattedFilterDate}`;
             } else {
                 document.getElementById('printReportTitle').innerText = `Hospital Comprehensive Summary Report`;
@@ -926,12 +945,14 @@
 
             const tbody = document.getElementById('reportTableBody');
             const printTbody = document.getElementById('printReportTableBody');
+            const printExpenseTbody = document.getElementById('printExpenseTableBody');
 
             let combinedRows = [];
             filteredBills.forEach(b => {
                 const servs = b.services ? b.services.map(s => s.name).join(', ') : '';
                 combinedRows.push({
                     date: b.date,
+                    rawDate: b.rawDate || '',
                     name: b.name,
                     phone: b.phone || '-',
                     services: 'Bill: ' + servs,
@@ -943,6 +964,7 @@
             filteredMeds.forEach(m => {
                 combinedRows.push({
                     date: m.date,
+                    rawDate: m.rawDate || '',
                     name: m.customer,
                     phone: '-',
                     services: `Medicine: ${m.medName} (${m.medQty})`,
@@ -954,6 +976,7 @@
             filteredGlasses.forEach(g => {
                 combinedRows.push({
                     date: g.date,
+                    rawDate: g.rawDate || '',
                     name: g.customer,
                     phone: '-',
                     services: `Glasses: ${g.glassType} [Power: ${g.glassPower || 'N/A'}]`,
@@ -962,31 +985,46 @@
                 });
             });
 
+            // Sorting combined records by Date (Ascending or Descending as preferred, using chronological order based on rawDate)
+            combinedRows.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0));
+
             if (combinedRows.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">No records found for the selected filter</td></tr>`;
                 printTbody.innerHTML = `<tr><td colspan="5" style="padding: 10px; text-align: center; color: #666;">No records found</td></tr>`;
-                return;
+            } else {
+                tbody.innerHTML = combinedRows.map(r => `
+                    <tr class="hover:bg-[#080e1e]/40">
+                        <td class="p-3 text-slate-400 text-xs">${r.date}</td>
+                        <td class="p-3 font-semibold text-white">${r.name}</td>
+                        <td class="p-3 text-slate-300 text-xs">${r.phone}</td>
+                        <td class="p-3 text-slate-300 text-xs">${r.services}</td>
+                        <td class="p-3 text-right font-bold ${r.type === 'Medicine' ? 'text-emerald-400' : r.type === 'Glasses' ? 'text-purple-400' : 'text-sky-400'}">৳ ${r.amount}</td>
+                    </tr>
+                `).join('');
+
+                printTbody.innerHTML = combinedRows.map(r => `
+                    <tr>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.date}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px; font-weight: bold;">${r.name}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.phone}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.services}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold;">${r.amount}</td>
+                    </tr>
+                `).join('');
             }
 
-            tbody.innerHTML = combinedRows.map(r => `
-                <tr class="hover:bg-[#080e1e]/40">
-                    <td class="p-3 text-slate-400 text-xs">${r.date}</td>
-                    <td class="p-3 font-semibold text-white">${r.name}</td>
-                    <td class="p-3 text-slate-300 text-xs">${r.phone}</td>
-                    <td class="p-3 text-slate-300 text-xs">${r.services}</td>
-                    <td class="p-3 text-right font-bold ${r.type === 'Medicine' ? 'text-emerald-400' : r.type === 'Glasses' ? 'text-purple-400' : 'text-sky-400'}">৳ ${r.amount}</td>
-                </tr>
-            `).join('');
-
-            printTbody.innerHTML = combinedRows.map(r => `
-                <tr>
-                    <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.date}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 5px; font-weight: bold;">${r.name}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.phone}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.services}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold;">${r.amount}</td>
-                </tr>
-            `).join('');
+            // Populate Expense Details in Print Report
+            if (filteredExpenses.length === 0) {
+                printExpenseTbody.innerHTML = `<tr><td colspan="3" style="border: 1px solid #cbd5e1; padding: 6px; text-align: center; color: #666;">No expenses recorded</td></tr>`;
+            } else {
+                printExpenseTbody.innerHTML = filteredExpenses.map(ex => `
+                    <tr>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${ex.date}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${ex.reason}</td>
+                        <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold; color: #dc2626;">${ex.amount}</td>
+                    </tr>
+                `).join('');
+            }
         }
 
         function resetReportFilter() {
