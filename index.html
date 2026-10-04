@@ -368,10 +368,23 @@
         <section id="expense" class="tab-content space-y-6">
             <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
                 <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-wallet text-rose-400 mr-2"></i> Hospital Expenses</h3>
-                <form onsubmit="saveExpense(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <input type="text" id="expReason" placeholder="Expense description" required class="bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 focus:ring-1 focus:ring-rose-500 outline-none smooth-transition">
-                    <input type="number" id="expAmount" placeholder="Amount (BDT)" required class="bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 focus:ring-1 focus:ring-rose-500 outline-none smooth-transition">
-                    <button type="submit" class="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-xl py-2.5 text-sm transition-all duration-300 shadow-lg shadow-rose-950">Add Expense</button>
+                <form id="expenseForm" onsubmit="saveExpense(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
+                        <input type="date" id="expDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Description</label>
+                        <input type="text" id="expReason" placeholder="Expense description" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Amount (BDT)</label>
+                        <input type="number" id="expAmount" placeholder="Amount in BDT" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 outline-none">
+                    </div>
+                    <div class="flex gap-2 justify-end">
+                        <button type="button" onclick="resetExpenseForm()" id="cancelExpEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all">Cancel</button>
+                        <button type="submit" id="saveExpBtn" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-xl py-2.5 text-sm font-semibold transition-all shadow-lg shadow-rose-950">Add Expense</button>
+                    </div>
                 </form>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
@@ -380,6 +393,7 @@
                                 <th class="p-3">Date</th>
                                 <th class="p-3">Description</th>
                                 <th class="p-3">Amount</th>
+                                <th class="p-3 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody id="expenseTableBody" class="divide-y divide-blue-900/20"></tbody>
@@ -547,6 +561,7 @@
         document.getElementById('billDate').valueAsDate = new Date();
         document.getElementById('medDate').valueAsDate = new Date();
         document.getElementById('glassDate').valueAsDate = new Date();
+        document.getElementById('expDate').valueAsDate = new Date();
 
         const visitList = [
             { id: "v1", name: "Doctor Visit Fee", price: 100 }
@@ -560,7 +575,8 @@
             { id: 5, name: "IOP", price: 100 },
             { id: 6, name: "Foreign Body Removal (Normal)", price: 200 },
             { id: 7, name: "Foreign Body Removal (OT)", price: 1500 },
-            { id: 8, name: "Bandage", price: 150 }
+            { id: 8, name: "Bandage", price: 150 },
+            { id: 9, name: "Others", price: 0 }
         ];
 
         function initServicesUI() {
@@ -602,12 +618,14 @@
                         <input type="number" id="price_${item.id}" value="${item.price}" oninput="calculateTotal()" class="w-24 bg-[#111c38] border border-blue-900/40 rounded-lg px-2 py-1 text-xs text-amber-400 font-bold outline-none text-right">
                     </div>
                 `;
-                dashTestContainer.innerHTML += `
-                    <div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]">
-                        <span class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-blue-400"></i> ${item.id}. ${item.name}</span> 
-                        <span class="font-bold text-amber-400 text-xs">৳${item.price}</span>
-                    </div>
-                `;
+                if(item.name !== "Others") {
+                    dashTestContainer.innerHTML += `
+                        <div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]">
+                            <span class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-blue-400"></i> ${item.id}. ${item.name}</span> 
+                            <span class="font-bold text-amber-400 text-xs">৳${item.price}</span>
+                        </div>
+                    `;
+                }
             });
         }
 
@@ -637,6 +655,7 @@
         let editingBillId = null;
         let editingMedId = null;
         let editingGlassId = null;
+        let editingExpId = null;
 
         function calculateTotal() {
             const checkboxes = document.querySelectorAll('input[name="service"]:checked');
@@ -1153,30 +1172,77 @@
 
         function saveExpense(e) {
             e.preventDefault();
+            const rawDate = document.getElementById('expDate').value;
+            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+
             const exp = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString('en-GB'),
+                id: editingExpId ? editingExpId : Date.now(),
+                date: formattedDate,
+                rawDate: rawDate,
                 reason: document.getElementById('expReason').value,
                 amount: parseFloat(document.getElementById('expAmount').value)
             };
 
-            expenses.unshift(exp);
+            if (editingExpId) {
+                expenses = expenses.map(ex => ex.id === editingExpId ? exp : ex);
+                editingExpId = null;
+                document.getElementById('saveExpBtn').innerText = "Add Expense";
+                document.getElementById('cancelExpEditBtn').classList.add('hidden');
+            } else {
+                expenses.unshift(exp);
+            }
+
             localStorage.setItem('max_expenses', JSON.stringify(expenses));
-            e.target.reset();
+            document.getElementById('expenseForm').reset();
+            document.getElementById('expDate').valueAsDate = new Date();
+
             renderExpenses();
             updateDashboard();
         }
 
+        function resetExpenseForm() {
+            editingExpId = null;
+            document.getElementById('expenseForm').reset();
+            document.getElementById('expDate').valueAsDate = new Date();
+            document.getElementById('saveExpBtn').innerText = "Add Expense";
+            document.getElementById('cancelExpEditBtn').classList.add('hidden');
+        }
+
         function renderExpenses() {
             const tbody = document.getElementById('expenseTableBody');
-            tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="3" class="p-6 text-center text-slate-500">No expense records found</td></tr>` :
+            tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-500">No expense records found</td></tr>` :
             expenses.map(ex => `
                 <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
                     <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
                     <td class="p-3 text-white">${ex.reason}</td>
                     <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="editExpense(${ex.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Expense"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteExpense(${ex.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>
             `).join('');
+        }
+
+        function editExpense(id) {
+            const ex = expenses.find(item => item.id == id);
+            if (!ex) return;
+            editingExpId = ex.id;
+
+            document.getElementById('expDate').value = ex.rawDate || new Date().toISOString().split('T')[0];
+            document.getElementById('expReason').value = ex.reason || '';
+            document.getElementById('expAmount').value = ex.amount || '';
+
+            document.getElementById('saveExpBtn').innerText = "Update Expense";
+            document.getElementById('cancelExpEditBtn').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteExpense(id) {
+            expenses = expenses.filter(ex => ex.id != id);
+            localStorage.setItem('max_expenses', JSON.stringify(expenses));
+            renderExpenses();
+            updateDashboard();
         }
 
         function updateDashboard() {
