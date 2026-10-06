@@ -1,1413 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sreenagar Islamia Eye Hospital</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .tab-content { display: none; }
-        .tab-content.active { 
-            display: block; 
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .hover-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .hover-card:hover {
-            transform: translateY(-5px) scale(1.01);
-            box-shadow: 0 25px 30px -5px rgba(30, 144, 255, 0.2), 0 10px 15px -5px rgba(30, 144, 255, 0.1);
-            border-color: rgba(30, 144, 255, 0.5);
-        }
-        .smooth-transition { transition: all 0.25s ease-in-out; }
-        .print-receipt-container { display: none; }
-        .print-report-container { display: none; }
-        @media print { 
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; }
-            body.printing-receipt .print-receipt-container { 
-                display: flex !important; width: 100%; justify-content: space-between; gap: 15px; 
+        @media print {
+            body * {
+                visibility: hidden;
             }
-            body.printing-receipt .print-report-container { display: none !important; }
-            body.printing-report .print-report-container {
-                display: block !important; width: 100%; background: white !important; color: black !important;
+            #printable-receipt, #printable-receipt * {
+                visibility: visible;
             }
-            body.printing-report .print-receipt-container { display: none !important; }
+            #printable-receipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
-<body class="bg-[#0b1329] text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+<body class="bg-slate-50 font-sans">
 
-    <!-- Header -->
-    <header class="bg-[#111c38]/90 backdrop-blur-md border-b border-blue-900/40 shadow-2xl no-print sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-blue-600 to-sky-400 p-2.5 rounded-xl shadow-lg shadow-blue-950/50 text-white animate-pulse">
-                    <i class="fa-solid fa-eye text-xl"></i>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col hidden md:flex">
+            <div class="p-5 border-b border-slate-800">
+                <h1 class="text-lg font-bold">Islamia Eye Hospital</h1>
+                <p class="text-xs text-slate-400">সঞ্চালনা ও ব্যবস্থাপনা প্যানেল</p>
+            </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" onclick="switchTab('dashboard')" class="block px-4 py-2 rounded bg-blue-600 text-white">ড্যাশবোর্ড</a>
+                <a href="#" onclick="switchTab('billing')" class="block px-4 py-2 rounded hover:bg-slate-800 text-slate-300">বিলিং ও সেবা</a>
+                <a href="#" onclick="switchTab('pharmacy')" class="block px-4 py-2 rounded hover:bg-slate-800 text-slate-300">মেডিসিন ও চশমা</a>
+                <a href="#" onclick="switchTab('reports')" class="block px-4 py-2 rounded hover:bg-slate-800 text-slate-300">রিপোর্ট</a>
+                <a href="#" onclick="switchTab('expenses')" class="block px-4 py-2 rounded hover:bg-slate-800 text-slate-300">খরচ (Expenses)</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6">
+                <h2 class="text-xl font-semibold text-slate-800" id="page-title">ড্যাশবোর্ড</h2>
+                <div class="text-sm font-medium text-slate-600">শ্রীনগর, মুন্সিগঞ্জ</div>
+            </header>
+
+            <div class="p-6">
+                <!-- Dashboard Tab -->
+                <div id="tab-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+                            <p class="text-sm text-slate-500">আজকের মোট রোগী</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1">০</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+                            <p class="text-sm text-slate-500">আজকের আয়</p>
+                            <h3 class="text-2xl font-bold text-emerald-600 mt-1">৳ ০</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+                            <p class="text-sm text-slate-500">আজকের খরচ</p>
+                            <h3 class="text-2xl font-bold text-rose-600 mt-1">৳ ০</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+                            <p class="text-sm text-slate-500">মোট মেডিসিন স্টক</p>
+                            <h3 class="text-2xl font-bold text-blue-600 mt-1">০ টি</h3>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-xl font-bold text-white tracking-wide">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল <span class="text-xs text-amber-400 block font-normal">Sreenagar Islamia Eye Hospital</span></h1>
-                    <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ</p>
+
+                <!-- Billing Tab -->
+                <div id="tab-billing" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-lg font-bold mb-4">নতুন রিসিট তৈরি</h3>
+                        <form onsubmit="generateReceipt(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">রোগীর নাম</label>
+                                <input type="text" id="patient-name" required class="mt-1 w-full p-2 border border-slate-300 rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">মোবাইল নম্বর</label>
+                                <input type="text" id="patient-phone" class="mt-1 w-full p-2 border border-slate-300 rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">সেবা / পরীক্ষা</label>
+                                <input type="text" id="service-name" required class="mt-1 w-full p-2 border border-slate-300 rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">ফি / পরিমাণ (টাকা)</label>
+                                <input type="number" id="service-fee" required class="mt-1 w-full p-2 border border-slate-300 rounded-md">
+                            </div>
+                            <div class="md:col-span-2">
+                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">রিসিট তৈরি ও প্রিন্ট করুন</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Printable Receipt Area (Dual Copy Layout) -->
+                    <div id="printable-receipt" class="hidden bg-white p-8 rounded-xl shadow-sm border border-slate-100 max-w-2xl mx-auto space-y-8">
+                        <div class="border-b pb-4 text-center">
+                            <h2 class="text-xl font-bold text-slate-900">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h2>
+                            <p class="text-xs text-slate-600">শ্রীনগর, মুন্সিগঞ্জ | মোবাইল: 01XXXXXXXXX</p>
+                            <p class="text-sm font-semibold mt-2 text-blue-600">[ক্লিনিক কপি / Patient Copy]</p>
+                        </div>
+                        <div class="text-sm space-y-2">
+                            <p><strong>রিসিট নং:</strong> <span id="r-no">#1001</span></p>
+                            <p><strong>তারিখ:</strong> <span id="r-date">06/10/2026</span></p>
+                            <p><strong>রোগীর নাম:</strong> <span id="r-name">---</span></p>
+                            <p><strong>মোবাইল:</strong> <span id="r-phone">---</span></p>
+                            <p><strong>সেবা বিবরণ:</strong> <span id="r-service">---</span></p>
+                            <p><strong>মূল্য:</strong> ৳ <span id="r-fee">0</span></p>
+                        </div>
+                        <div class="pt-8 flex justify-between text-xs text-slate-500 border-t">
+                            <span>প্রস্তুতকারী স্বাক্ষর</span>
+                            <span>কর্তৃপক্ষের স্বাক্ষর</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pharmacy Tab -->
+                <div id="tab-pharmacy" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-lg font-bold mb-4">মেডিসিন ও চশমা স্টক</h3>
+                        <p class="text-sm text-slate-500">স্টক ম্যানেজমেন্ট এবং বিক্রয় তালিকা এখানে যুক্ত হবে।</p>
+                    </div>
+                </div>
+
+                <!-- Reports Tab -->
+                <div id="tab-reports" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-lg font-bold mb-4">দৈনিক ও মাসিক রিপোর্ট</h3>
+                        <p class="text-sm text-slate-500">হিসাব-নিকাশ এবং সামারি রিপোর্ট এখানে প্রদর্শিত হবে।</p>
+                    </div>
+                </div>
+
+                <!-- Expenses Tab -->
+                <div id="tab-expenses" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-lg font-bold mb-4">হাসপাতালের খরচ ব্যবস্থাপনা</h3>
+                        <p class="text-sm text-slate-500">বিভিন্ন খরচের হিসাব এন্ট্রি করার ফরম।</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
-
-    <!-- Nav -->
-    <nav class="bg-[#111c38]/60 backdrop-blur-lg border-b border-blue-900/40 no-print sticky top-[65px] z-40">
-        <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2.5">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
-            <button onclick="switchTab('billing')" id="nav-billing" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300"><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Fees</button>
-            <button onclick="switchTab('medStock')" id="nav-medStock" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300"><i class="fa-solid fa-boxes-stacked"></i> Medicine Stock</button>
-            <button onclick="switchTab('medicine')" id="nav-medicine" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300"><i class="fa-solid fa-pills"></i> Medicine Sales</button>
-            <button onclick="switchTab('glasses')" id="nav-glasses" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300"><i class="fa-solid fa-glasses"></i> Glasses Sales</button>
-            <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300"><i class="fa-solid fa-chart-column"></i> Reports</button>
-            <button onclick="switchTab('expense')" id="nav-expense" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300"><i class="fa-solid fa-wallet"></i> Expenses</button>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-grow w-full no-print">
-
-        <!-- DASHBOARD -->
-        <section id="dashboard" class="tab-content active space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4">
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Patients</p>
-                    <h3 class="text-3xl font-extrabold text-sky-400 mt-2" id="dashPatientCount">0</h3>
-                </div>
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Income</p>
-                    <h3 class="text-3xl font-extrabold text-blue-400 mt-2" id="dashIncome">৳ 0</h3>
-                </div>
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Medicine Sales</p>
-                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-2" id="dashMedicineIncome">৳ 0</h3>
-                </div>
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Glasses Sales</p>
-                    <h3 class="text-3xl font-extrabold text-purple-400 mt-2" id="dashGlassesIncome">৳ 0</h3>
-                </div>
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Expense</p>
-                    <h3 class="text-3xl font-extrabold text-rose-400 mt-2" id="dashExpense">৳ 0</h3>
-                </div>
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-5 rounded-2xl shadow-xl hover-card">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Net Income / Balance</p>
-                    <h3 class="text-3xl font-extrabold text-amber-400 mt-2" id="dashBalance">৳ 0</h3>
-                </div>
-            </div>
-
-            <!-- Price Lists -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-sky-400"></i> Visit Fee</h3>
-                    <div id="visitFeeContainer" class="space-y-3 text-sm text-slate-300"></div>
-                </div>
-
-                <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400"></i> Test & Service Fees</h3>
-                    <div id="testListContainer" class="space-y-3 text-sm text-slate-300"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- BILLING -->
-        <section id="billing" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-file-invoice text-blue-400 mr-2"></i> New Patient Bill & Service Entry</h3>
-                <form id="billingForm" onsubmit="saveBill(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
-                            <input type="date" id="billDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Patient Name</label>
-                            <input type="text" id="patientName" required placeholder="Enter name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Age</label>
-                            <input type="text" id="patientAge" placeholder="e.g. 35 yrs / 6 mos" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Number</label>
-                            <input type="text" id="patientPhone" placeholder="017xxxxxxxx" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Address</label>
-                            <input type="text" id="patientAddress" placeholder="Enter address" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor Name</label>
-                            <input type="text" id="doctorName" value="Dr. Specialist Surgeon" required placeholder="Enter doctor name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none smooth-transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Discount (BDT)</label>
-                            <input type="number" id="discountAmount" value="0" min="0" oninput="calculateTotal()" placeholder="Enter discount" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Final Payable (BDT) - Auto Calculated</label>
-                            <input type="number" id="billAmount" readonly required class="w-full bg-[#080e1e] border border-blue-900/40 rounded-xl px-3 py-2 text-sm font-bold text-amber-400 outline-none">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
-                            <label class="block text-xs font-semibold text-sky-400 mb-2 uppercase tracking-wide">Select Visit Fee & Customise:</label>
-                            <div id="visitCheckboxContainer" class="space-y-3"></div>
-                        </div>
-
-                        <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
-                            <label class="block text-xs font-semibold text-amber-400 mb-2 uppercase tracking-wide">Select Tests / Services & Customise:</label>
-                            <div id="testCheckboxContainer" class="space-y-3"></div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                        <button type="button" onclick="resetBillingForm()" id="cancelEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-medium px-4 py-2 rounded-xl text-sm transition-all">Cancel Edit</button>
-                        <button type="submit" id="saveBillBtn" class="ml-auto bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-blue-950">Save Bill</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
-                    <h3 class="text-lg font-bold text-white">Patient Collection Records</h3>
-                    <div class="flex gap-2">
-                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-emerald-950"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
-                        <button onclick="exportAllBillsPDF()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-rose-950"><i class="fa-solid fa-file-pdf"></i> Print All Report PDF</button>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Patient Name & Info</th>
-                                <th class="p-3">Doctor</th>
-                                <th class="p-3">Visit & Tests</th>
-                                <th class="p-3">Amount</th>
-                                <th class="p-3 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="billTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- MEDICINE STOCK TAB -->
-        <section id="medStock" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-boxes-stacked text-teal-400 mr-2"></i> Medicine Stock Management</h3>
-                <form id="stockForm" onsubmit="saveStockMedicine(event)" class="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-6 items-end">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Medicine Name</label>
-                        <input type="text" id="stockName" placeholder="e.g. Moxiflox Eye Drop" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-teal-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Category / Type</label>
-                        <input type="text" id="stockCategory" placeholder="e.g. Drop / Tablet" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-teal-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Stock Quantity</label>
-                        <input type="number" id="stockQty" placeholder="Available Qty" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-teal-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Price per Unit (BDT)</label>
-                        <input type="number" id="stockPrice" placeholder="Unit Price" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-teal-500 outline-none">
-                    </div>
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick="resetStockForm()" id="cancelStockEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all">Cancel</button>
-                        <button type="submit" id="saveStockBtn" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white rounded-xl py-2.5 text-sm font-semibold transition-all shadow-lg shadow-teal-950">Add to Stock</button>
-                    </div>
-                </form>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="p-3">Medicine Name</th>
-                                <th class="p-3">Category</th>
-                                <th class="p-3">Stock Qty</th>
-                                <th class="p-3">Unit Price (BDT)</th>
-                                <th class="p-3 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stockTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- MEDICINE SALES TAB -->
-        <section id="medicine" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-pills text-emerald-400 mr-2"></i> Medicine Sales Entry</h3>
-                <form id="medicineForm" onsubmit="saveMedicineSale(event)" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
-                            <input type="date" id="medDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Customer / Patient Name</label>
-                            <input type="text" id="medCustomer" placeholder="Customer name" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Medicine Name(s)</label>
-                            <input type="text" id="medName" placeholder="e.g. Moxiflox Eye Drop, Napa" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Quantity / Details</label>
-                            <input type="text" id="medQty" placeholder="e.g. 2 Pcs / 1 Box" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Total Amount (BDT)</label>
-                            <input type="number" id="medAmount" placeholder="Amount in BDT" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-emerald-500 outline-none">
-                        </div>
-                        <div class="flex gap-2 md:col-span-2 justify-end">
-                            <button type="button" onclick="resetMedicineForm()" id="cancelMedEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all">Cancel</button>
-                            <button type="submit" id="saveMedBtn" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-emerald-950">Save Medicine Sale</button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Customer Name</th>
-                                <th class="p-3">Medicine Name</th>
-                                <th class="p-3">Quantity</th>
-                                <th class="p-3">Amount</th>
-                                <th class="p-3 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="medicineTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- GLASSES SALES TAB -->
-        <section id="glasses" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-glasses text-purple-400 mr-2"></i> Spectacles / Glasses Sales Entry</h3>
-                <form id="glassesForm" onsubmit="saveGlassesSale(event)" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
-                            <input type="date" id="glassDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-purple-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Customer / Patient Name</label>
-                            <input type="text" id="glassCustomer" placeholder="Customer name" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-purple-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Frame / Lens Type</label>
-                            <input type="text" id="glassType" placeholder="e.g. Anti-Glare / Reading Glass" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-purple-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Power / Details</label>
-                            <input type="text" id="glassPower" placeholder="e.g. Right -1.50, Left -2.00" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-purple-500 outline-none">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Total Amount (BDT)</label>
-                            <input type="number" id="glassAmount" placeholder="Amount in BDT" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-purple-500 outline-none">
-                        </div>
-                        <div class="flex gap-2 md:col-span-2 justify-end">
-                            <button type="button" onclick="resetGlassesForm()" id="cancelGlassEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all">Cancel</button>
-                            <button type="submit" id="saveGlassBtn" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-purple-950">Save Glasses Sale</button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Customer Name</th>
-                                <th class="p-3">Glass / Frame Type</th>
-                                <th class="p-3">Power / Details</th>
-                                <th class="p-3">Amount</th>
-                                <th class="p-3 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="glassesTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- REPORTS TAB -->
-        <section id="reports" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-chart-column text-sky-400 mr-2"></i> Hospital Revenue & Activity Report</h3>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-[#080e1e]/60 p-4 rounded-xl border border-blue-900/30">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Filter By Date</label>
-                        <input type="date" id="reportDateFilter" onchange="generateReport()" class="w-full bg-[#111c38] border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
-                    </div>
-                    <div class="flex items-end gap-2">
-                        <button onclick="resetReportFilter()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px] transition-all">Show All</button>
-                        <button onclick="printReport()" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px] flex items-center gap-2 shadow-lg shadow-sky-950"><i class="fa-solid fa-print"></i> Print Report</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-6 gap-4 mb-6">
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Filtered Patients</p>
-                        <h4 class="text-2xl font-bold text-sky-400 mt-1" id="reportPatientCount">0</h4>
-                    </div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Patient Collection</p>
-                        <h4 class="text-2xl font-bold text-blue-400 mt-1" id="reportTotalIncome">৳ 0</h4>
-                    </div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Medicine Sales</p>
-                        <h4 class="text-2xl font-bold text-emerald-400 mt-1" id="reportTotalMedicine">৳ 0</h4>
-                    </div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Glasses Sales</p>
-                        <h4 class="text-2xl font-bold text-purple-400 mt-1" id="reportTotalGlasses">৳ 0</h4>
-                    </div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Filtered Expenses</p>
-                        <h4 class="text-2xl font-bold text-rose-400 mt-1" id="reportTotalExpense">৳ 0</h4>
-                    </div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-slate-400">Net Income</p>
-                        <h4 class="text-2xl font-bold text-amber-400 mt-1" id="reportNetIncome">৳ 0</h4>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Name</th>
-                                <th class="p-3">Mobile / Age</th>
-                                <th class="p-3">Services / Items</th>
-                                <th class="p-3 text-right">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reportTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- EXPENSE -->
-        <section id="expense" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 backdrop-blur border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-wallet text-rose-400 mr-2"></i> Hospital Expenses</h3>
-                <form id="expenseForm" onsubmit="saveExpense(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
-                        <input type="date" id="expDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Description</label>
-                        <input type="text" id="expReason" placeholder="Expense description" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Amount (BDT)</label>
-                        <input type="number" id="expAmount" placeholder="Amount in BDT" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white focus:border-rose-500 outline-none">
-                    </div>
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick="resetExpenseForm()" id="cancelExpEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all">Cancel</button>
-                        <button type="submit" id="saveExpBtn" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-xl py-2.5 text-sm font-semibold transition-all shadow-lg shadow-rose-950">Add Expense</button>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Description</th>
-                                <th class="p-3">Amount</th>
-                                <th class="p-3 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expenseTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Printable Advanced Receipt Layout -->
-    <div id="printReceiptArea" class="print-receipt-container">
-        <!-- Copy 1: Patient Copy -->
-        <div style="width: 48%; border: 1.5px solid #0284c7; border-radius: 8px; padding: 14px; font-size: 10px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: #fff; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
-            <div style="position: absolute; top: 75px; right: 30px; border: 2.5px solid #16a34a; color: #16a34a; font-size: 16px; font-weight: 900; padding: 3px 12px; border-radius: 6px; transform: rotate(-12deg); letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; pointer-events: none;">PAID</div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 8px;">
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="background: #0284c7; color: white; width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px;"><i class="fa-solid fa-eye"></i></div>
-                    <span style="font-size: 9.5px; font-weight: 800; color: #0284c7; letter-spacing: 0.5px; text-transform: uppercase;">Islamia Eye Hospital</span>
-                </div>
-                <span style="font-size: 8.5px; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 20px; font-weight: 700; border: 1px solid #bae6fd;">Patient Copy</span>
-            </div>
-            
-            <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
-            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357</div>
-            
-            <div style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 9.5px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                    <span><strong>Date:</strong> <span class="r-date" style="color: #334155;"></span></span>
-                    <span><strong>Receipt ID:</strong> <span class="r-id" style="color: #0284c7; font-weight: 800;"></span></span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 10.5px;">
-                    <span><strong>Patient Name:</strong> <span class="r-name" style="font-weight: 700; color: #0f172a;"></span></span>
-                    <span><strong>Age:</strong> <span class="r-age" style="font-weight: 700; color: #0f172a;"></span></span>
-                </div>
-                <div style="margin-bottom: 4px;"><strong>Address:</strong> <span class="r-address" style="color: #475569;"></span></div>
-                <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 2px;">
-                    <span><strong>Mobile:</strong> <span class="r-phone" style="color: #334155;"></span></span>
-                    <span><strong>Consultant:</strong> <span class="r-doctor" style="font-weight: 700; color: #0f172a;"></span></span>
-                </div>
-            </div>
-
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 9.5px; border-radius: 4px; overflow: hidden;">
-                <thead>
-                    <tr style="background: #0284c7; color: white; text-transform: uppercase; font-size: 8.5px; letter-spacing: 0.5px;">
-                        <th style="padding: 5px; width: 25px; text-align: center;">SL</th>
-                        <th style="padding: 5px; text-align: left;">Visit / Test Description</th>
-                        <th style="padding: 5px; width: 65px; text-align: right;">Fee (BDT)</th>
-                    </tr>
-                </thead>
-                <tbody class="r-services-table-body"></tbody>
-            </table>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #eff6ff; border: 1px solid #bfdbfe; padding: 6px 10px; border-radius: 6px; font-weight: bold; margin-bottom: 15px; font-size: 11px;">
-                <span style="color: #1e40af; text-transform: uppercase; font-size: 9.5px; letter-spacing: 0.5px;">Total Payable Amount:</span>
-                <span style="color: #0284c7; font-size: 13px; font-weight: 800;">৳ <span class="r-amount-total">0</span></span>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; font-size: 9px; margin-top: 20px; text-align: center;">
-                <div style="border-top: 1.5px solid #0284c7; width: 150px; padding-top: 4px;">
-                    <div style="font-weight: 800; font-size: 9px; color: #0f172a;">Manager</div>
-                    <div style="font-size: 7.5px; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sreenagar Islamia Eye Hospital</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Copy 2: Hospital Counterfoil Copy -->
-        <div style="width: 48%; border: 1.5px solid #d97706; border-radius: 8px; padding: 14px; font-size: 10px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: #fff; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
-            <div style="position: absolute; top: 75px; right: 30px; border: 2.5px solid #16a34a; color: #16a34a; font-size: 16px; font-weight: 900; padding: 3px 12px; border-radius: 6px; transform: rotate(-12deg); letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; pointer-events: none;">PAID</div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d97706; padding-bottom: 6px; margin-bottom: 8px;">
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="background: #d97706; color: white; width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px;"><i class="fa-solid fa-eye"></i></div>
-                    <span style="font-size: 9.5px; font-weight: 800; color: #d97706; letter-spacing: 0.5px; text-transform: uppercase;">Islamia Eye Hospital</span>
-                </div>
-                <span style="font-size: 8.5px; background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 20px; font-weight: 700; border: 1px solid #fde68a;">Hospital Counterfoil</span>
-            </div>
-            
-            <div style="text-align: center; font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 1px; letter-spacing: 0.3px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
-            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px; font-weight: 500;">মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। হটলাইন: 01935 212 357</div>
-            
-            <div style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 9.5px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                    <span><strong>Date:</strong> <span class="r-date" style="color: #334155;"></span></span>
-                    <span><strong>Receipt ID:</strong> <span class="r-id" style="color: #d97706; font-weight: 800;"></span></span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 10.5px;">
-                    <span><strong>Patient Name:</strong> <span class="r-name" style="font-weight: 700; color: #0f172a;"></span></span>
-                    <span><strong>Age:</strong> <span class="r-age" style="font-weight: 700; color: #0f172a;"></span></span>
-                </div>
-                <div style="margin-bottom: 4px;"><strong>Address:</strong> <span class="r-address" style="color: #475569;"></span></div>
-                <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 2px;">
-                    <span><strong>Mobile:</strong> <span class="r-phone" style="color: #334155;"></span></span>
-                    <span><strong>Consultant:</strong> <span class="r-doctor" style="font-weight: 700; color: #0f172a;"></span></span>
-                </div>
-            </div>
-
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 9.5px; border-radius: 4px; overflow: hidden;">
-                <thead>
-                    <tr style="background: #d97706; color: white; text-transform: uppercase; font-size: 8.5px; letter-spacing: 0.5px;">
-                        <th style="padding: 5px; width: 25px; text-align: center;">SL</th>
-                        <th style="padding: 5px; text-align: left;">Visit / Test Description</th>
-                        <th style="padding: 5px; width: 65px; text-align: right;">Fee (BDT)</th>
-                    </tr>
-                </thead>
-                <tbody class="r-services-table-body"></tbody>
-            </table>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #fffbeb; border: 1px solid #fde68a; padding: 6px 10px; border-radius: 6px; font-weight: bold; margin-bottom: 15px; font-size: 11px;">
-                <span style="color: #92400e; text-transform: uppercase; font-size: 9.5px; letter-spacing: 0.5px;">Total Payable Amount:</span>
-                <span style="color: #d97706; font-size: 13px; font-weight: 800;">৳ <span class="r-amount-total">0</span></span>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; font-size: 9px; margin-top: 20px; text-align: center;">
-                <div style="border-top: 1.5px solid #d97706; width: 150px; padding-top: 4px;">
-                    <div style="font-weight: 800; font-size: 9px; color: #0f172a;">Manager</div>
-                    <div style="font-size: 7.5px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sreenagar Islamia Eye Hospital</div>
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Printable Full Report Layout -->
-    <div id="printReportArea" class="print-report-container p-6">
-        <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 15px;">
-            <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h2>
-            <p style="font-size: 10px; color: #555; margin: 2px 0;">মক্কা কমপ্লেক্স (নিচ তলা), এম. রহমান কমপ্লেক্স সংলগ্ন, শ্রীনগর, মুন্সিগঞ্জ। ফোন: 01935 212 357</p>
-            <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 10px; font-weight: bold; background: #f8fafc; padding: 6px; border: 1px solid #e2e8f0;">
-            <span>Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
-            <span>Collection: <span id="pRepIncome" style="color: #1e3a8a;">৳ 0</span></span>
-            <span>Medicine: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
-            <span>Glasses: <span id="pRepGlasses" style="color: #9333ea;">৳ 0</span></span>
-            <span>Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
-            <span>Net Income: <span id="pRepNetIncome" style="color: #d97706;">৳ 0</span></span>
-        </div>
-        
-        <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
-            <thead>
-                <tr style="background: #1e3a8a; color: white;">
-                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Date</th>
-                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Name</th>
-                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Mobile / Age</th>
-                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Services / Items</th>
-                    <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">Amount (BDT)</th>
-                </tr>
-            </thead>
-            <tbody id="printReportTableBody"></tbody>
-        </table>
+    <!-- Firebase SDK ও ইনিশিয়ালাইজেশন (আপনার দেওয়া কনফিগারেশন অনুযায়ী) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
 
-        <div style="margin-top: 15px;">
-            <h4 style="font-size: 12px; font-weight: bold; color: #dc2626; margin-bottom: 6px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">Expense Details</h4>
-            <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
-                <thead>
-                    <tr style="background: #7f1d1d; color: white;">
-                        <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left; width: 80px;">Date</th>
-                        <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Description</th>
-                        <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right; width: 100px;">Amount (BDT)</th>
-                    </tr>
-                </thead>
-                <tbody id="printExpenseTableBody">
-                    <tr><td colspan="3" style="border: 1px solid #cbd5e1; padding: 6px; text-align: center; color: #666;">No expenses recorded</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        // Firebase Configuration (Provided from Project Settings)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBND1Hg5TV8H4zDV0kLgBsVauthOxsmIn",
+            authDomain: "sreenagar-islamiya-eye-h-4a011.firebaseapp.com",
+            projectId: "sreenagar-islamiya-eye-h-4a011",
+            storageBucket: "sreenagar-islamiya-eye-h-4a011.firebasestorage.app",
+            messagingSenderId: "454191367184",
+            appId: "1:454191367184:web:06fc6e3c00f74be2fef695",
+            measurementId: "G-7L73DT185C"
+        };
 
-    <!-- JavaScript Script -->
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+
     <script>
-        document.getElementById('billDate').valueAsDate = new Date();
-        document.getElementById('medDate').valueAsDate = new Date();
-        document.getElementById('glassDate').valueAsDate = new Date();
-        document.getElementById('expDate').valueAsDate = new Date();
-
-        const visitList = [
-            { id: "v1", name: "Doctor Visit Fee", price: 100 }
-        ];
-
-        const testList = [
-            { id: 1, name: "SPT", price: 300 },
-            { id: 2, name: "Fluorescein Test", price: 200 },
-            { id: 3, name: "Schirmer Tear Test", price: 200 },
-            { id: 4, name: "NCT", price: 100 },
-            { id: 5, name: "IOP", price: 100 },
-            { id: 6, name: "Foreign Body Removal (Normal)", price: 200 },
-            { id: 7, name: "Foreign Body Removal (OT)", price: 1500 },
-            { id: 8, name: "Bandage", price: 150 },
-            { id: 9, name: "Others", price: 0 }
-        ];
-
-        function initServicesUI() {
-            const visitContainer = document.getElementById('visitCheckboxContainer');
-            const testContainer = document.getElementById('testCheckboxContainer');
-            const dashVisitContainer = document.getElementById('visitFeeContainer');
-            const dashTestContainer = document.getElementById('testListContainer');
-
-            visitContainer.innerHTML = '';
-            testContainer.innerHTML = '';
-            dashVisitContainer.innerHTML = '';
-            dashTestContainer.innerHTML = '';
-
-            visitList.forEach(item => {
-                visitContainer.innerHTML += `
-                    <div class="flex items-center justify-between gap-2 bg-[#080e1e] p-2.5 rounded-xl border border-blue-900/30">
-                        <label class="flex items-center space-x-2 text-sm cursor-pointer hover:text-white flex-grow">
-                            <input type="checkbox" name="service" value="${item.name}" data-index="${item.id}" onchange="calculateTotal()" class="rounded border-blue-900 text-blue-600 focus:ring-blue-500 w-4 h-4">
-                            <span class="text-xs font-semibold">${item.name}</span>
-                        </label>
-                        <input type="number" id="price_${item.id}" value="${item.price}" oninput="calculateTotal()" class="w-24 bg-[#111c38] border border-blue-900/40 rounded-lg px-2 py-1 text-xs text-amber-400 font-bold outline-none text-right">
-                    </div>
-                `;
-                dashVisitContainer.innerHTML += `
-                    <div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]">
-                        <span class="flex items-center gap-2 text-xs"><i class="fa-solid fa-user-doctor text-sky-400"></i> ${item.name}</span> 
-                        <span class="font-bold text-amber-400 text-xs">৳${item.price}</span>
-                    </div>
-                `;
-            });
-
-            testList.forEach(item => {
-                testContainer.innerHTML += `
-                    <div class="flex items-center justify-between gap-2 bg-[#080e1e] p-2.5 rounded-xl border border-blue-900/30">
-                        <label class="flex items-center space-x-2 text-sm cursor-pointer hover:text-white flex-grow">
-                            <input type="checkbox" name="service" value="${item.name}" data-index="${item.id}" onchange="calculateTotal()" class="rounded border-blue-900 text-blue-600 focus:ring-blue-500 w-4 h-4">
-                            <span class="text-xs"><strong>${item.id}.</strong> ${item.name}</span>
-                        </label>
-                        <input type="number" id="price_${item.id}" value="${item.price}" oninput="calculateTotal()" class="w-24 bg-[#111c38] border border-blue-900/40 rounded-lg px-2 py-1 text-xs text-amber-400 font-bold outline-none text-right">
-                    </div>
-                `;
-                if(item.name !== "Others") {
-                    dashTestContainer.innerHTML += `
-                        <div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between smooth-transition hover:border-blue-500/50 hover:bg-[#080e1e]">
-                            <span class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-blue-400"></i> ${item.id}. ${item.name}</span> 
-                            <span class="font-bold text-amber-400 text-xs">৳${item.price}</span>
-                        </div>
-                    `;
-                }
-            });
-        }
-
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            const targetTab = document.getElementById(tabId);
-            if (targetTab) targetTab.classList.add('active');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300";
+            const tabs = ['dashboard', 'billing', 'pharmacy', 'reports', 'expenses'];
+            tabs.forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
             });
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) {
-                activeBtn.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all duration-300";
-            }
-
-            if(tabId === 'reports') {
-                generateReport();
-            }
-        }
-
-        let bills = JSON.parse(localStorage.getItem('max_bills')) || [];
-        let stockMedicines = JSON.parse(localStorage.getItem('max_stock_medicines')) || [];
-        let medicines = JSON.parse(localStorage.getItem('max_medicines')) || [];
-        let glasses = JSON.parse(localStorage.getItem('max_glasses')) || [];
-        let expenses = JSON.parse(localStorage.getItem('max_expenses')) || [];
-        
-        let editingBillId = null;
-        let editingStockId = null;
-        let editingMedId = null;
-        let editingGlassId = null;
-        let editingExpId = null;
-
-        function calculateTotal() {
-            const checkboxes = document.querySelectorAll('input[name="service"]:checked');
-            let subtotal = 0;
-            checkboxes.forEach(cb => {
-                const id = cb.getAttribute('data-index');
-                const priceInput = document.getElementById('price_' + id);
-                const price = priceInput ? parseFloat(priceInput.value) || 0 : 0;
-                subtotal += price;
-            });
-            const discount = parseFloat(document.getElementById('discountAmount').value) || 0;
-            let total = subtotal - discount;
-            if(total < 0) total = 0;
-            document.getElementById('billAmount').value = total;
-        }
-
-        function saveBill(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('billDate').value;
-            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
-
-            const selectedServices = [];
-            const checkboxes = document.querySelectorAll('input[name="service"]:checked');
-            checkboxes.forEach((cb, idx) => {
-                const id = cb.getAttribute('data-index');
-                const priceInput = document.getElementById('price_' + id);
-                const price = priceInput ? parseFloat(priceInput.value) || 0 : 0;
-                selectedServices.push({
-                    serial: idx + 1,
-                    id: id,
-                    name: cb.value,
-                    price: price
-                });
-            });
-
-            if (selectedServices.length === 0) {
-                alert('Please select at least a visit fee or a test!');
-                return;
-            }
-
-            const billData = {
-                id: editingBillId ? editingBillId : Date.now(),
-                date: formattedDate,
-                rawDate: rawDate,
-                name: document.getElementById('patientName').value,
-                age: document.getElementById('patientAge').value,
-                phone: document.getElementById('patientPhone').value,
-                address: document.getElementById('patientAddress').value,
-                doctor: document.getElementById('doctorName').value,
-                discount: parseFloat(document.getElementById('discountAmount').value) || 0,
-                services: selectedServices,
-                amount: parseFloat(document.getElementById('billAmount').value)
-            };
-
-            if (editingBillId) {
-                bills = bills.map(b => b.id === editingBillId ? billData : b);
-                editingBillId = null;
-                document.getElementById('saveBillBtn').innerText = "Save Bill";
-                document.getElementById('cancelEditBtn').classList.add('hidden');
-            } else {
-                bills.unshift(billData);
-            }
-
-            localStorage.setItem('max_bills', JSON.stringify(bills));
-            document.getElementById('billingForm').reset();
-            document.getElementById('billDate').valueAsDate = new Date();
-            document.getElementById('discountAmount').value = "0";
-            document.getElementById('billAmount').value = "";
-            document.querySelectorAll('input[name="service"]').forEach(cb => cb.checked = false);
-            initServicesUI();
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
             
-            renderBills();
-            updateDashboard();
-        }
-
-        function resetBillingForm() {
-            editingBillId = null;
-            document.getElementById('billingForm').reset();
-            document.getElementById('billDate').valueAsDate = new Date();
-            document.getElementById('discountAmount').value = "0";
-            document.getElementById('billAmount').value = "";
-            document.querySelectorAll('input[name="service"]').forEach(cb => cb.checked = false);
-            initServicesUI();
-            document.getElementById('saveBillBtn').innerText = "Save Bill";
-            document.getElementById('cancelEditBtn').classList.add('hidden');
-        }
-
-        function renderBills() {
-            const tbody = document.getElementById('billTableBody');
-            tbody.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No records found</td></tr>` : 
-            bills.map(b => {
-                const serviceListStr = b.services ? b.services.map(s => `${s.name} (৳${s.price})`).join(', ') : '';
-                const discText = b.discount > 0 ? ` <span class="text-rose-400 text-xs">(Disc: ৳${b.discount})</span>` : '';
-                const ageText = b.age ? ` Age: ${b.age}` : '';
-                return `
-                    <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-                        <td class="p-3 text-slate-400 text-xs">${b.date}</td>
-                        <td class="p-3 font-medium text-white">${b.name} <span class="text-amber-400 text-xs">(${ageText})</span><br><span class="text-xs text-slate-400">${b.address || ''}</span> <br><span class="text-xs text-slate-500">${b.phone || ''}</span></td>
-                        <td class="p-3 text-slate-300 text-xs">${b.doctor}</td>
-                        <td class="p-3 text-slate-300 text-xs">${serviceListStr}</td>
-                        <td class="p-3 font-bold text-sky-400">৳ ${b.amount} ${discText}</td>
-                        <td class="p-3 text-center">
-                            <button onclick="printBill(${b.id})" class="text-amber-400 hover:text-amber-300 mr-2" title="Print Bill / Report Slip"><i class="fa-solid fa-print"></i></button>
-                            <button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Bill"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteBill(${b.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // Stock Medicine Functions
-        function saveStockMedicine(e) {
-            e.preventDefault();
-            const stockData = {
-                id: editingStockId ? editingStockId : Date.now(),
-                name: document.getElementById('stockName').value,
-                category: document.getElementById('stockCategory').value,
-                qty: parseInt(document.getElementById('stockQty').value) || 0,
-                price: parseFloat(document.getElementById('stockPrice').value) || 0
+            // Update Header Title
+            const titles = {
+                'dashboard': 'ড্যাশবোর্ড',
+                'billing': 'বিলিং ও সেবা',
+                'pharmacy': 'মেডিসিন ও চশমা',
+                'reports': 'রিপোর্ট',
+                'expenses': 'খরচ (Expenses)'
             };
-
-            if (editingStockId) {
-                stockMedicines = stockMedicines.map(s => s.id === editingStockId ? stockData : s);
-                editingStockId = null;
-                document.getElementById('saveStockBtn').innerText = "Add to Stock";
-                document.getElementById('cancelStockEditBtn').classList.add('hidden');
-            } else {
-                stockMedicines.unshift(stockData);
-            }
-
-            localStorage.setItem('max_stock_medicines', JSON.stringify(stockMedicines));
-            document.getElementById('stockForm').reset();
-            renderStockMedicines();
+            document.getElementById('page-title').innerText = titles[tabId];
         }
 
-        function resetStockForm() {
-            editingStockId = null;
-            document.getElementById('stockForm').reset();
-            document.getElementById('saveStockBtn').innerText = "Add to Stock";
-            document.getElementById('cancelStockEditBtn').classList.add('hidden');
-        }
+        function generateReceipt(event) {
+            event.preventDefault();
+            const name = document.getElementById('patient-name').value;
+            const phone = document.getElementById('patient-phone').value;
+            const service = document.getElementById('service-name').value;
+            const fee = document.getElementById('service-fee').value;
 
-        function renderStockMedicines() {
-            const tbody = document.getElementById('stockTableBody');
-            tbody.innerHTML = stockMedicines.length === 0 ? `<tr><td colspan="5" class="p-6 text-center text-slate-500">No stock medicines added</td></tr>` :
-            stockMedicines.map(s => `
-                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-                    <td class="p-3 font-semibold text-white">${s.name}</td>
-                    <td class="p-3 text-slate-300 text-xs">${s.category || '-'}</td>
-                    <td class="p-3 font-bold text-teal-400">${s.qty} Pcs</td>
-                    <td class="p-3 text-slate-200 text-xs">৳ ${s.price}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editStockMedicine(${s.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Stock"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteStockMedicine(${s.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
+            document.getElementById('r-name').innerText = name;
+            document.getElementById('r-phone').innerText = phone || 'প্রযোজ্য নয়';
+            document.getElementById('r-service').innerText = service;
+            document.getElementById('r-fee').innerText = fee;
+            document.getElementById('r-date').innerText = new Date().toLocaleDateString('bn-BD');
 
-        function editStockMedicine(id) {
-            const s = stockMedicines.find(item => item.id == id);
-            if (!s) return;
-            editingStockId = s.id;
-            document.getElementById('stockName').value = s.name || '';
-            document.getElementById('stockCategory').value = s.category || '';
-            document.getElementById('stockQty').value = s.qty || 0;
-            document.getElementById('stockPrice').value = s.price || 0;
-
-            document.getElementById('saveStockBtn').innerText = "Update Stock";
-            document.getElementById('cancelStockEditBtn').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function deleteStockMedicine(id) {
-            stockMedicines = stockMedicines.filter(s => s.id != id);
-            localStorage.setItem('max_stock_medicines', JSON.stringify(stockMedicines));
-            renderStockMedicines();
-        }
-
-        function saveMedicineSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('medDate').value;
-            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
-
-            const medData = {
-                id: editingMedId ? editingMedId : Date.now(),
-                date: formattedDate,
-                rawDate: rawDate,
-                customer: document.getElementById('medCustomer').value,
-                medName: document.getElementById('medName').value,
-                medQty: document.getElementById('medQty').value,
-                amount: parseFloat(document.getElementById('medAmount').value)
-            };
-
-            if (editingMedId) {
-                medicines = medicines.map(m => m.id === editingMedId ? medData : m);
-                editingMedId = null;
-                document.getElementById('saveMedBtn').innerText = "Save Medicine Sale";
-                document.getElementById('cancelMedEditBtn').classList.add('hidden');
-            } else {
-                medicines.unshift(medData);
-            }
-
-            localStorage.setItem('max_medicines', JSON.stringify(medicines));
-            document.getElementById('medicineForm').reset();
-            document.getElementById('medDate').valueAsDate = new Date();
-
-            renderMedicines();
-            updateDashboard();
-        }
-
-        function resetMedicineForm() {
-            editingMedId = null;
-            document.getElementById('medicineForm').reset();
-            document.getElementById('medDate').valueAsDate = new Date();
-            document.getElementById('saveMedBtn').innerText = "Save Medicine Sale";
-            document.getElementById('cancelMedEditBtn').classList.add('hidden');
-        }
-
-        function renderMedicines() {
-            const tbody = document.getElementById('medicineTableBody');
-            tbody.innerHTML = medicines.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No medicine sales found</td></tr>` :
-            medicines.map(m => `
-                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-                    <td class="p-3 text-slate-400 text-xs">${m.date}</td>
-                    <td class="p-3 font-medium text-white">${m.customer}</td>
-                    <td class="p-3 text-slate-200 text-xs font-semibold">${m.medName || '-'}</td>
-                    <td class="p-3 text-slate-300 text-xs">${m.medQty || '-'}</td>
-                    <td class="p-3 font-bold text-emerald-400">৳ ${m.amount}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editMedicine(${m.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Medicine"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteMedicine(${m.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function editMedicine(id) {
-            const m = medicines.find(item => item.id == id);
-            if (!m) return;
-            editingMedId = m.id;
-
-            document.getElementById('medDate').value = m.rawDate || new Date().toISOString().split('T')[0];
-            document.getElementById('medCustomer').value = m.customer || '';
-            document.getElementById('medName').value = m.medName || '';
-            document.getElementById('medQty').value = m.medQty || '';
-            document.getElementById('medAmount').value = m.amount || '';
-
-            document.getElementById('saveMedBtn').innerText = "Update Medicine Sale";
-            document.getElementById('cancelMedEditBtn').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function deleteMedicine(id) {
-            medicines = medicines.filter(m => m.id != id);
-            localStorage.setItem('max_medicines', JSON.stringify(medicines));
-            renderMedicines();
-            updateDashboard();
-        }
-
-        function saveGlassesSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('glassDate').value;
-            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
-
-            const glassData = {
-                id: editingGlassId ? editingGlassId : Date.now(),
-                date: formattedDate,
-                rawDate: rawDate,
-                customer: document.getElementById('glassCustomer').value,
-                glassType: document.getElementById('glassType').value,
-                glassPower: document.getElementById('glassPower').value,
-                amount: parseFloat(document.getElementById('glassAmount').value)
-            };
-
-            if (editingGlassId) {
-                glasses = glasses.map(g => g.id === editingGlassId ? glassData : g);
-                editingGlassId = null;
-                document.getElementById('saveGlassBtn').innerText = "Save Glasses Sale";
-                document.getElementById('cancelGlassEditBtn').classList.add('hidden');
-            } else {
-                glasses.unshift(glassData);
-            }
-
-            localStorage.setItem('max_glasses', JSON.stringify(glasses));
-            document.getElementById('glassesForm').reset();
-            document.getElementById('glassDate').valueAsDate = new Date();
-
-            renderGlasses();
-            updateDashboard();
-        }
-
-        function resetGlassesForm() {
-            editingGlassId = null;
-            document.getElementById('glassesForm').reset();
-            document.getElementById('glassDate').valueAsDate = new Date();
-            document.getElementById('saveGlassBtn').innerText = "Save Glasses Sale";
-            document.getElementById('cancelGlassEditBtn').classList.add('hidden');
-        }
-
-        function renderGlasses() {
-            const tbody = document.getElementById('glassesTableBody');
-            tbody.innerHTML = glasses.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No glasses sales found</td></tr>` :
-            glasses.map(g => `
-                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-                    <td class="p-3 text-slate-400 text-xs">${g.date}</td>
-                    <td class="p-3 font-medium text-white">${g.customer}</td>
-                    <td class="p-3 text-slate-200 text-xs font-semibold">${g.glassType || '-'}</td>
-                    <td class="p-3 text-slate-300 text-xs">${g.glassPower || '-'}</td>
-                    <td class="p-3 font-bold text-purple-400">৳ ${g.amount}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editGlasses(${g.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Glass Sale"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteGlasses(${g.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function editGlasses(id) {
-            const g = glasses.find(item => item.id == id);
-            if (!g) return;
-            editingGlassId = g.id;
-
-            document.getElementById('glassDate').value = g.rawDate || new Date().toISOString().split('T')[0];
-            document.getElementById('glassCustomer').value = g.customer || '';
-            document.getElementById('glassType').value = g.glassType || '';
-            document.getElementById('glassPower').value = g.glassPower || '';
-            document.getElementById('glassAmount').value = g.amount || '';
-
-            document.getElementById('saveGlassBtn').innerText = "Update Glasses Sale";
-            document.getElementById('cancelGlassEditBtn').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function deleteGlasses(id) {
-            glasses = glasses.filter(g => g.id != id);
-            localStorage.setItem('max_glasses', JSON.stringify(glasses));
-            renderGlasses();
-            updateDashboard();
-        }
-
-        function generateReport() {
-            const dateFilter = document.getElementById('reportDateFilter').value;
-            let filteredBills = [...bills];
-            let filteredMeds = [...medicines];
-            let filteredGlasses = [...glasses];
-            let filteredExpenses = [...expenses];
-
-            if (dateFilter) {
-                const formattedFilterDate = new Date(dateFilter).toLocaleDateString('en-GB');
-                filteredBills = filteredBills.filter(b => b.date === formattedFilterDate);
-                filteredMeds = filteredMeds.filter(m => m.date === formattedFilterDate);
-                filteredGlasses = filteredGlasses.filter(g => g.date === formattedFilterDate);
-                filteredExpenses = filteredExpenses.filter(e => e.date === formattedFilterDate);
-                document.getElementById('printReportTitle').innerText = `Hospital Report - Date: ${formattedFilterDate}`;
-            } else {
-                document.getElementById('printReportTitle').innerText = `Hospital Comprehensive Summary Report`;
-            }
-
-            const totalInc = filteredBills.reduce((sum, b) => sum + b.amount, 0);
-            const totalMedInc = filteredMeds.reduce((sum, m) => sum + m.amount, 0);
-            const totalGlassInc = filteredGlasses.reduce((sum, g) => sum + g.amount, 0);
-            const totalExp = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
-            
-            const grossIncome = totalInc + totalMedInc + totalGlassInc;
-            const netIncome = grossIncome - totalExp;
-
-            document.getElementById('reportPatientCount').innerText = filteredBills.length;
-            document.getElementById('reportTotalIncome').innerText = '৳ ' + totalInc;
-            document.getElementById('reportTotalMedicine').innerText = '৳ ' + totalMedInc;
-            document.getElementById('reportTotalGlasses').innerText = '৳ ' + totalGlassInc;
-            document.getElementById('reportTotalExpense').innerText = '৳ ' + totalExp;
-            document.getElementById('reportNetIncome').innerText = '৳ ' + netIncome;
-
-            document.getElementById('pRepCount').innerText = filteredBills.length;
-            document.getElementById('pRepIncome').innerText = '৳ ' + totalInc;
-            document.getElementById('pRepMedicine').innerText = '৳ ' + totalMedInc;
-            document.getElementById('pRepGlasses').innerText = '৳ ' + totalGlassInc;
-            document.getElementById('pRepExpense').innerText = '৳ ' + totalExp;
-            document.getElementById('pRepNetIncome').innerText = '৳ ' + netIncome;
-
-            const tbody = document.getElementById('reportTableBody');
-            const printTbody = document.getElementById('printReportTableBody');
-            const printExpenseTbody = document.getElementById('printExpenseTableBody');
-
-            let combinedRows = [];
-            filteredBills.forEach(b => {
-                const servs = b.services ? b.services.map(s => s.name).join(', ') : '';
-                combinedRows.push({
-                    date: b.date,
-                    rawDate: b.rawDate || '',
-                    name: b.name,
-                    info: `${b.phone || '-'} / Age: ${b.age || 'N/A'}`,
-                    services: 'Bill: ' + servs,
-                    amount: b.amount,
-                    type: 'Bill'
-                });
-            });
-
-            filteredMeds.forEach(m => {
-                combinedRows.push({
-                    date: m.date,
-                    rawDate: m.rawDate || '',
-                    name: m.customer,
-                    info: '-',
-                    services: `Medicine: ${m.medName} (${m.medQty})`,
-                    amount: m.amount,
-                    type: 'Medicine'
-                });
-            });
-
-            filteredGlasses.forEach(g => {
-                combinedRows.push({
-                    date: g.date,
-                    rawDate: g.rawDate || '',
-                    name: g.customer,
-                    info: '-',
-                    services: `Glasses: ${g.glassType} [Power: ${g.glassPower || 'N/A'}]`,
-                    amount: g.amount,
-                    type: 'Glasses'
-                });
-            });
-
-            combinedRows.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0));
-
-            if (combinedRows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">No records found for the selected filter</td></tr>`;
-                printTbody.innerHTML = `<tr><td colspan="5" style="padding: 10px; text-align: center; color: #666;">No records found</td></tr>`;
-            } else {
-                tbody.innerHTML = combinedRows.map(r => `
-                    <tr class="hover:bg-[#080e1e]/40">
-                        <td class="p-3 text-slate-400 text-xs">${r.date}</td>
-                        <td class="p-3 font-semibold text-white">${r.name}</td>
-                        <td class="p-3 text-slate-300 text-xs">${r.info}</td>
-                        <td class="p-3 text-slate-300 text-xs">${r.services}</td>
-                        <td class="p-3 text-right font-bold ${r.type === 'Medicine' ? 'text-emerald-400' : r.type === 'Glasses' ? 'text-purple-400' : 'text-sky-400'}">৳ ${r.amount}</td>
-                    </tr>
-                `).join('');
-
-                printTbody.innerHTML = combinedRows.map(r => `
-                    <tr>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.date}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px; font-weight: bold;">${r.name}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.info}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.services}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold;">${r.amount}</td>
-                    </tr>
-                `).join('');
-            }
-
-            if (filteredExpenses.length === 0) {
-                printExpenseTbody.innerHTML = `<tr><td colspan="3" style="border: 1px solid #cbd5e1; padding: 6px; text-align: center; color: #666;">No expenses recorded</td></tr>`;
-            } else {
-                printExpenseTbody.innerHTML = filteredExpenses.map(ex => `
-                    <tr>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${ex.date}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px;">${ex.reason}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 5px; text-align: right; font-weight: bold; color: #dc2626;">${ex.amount}</td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        function resetReportFilter() {
-            document.getElementById('reportDateFilter').value = '';
-            generateReport();
-        }
-
-        function printReport() {
-            document.body.classList.remove('printing-receipt');
-            document.body.classList.add('printing-report');
+            const receiptElement = document.getElementById('printable-receipt');
+            receiptElement.classList.remove('hidden');
             window.print();
-            document.body.classList.remove('printing-report');
         }
-
-        function printBill(id) {
-            const b = bills.find(item => item.id == id);
-            if (!b) return;
-
-            document.querySelectorAll('.r-date').forEach(el => el.innerText = b.date);
-            document.querySelectorAll('.r-id').forEach(el => el.innerText = '#' + String(b.id).slice(-6));
-            document.querySelectorAll('.r-name').forEach(el => el.innerText = b.name);
-            document.querySelectorAll('.r-age').forEach(el => el.innerText = b.age || '-');
-            document.querySelectorAll('.r-address').forEach(el => el.innerText = b.address || '-');
-            document.querySelectorAll('.r-phone').forEach(el => el.innerText = b.phone || '-');
-            document.querySelectorAll('.r-doctor').forEach(el => el.innerText = b.doctor);
-            document.querySelectorAll('.r-amount-total').forEach(el => el.innerText = b.amount);
-
-            const servicesList = b.services || [];
-            const rowsHtml = servicesList.map((s, index) => `
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 6px; text-align: center; color: #64748b; font-weight: 600;">${index + 1}</td>
-                    <td style="padding: 6px; color: #0f172a; font-weight: 500;">${s.name}</td>
-                    <td style="padding: 6px; text-align: right; font-weight: 700; color: #0f172a;">${s.price}</td>
-                </tr>
-            `).join('');
-
-            document.querySelectorAll('.r-services-table-body').forEach(el => {
-                el.innerHTML = rowsHtml;
-            });
-
-            document.body.classList.remove('printing-report');
-            document.body.classList.add('printing-receipt');
-            window.print();
-            document.body.classList.remove('printing-receipt');
-        }
-
-        function exportAllBillsPDF() {
-            switchTab('reports');
-            printReport();
-        }
-
-        function exportToExcel() {
-            if (bills.length === 0 && medicines.length === 0 && glasses.length === 0) {
-                alert('No data available to export!');
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "Type,Date,Name,Age,Phone/Customer,Address/Details,Doctor/Extra,Amount (BDT)\n";
-
-            bills.forEach(b => {
-                const servicesStr = b.services ? b.services.map(s => `${s.name}(${s.price})`).join('; ') : '';
-                csvContent += `"Bill",${b.date},"${b.name}","${b.age || ''}","${b.phone || ''}","${b.address || ''}","${b.doctor} - ${servicesStr}",${b.amount}\n`;
-            });
-
-            medicines.forEach(m => {
-                csvContent += `"Medicine",${m.date},"${m.customer}","-","-","${m.medName || ''}","${m.medQty || ''}",${m.amount}\n`;
-            });
-
-            glasses.forEach(g => {
-                csvContent += `"Glasses",${g.date},"${g.customer}","-","-","${m.glassType || ''}","${m.glassPower || ''}",${g.amount}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "hospital_sales_records.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function deleteBill(id) {
-            bills = bills.filter(b => b.id != id);
-            localStorage.setItem('max_bills', JSON.stringify(bills));
-            renderBills();
-            updateDashboard();
-            if(document.getElementById('reports').classList.contains('active')) {
-                generateReport();
-            }
-        }
-
-        function editBill(id) {
-            const b = bills.find(item => item.id == id);
-            if (!b) return;
-            editingBillId = b.id;
-            
-            document.getElementById('billDate').value = b.rawDate || new Date().toISOString().split('T')[0];
-            document.getElementById('patientName').value = b.name || '';
-            document.getElementById('patientAge').value = b.age || '';
-            document.getElementById('patientPhone').value = b.phone || '';
-            document.getElementById('patientAddress').value = b.address || '';
-            document.getElementById('doctorName').value = b.doctor || '';
-            document.getElementById('discountAmount').value = b.discount || 0;
-            document.getElementById('billAmount').value = b.amount || 0;
-
-            const serviceNames = b.services ? b.services.map(s => s.name) : [];
-            const servicePrices = {};
-            if(b.services) {
-                b.services.forEach(s => { servicePrices[s.id] = s.price; });
-            }
-
-            document.querySelectorAll('input[name="service"]').forEach(cb => {
-                const id = cb.getAttribute('data-index');
-                if (serviceNames.includes(cb.value)) {
-                    cb.checked = true;
-                    if(servicePrices[id] !== undefined) {
-                        const pInput = document.getElementById('price_' + id);
-                        if(pInput) pInput.value = servicePrices[id];
-                    }
-                } else {
-                    cb.checked = false;
-                }
-            });
-
-            document.getElementById('saveBillBtn').innerText = "Update Bill";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-            switchTab('billing');
-        }
-
-        function saveExpense(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('expDate').value;
-            const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
-
-            const exp = {
-                id: editingExpId ? editingExpId : Date.now(),
-                date: formattedDate,
-                rawDate: rawDate,
-                reason: document.getElementById('expReason').value,
-                amount: parseFloat(document.getElementById('expAmount').value)
-            };
-
-            if (editingExpId) {
-                expenses = expenses.map(ex => ex.id === editingExpId ? exp : ex);
-                editingExpId = null;
-                document.getElementById('saveExpBtn').innerText = "Add Expense";
-                document.getElementById('cancelExpEditBtn').classList.add('hidden');
-            } else {
-                expenses.unshift(exp);
-            }
-
-            localStorage.setItem('max_expenses', JSON.stringify(expenses));
-            document.getElementById('expenseForm').reset();
-            document.getElementById('expDate').valueAsDate = new Date();
-
-            renderExpenses();
-            updateDashboard();
-        }
-
-        function resetExpenseForm() {
-            editingExpId = null;
-            document.getElementById('expenseForm').reset();
-            document.getElementById('expDate').valueAsDate = new Date();
-            document.getElementById('saveExpBtn').innerText = "Add Expense";
-            document.getElementById('cancelExpEditBtn').classList.add('hidden');
-        }
-
-        function renderExpenses() {
-            const tbody = document.getElementById('expenseTableBody');
-            tbody.innerHTML = expenses.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-500">No expense records found</td></tr>` :
-            expenses.map(ex => `
-                <tr class="hover:bg-[#080e1e]/40 transition-colors duration-200">
-                    <td class="p-3 text-slate-400 text-xs">${ex.date}</td>
-                    <td class="p-3 text-white">${ex.reason}</td>
-                    <td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editExpense(${ex.id})" class="text-sky-400 hover:text-sky-300 mr-2" title="Edit Expense"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteExpense(${ex.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function editExpense(id) {
-            const ex = expenses.find(item => item.id == id);
-            if (!ex) return;
-            editingExpId = ex.id;
-
-            document.getElementById('expDate').value = ex.rawDate || new Date().toISOString().split('T')[0];
-            document.getElementById('expReason').value = ex.reason || '';
-            document.getElementById('expAmount').value = ex.amount || '';
-
-            document.getElementById('saveExpBtn').innerText = "Update Expense";
-            document.getElementById('cancelExpEditBtn').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function deleteExpense(id) {
-            expenses = expenses.filter(ex => ex.id != id);
-            localStorage.setItem('max_expenses', JSON.stringify(expenses));
-            renderExpenses();
-            updateDashboard();
-        }
-
-        function updateDashboard() {
-            const totalIncome = bills.reduce((sum, b) => sum + b.amount, 0);
-            const totalMedicine = medicines.reduce((sum, m) => sum + m.amount, 0);
-            const totalGlasses = glasses.reduce((sum, g) => sum + g.amount, 0);
-            const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
-            
-            const balance = (totalIncome + totalMedicine + totalGlasses) - totalExpense;
-
-            document.getElementById('dashPatientCount').innerText = bills.length;
-            document.getElementById('dashIncome').innerText = '৳ ' + totalIncome;
-            document.getElementById('dashMedicineIncome').innerText = '৳ ' + totalMedicine;
-            document.getElementById('dashGlassesIncome').innerText = '৳ ' + totalGlasses;
-            document.getElementById('dashExpense').innerText = '৳ ' + totalExpense;
-            document.getElementById('dashBalance').innerText = '৳ ' + balance;
-        }
-
-        initServicesUI();
-        renderBills();
-        renderStockMedicines();
-        renderMedicines();
-        renderGlasses();
-        renderExpenses();
-        updateDashboard();
     </script>
 </body>
 </html>
