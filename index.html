@@ -702,7 +702,7 @@
         let role = null;
         let db = null;
         
-        // Firebase Configuration - Keys placeholder
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyYOUR_ACTUAL_API_KEY_HERE",
             authDomain: "sreenagar-eye-hospital.firebaseapp.com",
@@ -1019,111 +1019,28 @@
             const table = document.getElementById('stockTableBody');
             if(!table) return;
             table.innerHTML = stockMedicines.length === 0 ? `<tr><td colspan="8" class="p-6 text-center text-slate-500">No medicine stock added</td></tr>` :
-            stockMedicines.map(s => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 font-semibold text-white">${s.name}</td><td class="p-3 text-slate-300 text-xs">${s.category || '-'}</td><td class="p-3 font-bold ${stockState(s).low ? 'text-rose-400' : 'text-teal-400'}">${s.qty} Pcs${stockState(s).low ? ' (low)' : ''}</td><td class="p-3 text-slate-300 text-xs">${s.cost?'৳ '+s.cost:'-'}</td><td class="p-3 text-slate-200 text-xs">৳ ${s.price}</td><td class="p-3 text-xs font-bold ${s.cost&&s.price>=s.cost?'text-emerald-400':'text-rose-400'}">${pct(s.price,s.cost)}</td><td class="p-3 text-xs ${stockState(s).exp ? 'text-rose-400' : stockState(s).soon ? 'text-amber-400' : 'text-slate-300'}">${s.expiry || '-'}${stockState(s).exp ? ' (expired)' : stockState(s).soon ? ' (soon)' : ''}</td><td class="p-3 text-center"><button onclick="editStock(${s.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('stockMedicines', ${s.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+            stockMedicines.map(s => {
+                const st = stockState(s);
+                let badge = '';
+                if(st.exp) badge = `<span class="bg-rose-900/60 text-rose-300 text-[10px] px-2 py-0.5 rounded font-bold ml-1">Expired</span>`;
+                else if(st.soon) badge = `<span class="bg-amber-900/60 text-amber-300 text-[10px] px-2 py-0.5 rounded font-bold ml-1">Expiring Soon</span>`;
+                return `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 font-semibold text-white">${s.name} ${badge}</td><td class="p-3 text-slate-300 text-xs">${s.category || '-'}</td><td class="p-3 font-bold ${st.low ? 'text-rose-400' : 'text-slate-200'}">${s.qty}</td><td class="p-3 text-slate-300 text-xs">৳${s.cost||0}</td><td class="p-3 font-bold text-teal-400">৳${s.price}</td><td class="p-3 text-emerald-400 font-bold text-xs">${pct(s.price, s.cost)}</td><td class="p-3 text-slate-400 text-xs">${s.expiry||'-'}</td><td class="p-3 text-center"><button onclick="editStock(${s.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('stockMedicines', ${s.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+            }).join('');
+
+            const dl = document.getElementById('stockNames');
+            if(dl) dl.innerHTML = stockMedicines.map(s => `<option value="${s.name}">`).join('');
         }
 
-        function editStock(id) {
-            const s = stockMedicines.find(x => x.id == id);
-            if (!s) return; editingStockId = s.id;
-            document.getElementById('stockName').value = s.name; document.getElementById('stockCategory').value = s.category;
-            document.getElementById('stockQty').value = s.qty; document.getElementById('stockPrice').value = s.price; document.getElementById('stockCost').value = s.cost || ''; document.getElementById('stockExpiry').value = s.expiry || ''; document.getElementById('stockMin').value = s.minQty || '';
-            document.getElementById('saveStockBtn').innerText = "Update"; document.getElementById('cancelStockEditBtn').classList.remove('hidden');
+        function updateStockProfit() {
+            const c = parseFloat(document.getElementById('stockCost').value)||0;
+            const p = parseFloat(document.getElementById('stockPrice').value)||0;
+            document.getElementById('stockProfit').innerText = c>0 ? `Profit Margin: ${pct(p, c)}` : '';
         }
 
-        function saveMedicineSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('medDate').value;
-            const data = { id: editingMedId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, customer: document.getElementById('medCustomer').value, medName: document.getElementById('medName').value, medQty: document.getElementById('medQty').value, amount: parseFloat(document.getElementById('medAmount').value) };
-            saveDataToFirestore("medicines", data.id, data);
-            resetMedicineForm();
-        }
-        function resetMedicineForm() {
-            editingMedId = null; document.getElementById('medicineForm').reset(); document.getElementById('medDate').valueAsDate = new Date();
-            document.getElementById('saveMedBtn').innerText = "Save Sale"; document.getElementById('cancelMedEditBtn').classList.add('hidden');
-        }
-        function renderMedicines() {
-            const table = document.getElementById('medicineTableBody');
-            if(!table) return;
-            table.innerHTML = medicines.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No medicine sales found</td></tr>` :
-            medicines.map(m => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${m.date}</td><td class="p-3 font-medium text-white">${m.customer}</td><td class="p-3 text-slate-200 text-xs">${m.medName}</td><td class="p-3 text-slate-300 text-xs">${m.medQty}</td><td class="p-3 font-bold text-emerald-400">৳ ${m.amount}</td><td class="p-3 text-center"><button onclick="editMed(${m.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('medicines', ${m.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editMed(id) {
-            const m = medicines.find(x => x.id == id); if (!m) return; editingMedId = m.id;
-            document.getElementById('medDate').value = m.rawDate || ''; document.getElementById('medCustomer').value = m.customer;
-            document.getElementById('medName').value = m.medName; document.getElementById('medQty').value = m.medQty; document.getElementById('medAmount').value = m.amount;
-            document.getElementById('saveMedBtn').innerText = "Update"; document.getElementById('cancelMedEditBtn').classList.remove('hidden');
-        }
-
-        function saveGlassesSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('glassDate').value;
-            const data = { 
-                id: editingGlassId || Date.now(), 
-                date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), 
-                rawDate, 
-                customer: document.getElementById('glassCustomer').value, 
-                glassType: document.getElementById('glassType').value, 
-                glassPower: document.getElementById('glassPower').value,
-                reference: document.getElementById('glassRef').value,
-                amount: parseFloat(document.getElementById('glassAmount').value) 
-            };
-            
-            if (!editingGlassId) {
-                const v = data.glassType.trim().toLowerCase();
-                const f = frames.find(x => (x.code + ' - ' + x.name).toLowerCase() === v || x.code.toLowerCase() === v);
-                if (f && f.qty > 0) saveDataToFirestore('frames', f.id, { ...f, qty: f.qty - 1 });
-            }
-
-            saveDataToFirestore("glasses", data.id, data);
-            resetGlassesForm();
-        }
-
-        function resetGlassesForm() {
-            editingGlassId = null; document.getElementById('glassesForm').reset(); document.getElementById('glassDate').valueAsDate = new Date();
-            document.getElementById('saveGlassBtn').innerText = "Save Glasses Sale"; document.getElementById('cancelGlassEditBtn').classList.add('hidden');
-        }
-
-        function renderGlasses() {
-            const table = document.getElementById('glassesTableBody');
-            if(!table) return;
-            table.innerHTML = glasses.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-slate-500">No glasses sales recorded</td></tr>` :
-            glasses.map(g => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${g.date}</td><td class="p-3 font-medium text-white">${g.customer}</td><td class="p-3 text-slate-200 text-xs font-semibold">${g.glassType}</td><td class="p-3 text-slate-300 text-xs">${g.glassPower || '-'}</td><td class="p-3 text-amber-300 text-xs font-medium">${g.reference || '-'}</td><td class="p-3 font-bold text-purple-400">৳ ${g.amount}</td><td class="p-3 text-center"><button onclick="editGlass(${g.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('glasses', ${g.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-
-        function editGlass(id) {
-            const g = glasses.find(x => x.id == id); if (!g) return; editingGlassId = g.id;
-            document.getElementById('glassDate').value = g.rawDate || ''; document.getElementById('glassCustomer').value = g.customer;
-            document.getElementById('glassType').value = g.glassType; document.getElementById('glassPower').value = g.glassPower || '';
-            document.getElementById('glassRef').value = g.reference || ''; document.getElementById('glassAmount').value = g.amount;
-            document.getElementById('saveGlassBtn').innerText = "Update"; document.getElementById('cancelGlassEditBtn').classList.remove('hidden');
-        }
-
-        function saveExpense(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('expDate').value;
-            const data = { id: editingExpId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, reason: document.getElementById('expReason').value, amount: parseFloat(document.getElementById('expAmount').value) };
-            saveDataToFirestore("expenses", data.id, data);
-            resetExpenseForm();
-        }
-        function resetExpenseForm() {
-            editingExpId = null; document.getElementById('expenseForm').reset(); document.getElementById('expDate').valueAsDate = new Date();
-            document.getElementById('saveExpBtn').innerText = "Add Expense"; document.getElementById('cancelExpEditBtn').classList.add('hidden');
-        }
-        function renderExpenses() {
-            const table = document.getElementById('expenseTableBody');
-            if(!table) return;
-            table.innerHTML = expenses.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-500">No expenses found</td></tr>` :
-            expenses.map(ex => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${ex.date}</td><td class="p-3 text-white">${ex.reason}</td><td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td><td class="p-3 text-center"><button onclick="editExp(${ex.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('expenses', ${ex.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editExp(id) {
-            const ex = expenses.find(x => x.id == id); if (!ex) return; editingExpId = ex.id;
-            document.getElementById('expDate').value = ex.rawDate || ''; document.getElementById('expReason').value = ex.reason; document.getElementById('expAmount').value = ex.amount;
-            document.getElementById('saveExpBtn').innerText = "Update"; document.getElementById('cancelExpEditBtn').classList.remove('hidden');
-        }
-
+        // Optical Frames Stock
         function saveFrame(e) {
             e.preventDefault();
-            const data = { id: editingFrameId || Date.now(), code: document.getElementById('frameCode').value, name: document.getElementById('frameName').value, qty: parseInt(document.getElementById('frameQty').value) || 0, price: parseFloat(document.getElementById('framePrice').value) || 0, cost: parseFloat(document.getElementById('frameCost').value) || 0 };
+            const data = { id: editingFrameId || Date.now(), code: document.getElementById('frameCode').value, name: document.getElementById('frameName').value, qty: parseInt(document.getElementById('frameQty').value) || 0, cost: parseFloat(document.getElementById('frameCost').value) || 0, price: parseFloat(document.getElementById('framePrice').value) || 0 };
             saveDataToFirestore("frames", data.id, data);
             resetFrameForm();
         }
@@ -1131,120 +1048,87 @@
             editingFrameId = null; document.getElementById('frameForm').reset();
             document.getElementById('saveFrameBtn').innerText = "Add Frame"; document.getElementById('cancelFrameBtn').classList.add('hidden');
         }
+        function updateFrameProfit() {
+            const c = parseFloat(document.getElementById('frameCost').value)||0;
+            const p = parseFloat(document.getElementById('framePrice').value)||0;
+            document.getElementById('frameProfit').innerText = c>0 ? `Profit Margin: ${pct(p, c)}` : '';
+        }
         function renderFrames() {
             const table = document.getElementById('frameTableBody');
             if(!table) return;
-            table.innerHTML = frames.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-slate-500">No optical frames added</td></tr>` :
-            frames.map(f => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 font-semibold text-sky-400">${f.code}</td><td class="p-3 text-white">${f.name}</td><td class="p-3 font-bold ${f.qty <= 3 ? 'text-rose-400' : 'text-purple-400'}">${f.qty} Pcs</td><td class="p-3 text-slate-300 text-xs">${f.cost?'৳ '+f.cost:'-'}</td><td class="p-3 text-slate-200 text-xs">৳ ${f.price}</td><td class="p-3 text-xs font-bold ${f.cost&&f.price>=f.cost?'text-emerald-400':'text-rose-400'}">${pct(f.price,f.cost)}</td><td class="p-3 text-center"><button onclick="editFrame(${f.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('frames', ${f.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editFrame(id) {
-            const f = frames.find(x => x.id == id); if (!f) return; editingFrameId = f.id;
-            document.getElementById('frameCode').value = f.code; document.getElementById('frameName').value = f.name;
-            document.getElementById('frameQty').value = f.qty; document.getElementById('frameCost').value = f.cost || ''; document.getElementById('framePrice').value = f.price;
-            document.getElementById('saveFrameBtn').innerText = "Update"; document.getElementById('cancelFrameBtn').classList.remove('hidden');
+            table.innerHTML = frames.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-slate-500">No frames in stock</td></tr>` :
+            frames.map(f => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 font-mono text-purple-400 font-bold">${f.code}</td><td class="p-3 font-semibold text-white">${f.name}</td><td class="p-3 font-bold text-slate-200">${f.qty}</td><td class="p-3 text-slate-300 text-xs">৳${f.cost||0}</td><td class="p-3 font-bold text-purple-400">৳${f.price}</td><td class="p-3 text-emerald-400 font-bold text-xs">${pct(f.price, f.cost)}</td><td class="p-3 text-center"><button onclick="editFrame(${f.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('frames', ${f.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+
+            const dl = document.getElementById('frameNames');
+            if(dl) dl.innerHTML = frames.map(f => `<option value="${f.code} - ${f.name}">`).join('');
         }
 
-        function updateDashboard() {
-            const bTot = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
-            const mTot = medicines.reduce((sum, m) => sum + (m.amount || 0), 0);
-            const gTot = glasses.reduce((sum, g) => sum + (g.amount || 0), 0);
-            const eTot = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-            const dueTot = bills.reduce((sum, b) => sum + billDue(b), 0);
-
-            const pCount = document.getElementById('dashPatientCount');
-            const dInc = document.getElementById('dashIncome');
-            const dMed = document.getElementById('dashMedicineIncome');
-            const dGla = document.getElementById('dashGlassesIncome');
-            const dExp = document.getElementById('dashExpense');
-            const dBal = document.getElementById('dashBalance');
-            const dDue = document.getElementById('dashDue');
-
-            if (pCount) pCount.innerText = bills.length;
-            if (dInc) dInc.innerText = '৳ ' + bTot;
-            if (dMed) dMed.innerText = '৳ ' + mTot;
-            if (dGla) dGla.innerText = '৳ ' + gTot;
-            if (dExp) dExp.innerText = '৳ ' + eTot;
-            if (dBal) dBal.innerText = '৳ ' + (bTot + mTot + gTot - eTot);
-            if (dDue) dDue.innerText = '৳ ' + dueTot;
-
-            const aStock = document.getElementById('alertsStock');
-            if (aStock) {
-                let html = '';
-                stockMedicines.forEach(s => {
-                    const st = stockState(s);
-                    if (st.low) html += `<div class="p-2 bg-rose-950/40 border border-rose-800/40 rounded-lg text-rose-300"><strong>Low Stock:</strong> ${s.name} (${s.qty} remaining)</div>`;
-                    if (st.exp) html += `<div class="p-2 bg-rose-950/40 border border-rose-800/40 rounded-lg text-rose-300"><strong>Expired:</strong> ${s.name} (${s.expiry})</div>`;
-                    else if (st.soon) html += `<div class="p-2 bg-amber-950/40 border border-amber-800/40 rounded-lg text-amber-300"><strong>Expiring Soon:</strong> ${s.name} (${s.expiry})</div>`;
-                });
-                aStock.innerHTML = html || `<p class="text-slate-500">No stock alerts</p>`;
-            }
-
-            const aDue = document.getElementById('alertsDue');
-            if (aDue) {
-                const dueList = bills.filter(b => billDue(b) > 0);
-                aDue.innerHTML = dueList.length === 0 ? `<p class="text-slate-500">No due records</p>` :
-                dueList.map(b => `<div class="p-2 bg-amber-950/40 border border-amber-800/40 rounded-lg text-amber-300 flex justify-between"><span>${b.name}</span><span class="font-bold">৳${billDue(b)}</span></div>`).join('');
-            }
+        // Medicine Sales Entry
+        function saveMedicineSale(e) {
+            e.preventDefault();
+            const rawDate = document.getElementById('medDate').value;
+            const data = { id: editingMedId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, customer: document.getElementById('medCustomer').value, name: document.getElementById('medName').value, qty: document.getElementById('medQty').value, amount: parseFloat(document.getElementById('medAmount').value) || 0 };
+            saveDataToFirestore("medicines", data.id, data);
+            resetMedicineForm();
+        }
+        function resetMedicineForm() {
+            editingMedId = null; document.getElementById('medicineForm').reset();
+            document.getElementById('medDate').valueAsDate = new Date();
+            document.getElementById('saveMedBtn').innerText = "Save Sale"; document.getElementById('cancelMedEditBtn').classList.add('hidden');
+        }
+        function renderMedicines() {
+            const table = document.getElementById('medicineTableBody');
+            if(!table) return;
+            table.innerHTML = medicines.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No medicine sales recorded</td></tr>` :
+            medicines.map(m => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${m.date}</td><td class="p-3 font-medium text-white">${m.customer}</td><td class="p-3 text-slate-300">${m.name}</td><td class="p-3 text-slate-300 text-xs">${m.qty}</td><td class="p-3 font-bold text-emerald-400">৳ ${m.amount}</td><td class="p-3 text-center"><button onclick="editMedicine(${m.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('medicines', ${m.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
         }
 
-        // Authentication & System Lock
-        function checkLockState() {
-            const savedRole = localStorage.getItem('hospital_role');
-            if (savedRole) {
-                role = savedRole;
-                document.body.setAttribute('data-role', role);
-                document.getElementById('roleLabel').innerText = role === 'admin' ? 'Admin' : 'Staff';
-                document.getElementById('lockScreen').classList.add('hidden');
-            } else {
-                document.getElementById('lockScreen').classList.remove('hidden');
-            }
+        // Glasses Sales Entry
+        function saveGlassesSale(e) {
+            e.preventDefault();
+            const rawDate = document.getElementById('glassDate').value;
+            const data = { id: editingGlassId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, customer: document.getElementById('glassCustomer').value, glassType: document.getElementById('glassType').value, power: document.getElementById('glassPower').value, reference: document.getElementById('glassRef').value, amount: parseFloat(document.getElementById('glassAmount').value) || 0 };
+            saveDataToFirestore("glasses", data.id, data);
+            resetGlassesForm();
+        }
+        function resetGlassesForm() {
+            editingGlassId = null; document.getElementById('glassesForm').reset();
+            document.getElementById('glassDate').valueAsDate = new Date();
+            document.getElementById('saveGlassBtn').innerText = "Save Glasses Sale"; document.getElementById('cancelGlassEditBtn').classList.add('hidden');
+        }
+        function renderGlasses() {
+            const table = document.getElementById('glassesTableBody');
+            if(!table) return;
+            table.innerHTML = glasses.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-slate-500">No glasses sales recorded</td></tr>` :
+            glasses.map(g => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${g.date}</td><td class="p-3 font-medium text-white">${g.customer}</td><td class="p-3 text-slate-300">${g.glassType}</td><td class="p-3 text-slate-400 text-xs">${g.power||'-'}</td><td class="p-3 text-amber-300 text-xs">${g.reference||'-'}</td><td class="p-3 font-bold text-purple-400">৳ ${g.amount}</td><td class="p-3 text-center"><button onclick="editGlasses(${g.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('glasses', ${g.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
         }
 
-        function submitLock() {
-            const selRole = document.getElementById('lockRole').value;
-            const pin = document.getElementById('lockPin').value;
-            const adminPin = localStorage.getItem('admin_pin') || '1234';
-            const staffPin = localStorage.getItem('staff_pin') || '0000';
-
-            if (selRole === 'admin' && pin === adminPin) {
-                role = 'admin';
-            } else if (selRole === 'staff' && pin === staffPin) {
-                role = 'staff';
-            } else {
-                document.getElementById('lockMsg').innerText = "Invalid PIN code entered!";
-                return;
-            }
-
-            localStorage.setItem('hospital_role', role);
-            document.body.setAttribute('data-role', role);
-            document.getElementById('roleLabel').innerText = role === 'admin' ? 'Admin' : 'Staff';
-            document.getElementById('lockScreen').classList.add('hidden');
-            document.getElementById('lockMsg').innerText = "";
-            document.getElementById('lockPin').value = "";
+        // Operational Expenses Entry
+        function saveExpense(e) {
+            e.preventDefault();
+            const rawDate = document.getElementById('expDate').value;
+            const data = { id: editingExpId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, reason: document.getElementById('expReason').value, amount: parseFloat(document.getElementById('expAmount').value) || 0 };
+            saveDataToFirestore("expenses", data.id, data);
+            resetExpenseForm();
+        }
+        function resetExpenseForm() {
+            editingExpId = null; document.getElementById('expenseForm').reset();
+            document.getElementById('expDate').valueAsDate = new Date();
+            document.getElementById('saveExpBtn').innerText = "Add Expense"; document.getElementById('cancelExpEditBtn').classList.add('hidden');
+        }
+        function renderExpenses() {
+            const table = document.getElementById('expenseTableBody');
+            if(!table) return;
+            table.innerHTML = expenses.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-500">No expenses recorded</td></tr>` :
+            expenses.map(x => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${x.date}</td><td class="p-3 font-medium text-white">${x.reason}</td><td class="p-3 font-bold text-rose-400">৳ ${x.amount}</td><td class="p-3 text-center"><button onclick="editExpense(${x.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('expenses', ${x.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
         }
 
-        function logout() {
-            localStorage.removeItem('hospital_role');
-            role = null;
-            document.body.removeAttribute('data-role');
-            document.getElementById('lockScreen').classList.remove('hidden');
-        }
-
-        function savePins() {
-            const aPin = document.getElementById('setAdminPin').value;
-            const sPin = document.getElementById('setStaffPin').value;
-            if (aPin) localStorage.setItem('admin_pin', aPin);
-            if (sPin) localStorage.setItem('staff_pin', sPin);
-            alert('Security PINs successfully updated!');
-        }
-
-        // Data Backup & Restore
+        // Data Backup & JSON Recovery
         function backupAll() {
-            const data = { bills, stockMedicines, medicines, glasses, expenses, frames, closings };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+            const payload = { bills, stockMedicines, medicines, glasses, expenses, frames, closings, exportedAt: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
-            a.href = url;
+            a.href = URL.createObjectURL(blob);
             a.download = `Islamia_Eye_Hospital_Backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
         }
@@ -1252,38 +1136,144 @@
         function restoreAll(input) {
             const file = input.files[0];
             if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
+            const r = new FileReader();
+            r.onload = e => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (confirm('Restore data from JSON backup? Current state will be replaced.')) {
-                        bills = data.bills || [];
-                        stockMedicines = data.stockMedicines || [];
-                        medicines = data.medicines || [];
-                        glasses = data.glasses || [];
-                        expenses = data.expenses || [];
-                        frames = data.frames || [];
-                        closings = data.closings || [];
-                        
-                        Object.keys(COLS).forEach(k => {
-                            localStorage.setItem(COLS[k], JSON.stringify(getArr(k)));
-                        });
-                        renderAll();
-                        alert('Backup restoration completed successfully!');
-                    }
+                    if (data.bills) localStorage.setItem('max_bills', JSON.stringify(data.bills));
+                    if (data.stockMedicines) localStorage.setItem('max_stock_medicines', JSON.stringify(data.stockMedicines));
+                    if (data.medicines) localStorage.setItem('max_medicines', JSON.stringify(data.medicines));
+                    if (data.glasses) localStorage.setItem('max_glasses', JSON.stringify(data.glasses));
+                    if (data.expenses) localStorage.setItem('max_expenses', JSON.stringify(data.expenses));
+                    if (data.frames) localStorage.setItem('max_frames', JSON.stringify(data.frames));
+                    if (data.closings) localStorage.setItem('max_closings', JSON.stringify(data.closings));
+                    alert('Data restored successfully! Refreshing view...');
+                    loadFromLocalStorageFallback();
                 } catch (err) {
-                    alert('Invalid JSON backup file provided.');
+                    alert('Invalid JSON Backup file format.');
                 }
             };
-            reader.readAsText(file);
+            r.readAsText(file);
         }
 
-        // Application Start
-        window.onload = () => {
-            initServicesUI();
+        // Global Dashboard Summary Calculation
+        function updateDashboard() {
+            const totalBillPaid = bills.reduce((sum, b) => sum + billPaid(b), 0);
+            const totalMed = medicines.reduce((sum, m) => sum + (m.amount || 0), 0);
+            const totalGlass = glasses.reduce((sum, g) => sum + (g.amount || 0), 0);
+            const totalExp = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+            const totalDue = bills.reduce((sum, b) => sum + billDue(b), 0);
+
+            document.getElementById('dashPatientCount').innerText = bills.length;
+            document.getElementById('dashIncome').innerText = `৳ ${totalBillPaid.toLocaleString()}`;
+            document.getElementById('dashMedicineIncome').innerText = `৳ ${totalMed.toLocaleString()}`;
+            document.getElementById('dashGlassesIncome').innerText = `৳ ${totalGlass.toLocaleString()}`;
+            document.getElementById('dashExpense').innerText = `৳ ${totalExp.toLocaleString()}`;
+            document.getElementById('dashBalance').innerText = `৳ ${(totalBillPaid + totalMed + totalGlass - totalExp).toLocaleString()}`;
+            document.getElementById('dashDue').innerText = `৳ ${totalDue.toLocaleString()}`;
+
+            // Inventory & Expiry Alerts
+            const stockAlertContainer = document.getElementById('alertsStock');
+            if (stockAlertContainer) {
+                const alerts = stockMedicines.filter(s => stockState(s).low || stockState(s).exp || stockState(s).soon);
+                stockAlertContainer.innerHTML = alerts.length === 0 ? `<p class="text-slate-500">All stock levels normal</p>` :
+                alerts.map(s => {
+                    const st = stockState(s);
+                    let label = st.exp ? 'EXPIRED' : (st.soon ? 'EXPIRING SOON' : 'LOW STOCK');
+                    return `<div class="p-2 bg-rose-950/40 border border-rose-800/40 rounded-lg flex justify-between"><span><strong>${s.name}</strong> (${label})</span><span class="font-bold text-rose-400">Qty: ${s.qty}</span></div>`;
+                }).join('');
+            }
+
+            // Dues Alerts
+            const duesAlertContainer = document.getElementById('alertsDue');
+            if (duesAlertContainer) {
+                const duesList = bills.filter(b => billDue(b) > 0);
+                duesAlertContainer.innerHTML = duesList.length === 0 ? `<p class="text-slate-500">No pending dues</p>` :
+                duesList.map(b => `<div class="p-2 bg-amber-950/40 border border-amber-800/40 rounded-lg flex justify-between"><span><strong>${b.name}</strong> (${b.phone || '-'})</span><span class="font-bold text-amber-400">Due: ৳${billDue(b)}</span></div>`).join('');
+            }
+        }
+
+        // Security Lock & PIN Execution
+        function checkPinSetup() {
+            const adminPin = localStorage.getItem('max_admin_pin');
+            const lockScreen = document.getElementById('lockScreen');
+            if (!adminPin) {
+                document.getElementById('lockTitle').innerText = "Initial Setup: Create Admin PIN";
+                document.getElementById('lockPin2').classList.remove('hidden');
+            } else {
+                document.getElementById('lockTitle').innerText = "System Security Login";
+                document.getElementById('lockPin2').classList.add('hidden');
+            }
+            lockScreen.classList.remove('hidden');
+        }
+
+        function submitLock() {
+            const adminPin = localStorage.getItem('max_admin_pin');
+            const selectedRole = document.getElementById('lockRole').value;
+            const pin1 = document.getElementById('lockPin').value;
+            const pin2 = document.getElementById('lockPin2').value;
+            const msg = document.getElementById('lockMsg');
+
+            if (!adminPin) {
+                if (pin1.length < 4 || pin1 !== pin2) {
+                    msg.innerText = "PINs must match and be at least 4 digits";
+                    return;
+                }
+                localStorage.setItem('max_admin_pin', pin1);
+                role = 'admin';
+                unlockApp();
+                return;
+            }
+
+            if (selectedRole === 'admin') {
+                if (pin1 === adminPin) { role = 'admin'; unlockApp(); }
+                else { msg.innerText = "Invalid Admin PIN"; }
+            } else {
+                const staffPin = localStorage.getItem('max_staff_pin');
+                if (!staffPin || pin1 === staffPin) { role = 'staff'; unlockApp(); }
+                else { msg.innerText = "Invalid Staff PIN"; }
+            }
+        }
+
+        function unlockApp() {
+            document.getElementById('lockScreen').classList.add('hidden');
+            document.body.setAttribute('data-role', role);
+            document.getElementById('roleLabel').innerText = role === 'admin' ? 'Admin' : 'Staff';
+            document.getElementById('lockPin').value = '';
+            document.getElementById('lockPin2').value = '';
+            document.getElementById('lockMsg').innerText = '';
             initFirebaseSync();
-            checkLockState();
-        };
+        }
+
+        function logout() {
+            role = null;
+            checkPinSetup();
+        }
+
+        function savePins() {
+            const adminPin = document.getElementById('setAdminPin').value;
+            const staffPin = document.getElementById('setStaffPin').value;
+            const clearStaff = document.getElementById('clearStaff').checked;
+
+            if (adminPin) {
+                if (adminPin.length < 4) return alert('Admin PIN must be at least 4 digits');
+                localStorage.setItem('max_admin_pin', adminPin);
+            }
+            if (clearStaff) {
+                localStorage.removeItem('max_staff_pin');
+            } else if (staffPin) {
+                localStorage.setItem('max_staff_pin', staffPin);
+            }
+            alert('Security PIN settings updated!');
+            document.getElementById('setAdminPin').value = '';
+            document.getElementById('setStaffPin').value = '';
+        }
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            initServicesUI();
+            checkPinSetup();
+        });
     </script>
 </body>
 </html>
