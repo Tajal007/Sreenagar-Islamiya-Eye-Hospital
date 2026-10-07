@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sreenagar Islamia Eye Hospital - Advanced Management System</title>
+    <title>Sreenagar Islamia Eye Hospital - Hospital Management System</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
@@ -11,7 +11,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs (Updated for Firebase v10 Compatibility Layer) -->
+    <!-- Firebase SDKs (v10 Compatibility Layer) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -22,7 +22,6 @@
             background: #070d1d;
         }
 
-        /* Glassmorphism Effects */
         .glass-card {
             background: rgba(17, 28, 56, 0.75);
             backdrop-filter: blur(16px);
@@ -44,17 +43,6 @@
             outline: none;
         }
 
-        /* Animated Hover Cards */
-        .hover-card { 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-        }
-        .hover-card:hover { 
-            transform: translateY(-6px) scale(1.015); 
-            box-shadow: 0 20px 35px -5px rgba(14, 165, 233, 0.25); 
-            border-color: rgba(56, 189, 248, 0.6); 
-        }
-
-        /* Tab Animations */
         .tab-content { display: none; }
         .tab-content.active { 
             display: block; 
@@ -66,7 +54,6 @@
             to { opacity: 1; transform: translateY(0); } 
         }
 
-        /* Glowing Pulse FX */
         .glow-pulse {
             box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
             animation: pulseGlow 2s infinite;
@@ -78,28 +65,23 @@
             100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
 
-        /* Print Engine CSS */
-        .print-receipt-container, .print-report-container { display: none; }
+        .print-receipt-container { display: none; }
         @media print { 
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
             body.printing-receipt .print-receipt-container { display: flex !important; width: 100%; justify-content: space-between; gap: 15px; }
-            body.printing-report .print-report-container { display: block !important; width: 100%; background: white !important; color: black !important; }
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #080e1e; }
         ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
-
-        body[data-role="staff"] [data-admin]{ display: none !important; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
-    <!-- Dynamic Header -->
-    <header class="bg-[#0f172a]/90 backdrop-blur-xl border-b border-blue-900/40 shadow-2xl no-print sticky top-0 z-50 transition-all">
+    <!-- Header -->
+    <header class="bg-[#0f172a]/90 backdrop-blur-xl border-b border-blue-900/40 shadow-2xl no-print sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="bg-gradient-to-tr from-blue-600 to-cyan-400 p-2.5 rounded-2xl shadow-lg text-white glow-pulse flex items-center justify-center">
@@ -110,7 +92,7 @@
                         শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল
                     </h1>
                     <p class="text-xs text-slate-400 font-medium tracking-wide flex items-center gap-1">
-                        <i class="fa-solid fa-location-dot text-amber-400"></i> মউকা কমপ্লেক্স, শ্রীনগর, মুন্সিগঞ্জ
+                        <i class="fa-solid fa-location-dot text-amber-400"></i> এম. রহমান কমপ্লেক্স সংলগ্ন, মক্কা কমপ্লেক্স (নিচ তলা), শ্রীনগর, মুন্সিগঞ্জ
                     </p>
                 </div>
             </div>
@@ -121,495 +103,198 @@
                     <span id="syncText" class="font-semibold text-slate-300">Connecting Cloud...</span>
                 </div>
                 <div class="h-4 w-[1px] bg-slate-700"></div>
-                <button onclick="logout()" class="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1 font-bold" title="Lock System">
-                    <i class="fa-solid fa-lock"></i> <span id="roleLabel">Admin</span>
-                </button>
+                <span class="text-amber-400 font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-user-shield"></i> <span id="roleLabel">Admin</span>
+                </span>
             </div>
         </div>
     </header>
 
-    <!-- Interactive Navigation Bar -->
+    <!-- Navigation Bar -->
     <nav class="bg-[#0b1329]/80 backdrop-blur-md border-b border-blue-900/30 no-print sticky top-[65px] z-40">
         <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2.5">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm bg-gradient-to-r from-blue-600 to-sky-500 text-white whitespace-nowrap flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
-            <button onclick="switchTab('billing')" id="nav-billing" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Fees</button>
-            <button onclick="switchTab('medStock')" id="nav-medStock" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-boxes-stacked"></i> Inventory & Stock</button>
+            <button onclick="switchTab('billing')" id="nav-billing" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-file-invoice-dollar"></i> New Bill</button>
+            <button onclick="switchTab('patients')" id="nav-patients" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-users"></i> Patient Records</button>
             <button onclick="switchTab('medicine')" id="nav-medicine" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-pills"></i> Medicine Sales</button>
             <button onclick="switchTab('glasses')" id="nav-glasses" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-glasses"></i> Glasses Sales</button>
-            <button onclick="switchTab('reports')" data-admin id="nav-reports" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-chart-column"></i> Reports</button>
-            <button onclick="switchTab('expense')" data-admin id="nav-expense" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-wallet"></i> Expenses</button>
-            <button onclick="switchTab('patients')" id="nav-patients" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-users"></i> Patients</button>
-            <button onclick="switchTab('cash')" id="nav-cash" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-cash-register"></i> Cash Closing</button>
-            <button onclick="switchTab('analysis')" data-admin id="nav-analysis" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-scale-balanced"></i> P&L & Analytics</button>
-            <button onclick="switchTab('settings')" data-admin id="nav-settings" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-gear"></i> Settings</button>
+            <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-chart-column"></i> Reports</button>
         </div>
     </nav>
 
-    <!-- Main Dynamic Content Container -->
-    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-grow w-full no-print space-y-6">
-
-        <!-- 1. DASHBOARD TAB -->
-        <section id="dashboard" class="tab-content active space-y-6">
-            <div data-admin class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="glass-card p-5 rounded-2xl hover-card">
-                    <div class="flex items-center justify-between text-slate-400 mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider">Patients</span>
-                        <i class="fa-solid fa-user-group text-sky-400"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-sky-400" id="dashPatientCount">0</h3>
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full no-print">
+        
+        <!-- DASHBOARD TAB -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="glass-card p-5 rounded-2xl border-l-4 border-l-blue-500">
+                    <p class="text-xs text-slate-400 font-medium">আজকের মোট পেশেন্ট</p>
+                    <h3 class="text-2xl font-bold text-white mt-1" id="dashTotalPatients">0</h3>
                 </div>
-                <div class="glass-card p-5 rounded-2xl hover-card">
-                    <div class="flex items-center justify-between text-slate-400 mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider">Bills Collection</span>
-                        <i class="fa-solid fa-file-invoice text-blue-400"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-blue-400" id="dashIncome">৳ 0</h3>
+                <div class="glass-card p-5 rounded-2xl border-l-4 border-l-emerald-500">
+                    <p class="text-xs text-slate-400 font-medium">আজকের মোট কালেকশন</p>
+                    <h3 class="text-2xl font-bold text-emerald-400 mt-1">৳ <span id="dashTotalCollection">0</span></h3>
                 </div>
-                <div class="glass-card p-5 rounded-2xl hover-card">
-                    <div class="flex items-center justify-between text-slate-400 mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider">Medicine Sales</span>
-                        <i class="fa-solid fa-pills text-emerald-400"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-emerald-400" id="dashMedicineIncome">৳ 0</h3>
+                <div class="glass-card p-5 rounded-2xl border-l-4 border-l-purple-500">
+                    <p class="text-xs text-slate-400 font-medium">আজকের মেডিসিন সেলস</p>
+                    <h3 class="text-2xl font-bold text-purple-400 mt-1">৳ <span id="dashMedSales">0</span></h3>
                 </div>
-                <div class="glass-card p-5 rounded-2xl hover-card">
-                    <div class="flex items-center justify-between text-slate-400 mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider">Glasses Sales</span>
-                        <i class="fa-solid fa-glasses text-purple-400"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-purple-400" id="dashGlassesIncome">৳ 0</h3>
+                <div class="glass-card p-5 rounded-2xl border-l-4 border-l-amber-500">
+                    <p class="text-xs text-slate-400 font-medium">আজকের চশমা সেলস</p>
+                    <h3 class="text-2xl font-bold text-amber-400 mt-1">৳ <span id="dashGlassSales">0</span></h3>
                 </div>
-                <div class="glass-card p-5 rounded-2xl hover-card">
-                    <div class="flex items-center justify-between text-slate-400 mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider">Total Expense</span>
-                        <i class="fa-solid fa-wallet text-rose-400"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-rose-400" id="dashExpense">৳ 0</h3>
-                </div>
-                <div class="glass-card p-5 rounded-2xl hover-card">
-                    <div class="flex items-center justify-between text-slate-400 mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider">Net Balance</span>
-                        <i class="fa-solid fa-sack-dollar text-amber-400"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-amber-400" id="dashBalance">৳ 0</h3>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 rounded-2xl hover-card">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Pending Due (Baki)</p>
-                    <h3 class="text-3xl font-black text-amber-400" id="dashDue">৳ 0</h3>
-                </div>
-                <div class="glass-card p-6 rounded-2xl">
-                    <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Low Stock & Expiry Alerts
-                    </h3>
-                    <div id="alertsStock" class="space-y-2 text-xs text-slate-300 max-h-40 overflow-y-auto pr-1"></div>
-                </div>
-                <div class="glass-card p-6 rounded-2xl">
-                    <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-hand-holding-dollar text-amber-400"></i> Patient Pending Dues
-                    </h3>
-                    <div id="alertsDue" class="space-y-2 text-xs text-slate-300 max-h-40 overflow-y-auto pr-1"></div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-card p-6 rounded-2xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-user-doctor text-sky-400"></i> Standard Visit Fees
-                    </h3>
-                    <div id="visitFeeContainer" class="space-y-3 text-sm text-slate-300"></div>
-                </div>
-                <div class="glass-card p-6 rounded-2xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-stethoscope text-amber-400"></i> Eye Test & Diagnostic Service Fees
-                    </h3>
-                    <div id="testListContainer" class="space-y-3 text-sm text-slate-300"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. BILLING & FEES TAB -->
-        <section id="billing" class="tab-content space-y-6">
-            <div class="glass-card p-6 rounded-2xl hover-card">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-file-invoice text-blue-400"></i> New Patient Invoice & Service Entry
-                </h3>
-                <form id="billingForm" onsubmit="saveBill(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
-                            <input type="date" id="billDate" required class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Patient Name</label>
-                            <input type="text" id="patientName" required placeholder="Enter full name" class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Age</label>
-                            <input type="text" id="patientAge" placeholder="e.g. 35 yrs" class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Number</label>
-                            <input type="text" id="patientPhone" placeholder="017xxxxxxxx" class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Address</label>
-                            <input type="text" id="patientAddress" placeholder="Enter address" class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                    </div>
-
-                    <!-- Enhanced Doctor & Reference Row -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor Name</label>
-                            <input type="text" id="doctorName" value="Dr. Specialist Surgeon" required class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor Type</label>
-                            <select id="doctorType" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                                <option value="Eye Specialist">Eye Specialist</option>
-                                <option value="Optometrist">Optometrist</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor / Optom Ref</label>
-                            <input type="text" id="refName" placeholder="Referred by (Optometrist/Doctor)" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Discount (BDT)</label>
-                            <input type="number" id="discountAmount" value="0" min="0" oninput="calculateTotal()" class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Payable (BDT)</label>
-                            <input type="number" id="billAmount" readonly required class="glass-input w-full rounded-xl px-3 py-2 text-sm font-bold text-amber-400">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Paid Amount (BDT)</label>
-                            <input type="number" id="paidAmount" min="0" placeholder="Blank = Full Paid" class="glass-input w-full rounded-xl px-3 py-2 text-sm">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 bg-slate-900/60 rounded-xl border border-blue-900/40">
-                            <label class="block text-xs font-bold text-sky-400 mb-2 uppercase tracking-wide">Doctor Visit Charges:</label>
-                            <div id="visitCheckboxContainer" class="space-y-3"></div>
-                        </div>
-                        <div class="p-4 bg-slate-900/60 rounded-xl border border-blue-900/40">
-                            <label class="block text-xs font-bold text-amber-400 mb-2 uppercase tracking-wide">Eye Tests & Services:</label>
-                            <div id="testCheckboxContainer" class="space-y-3"></div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between items-center pt-2">
-                        <button type="button" onclick="resetBillingForm()" id="cancelEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-medium px-4 py-2 rounded-xl text-sm transition-all">Cancel Edit</button>
-                        <button type="submit" id="saveBillBtn" class="ml-auto bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow-lg transition-all">Save Bill</button>
-                    </div>
-                </form>
             </div>
 
             <div class="glass-card p-6 rounded-2xl">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
-                    <h3 class="text-lg font-bold text-white">Patient Billing Records</h3>
-                    <div class="flex gap-2">
-                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all"><i class="fa-solid fa-file-excel"></i> Export CSV</button>
-                        <button onclick="exportAllBillsPDF()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all"><i class="fa-solid fa-file-pdf"></i> Print Summary</button>
-                    </div>
-                </div>
+                <h2 class="text-lg font-bold text-sky-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left"></i> সাম্প্রতিক বিল সমূহ</h2>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Patient Details</th>
-                                <th class="p-3">Doctor & Ref</th>
+                    <table class="w-full text-sm text-left text-slate-300">
+                        <thead class="text-xs text-slate-400 uppercase bg-slate-900/60">
+                            <tr>
+                                <th class="p-3">Bill ID</th>
+                                <th class="p-3">Patient Name</th>
+                                <th class="p-3">Mobile</th>
                                 <th class="p-3">Services</th>
-                                <th class="p-3">Amount</th>
-                                <th class="p-3 text-center">Actions</th>
+                                <th class="p-3">Total Amount</th>
+                                <th class="p-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="billTableBody" class="divide-y divide-blue-900/20"></tbody>
+                        <tbody id="recentBillsTable">
+                            <tr><td colspan="6" class="text-center p-4 text-slate-500">No bills recorded today.</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- 3. INVENTORY & STOCK MANAGEMENT TAB -->
-        <section id="medStock" class="tab-content space-y-6">
-            <!-- Medicine Stock -->
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-teal-400"></i> Medicine Stock & Margin Analysis</h3>
-                <form id="stockForm" onsubmit="saveStockMedicine(event)" class="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-8 gap-4 mb-6 items-end">
-                    <div><label class="block text-xs text-slate-300 mb-1">Name</label><input type="text" id="stockName" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Category</label><input type="text" id="stockCategory" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Qty</label><input type="number" id="stockQty" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">Cost Price</label>
-                        <input type="number" step="any" id="stockCost" oninput="updateStockProfit()" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                        <p id="stockProfit" class="text-xs text-emerald-400 mt-1 font-bold"></p>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">Sales Price</label>
-                        <input type="number" step="any" oninput="updateStockProfit()" id="stockPrice" required class="glass-input w-full rounded-xl p-2.5 text-sm">
-                    </div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Expiry Date</label><input type="date" id="stockExpiry" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Alert Qty &le;</label><input type="number" id="stockMin" placeholder="10" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick="resetStockForm()" id="cancelStockEditBtn" class="hidden bg-slate-700 text-white px-3 py-2.5 rounded-xl text-xs font-semibold">Cancel</button>
-                        <button type="submit" id="saveStockBtn" class="w-full bg-teal-600 hover:bg-teal-500 text-white rounded-xl py-2.5 text-sm font-bold shadow-lg transition-all">Add</button>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Name</th><th class="p-3">Category</th><th class="p-3">Qty</th><th class="p-3">Cost Price</th><th class="p-3">Sales Price</th><th class="p-3">Profit %</th><th class="p-3">Expiry</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="stockTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
+        <!-- BILLING TAB -->
+        <div id="tab-billing" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Patient Form -->
+                <div class="glass-card p-6 rounded-2xl lg:col-span-1">
+                    <h2 class="text-lg font-bold text-sky-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-user-plus"></i> রোগীর তথ্য</h2>
+                    <form id="billingForm" onsubmit="event.preventDefault(); createBill();" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">রোগীর নাম *</label>
+                            <input type="text" id="patientName" required class="w-full p-2.5 rounded-xl glass-input text-sm" placeholder="নাম লিখুন">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">বয়স *</label>
+                                <input type="number" id="patientAge" required class="w-full p-2.5 rounded-xl glass-input text-sm" placeholder="বয়স">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">মোবাইল *</label>
+                                <input type="text" id="patientPhone" required class="w-full p-2.5 rounded-xl glass-input text-sm" placeholder="017...">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">ঠিকানা</label>
+                            <input type="text" id="patientAddress" class="w-full p-2.5 rounded-xl glass-input text-sm" placeholder="ঠিকানা">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">ডাক্তার</label>
+                            <select id="doctorName" class="w-full p-2.5 rounded-xl glass-input text-sm">
+                                <option value="ডাক্তার চয়ন মন্ডল">ডাক্তার চয়ন মন্ডল (MBBS, DO)</option>
+                                <option value="অন্যান্য কনসালট্যান্ট">অন্যান্য কনসালট্যান্ট</option>
+                            </select>
+                        </div>
+                    </form>
                 </div>
-            </div>
 
-            <!-- Optical Frame & Glasses Stock with Real-time Profit Calculation -->
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-glasses text-purple-400"></i> Optical Frames Inventory & Profit Percentage</h3>
-                <form id="frameForm" onsubmit="saveFrame(event)" class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 items-end">
-                    <div><label class="block text-xs text-slate-300 mb-1">Frame Code</label><input type="text" id="frameCode" required placeholder="e.g. F-101" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Frame Name/Model</label><input type="text" id="frameName" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Stock Qty</label><input type="number" id="frameQty" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Cost Price (BDT)</label><input type="number" step="any" id="frameCost" oninput="updateFrameProfit()" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
+                <!-- Service Selection & Total -->
+                <div class="glass-card p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between">
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Sales Price (BDT)</label>
-                        <input type="number" step="any" id="framePrice" required oninput="updateFrameProfit()" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                        <p id="frameProfit" class="text-xs text-emerald-400 mt-1 font-bold"></p>
-                    </div>
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick="resetFrameForm()" id="cancelFrameBtn" class="hidden bg-slate-700 text-white px-3 py-2.5 rounded-xl text-xs font-semibold">Cancel</button>
-                        <button type="submit" id="saveFrameBtn" class="w-full bg-purple-600 hover:bg-purple-500 text-white rounded-xl py-2.5 text-sm font-bold shadow-lg transition-all">Add Frame</button>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Code</th><th class="p-3">Name</th><th class="p-3">Qty</th><th class="p-3">Cost Price</th><th class="p-3">Sales Price</th><th class="p-3">Profit %</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="frameTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. MEDICINE SALES TAB -->
-        <section id="medicine" class="tab-content space-y-6">
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-pills text-emerald-400"></i> Direct Medicine Sales Entry</h3>
-                <form id="medicineForm" onsubmit="saveMedicineSale(event)" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div><label class="block text-xs text-slate-300 mb-1">Date</label><input type="date" id="medDate" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Customer / Patient</label><input type="text" id="medCustomer" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Medicine Name</label><input type="text" id="medName" list="stockNames" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Quantity</label><input type="text" id="medQty" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                        <div><label class="block text-xs text-slate-300 mb-1">Amount Total (BDT)</label><input type="number" id="medAmount" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div class="flex gap-2 md:col-span-2 justify-end">
-                            <button type="button" onclick="resetMedicineForm()" id="cancelMedEditBtn" class="hidden bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold">Cancel</button>
-                            <button type="submit" id="saveMedBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all">Save Sale</button>
+                        <h2 class="text-lg font-bold text-sky-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-list-check"></i> সেবা নির্বাচন ও ফি</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6" id="serviceSelectionGrid">
+                            <label class="p-3 border border-slate-700 rounded-xl bg-slate-900/40 hover:border-blue-500 cursor-pointer flex items-center gap-2">
+                                <input type="checkbox" value="500" data-service="ডাক্তার ভিজিট" onchange="calculateBillTotal()" class="accent-blue-500 rounded">
+                                <span class="text-xs">ডাক্তার ভিজিট (৳500)</span>
+                            </label>
+                            <label class="p-3 border border-slate-700 rounded-xl bg-slate-900/40 hover:border-blue-500 cursor-pointer flex items-center gap-2">
+                                <input type="checkbox" value="1000" data-service="চোখের ছানি পরীক্ষা" onchange="calculateBillTotal()" class="accent-blue-500 rounded">
+                                <span class="text-xs">চোখের ছানি পরীক্ষা (৳1000)</span>
+                            </label>
+                            <label class="p-3 border border-slate-700 rounded-xl bg-slate-900/40 hover:border-blue-500 cursor-pointer flex items-center gap-2">
+                                <input type="checkbox" value="200" data-service="অটো রিফ্রোকশন" onchange="calculateBillTotal()" class="accent-blue-500 rounded">
+                                <span class="text-xs">অটো রিফ্রোকশন (৳200)</span>
+                            </label>
+                            <label class="p-3 border border-slate-700 rounded-xl bg-slate-900/40 hover:border-blue-500 cursor-pointer flex items-center gap-2">
+                                <input type="checkbox" value="300" data-service="প্রেসার পরীক্ষা" onchange="calculateBillTotal()" class="accent-blue-500 rounded">
+                                <span class="text-xs">প্রেসার পরীক্ষা (৳300)</span>
+                            </label>
+                            <label class="p-3 border border-slate-700 rounded-xl bg-slate-900/40 hover:border-blue-500 cursor-pointer flex items-center gap-2">
+                                <input type="checkbox" value="150" data-service="কালার ভিশন টেস্ট" onchange="calculateBillTotal()" class="accent-blue-500 rounded">
+                                <span class="text-xs">কালার ভিশন (৳150)</span>
+                            </label>
                         </div>
                     </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Customer</th><th class="p-3">Medicine</th><th class="p-3">Qty</th><th class="p-3">Amount</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="medicineTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
 
-        <!-- 5. GLASSES SALES TAB (With Doctor/Optom Ref) -->
-        <section id="glasses" class="tab-content space-y-6">
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-glasses text-purple-400"></i> Glasses & Optical Counter Sales</h3>
-                <form id="glassesForm" onsubmit="saveGlassesSale(event)" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div><label class="block text-xs text-slate-300 mb-1">Date</label><input type="date" id="glassDate" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Customer / Patient Name</label><input type="text" id="glassCustomer" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Frame / Glass Type</label><input type="text" id="glassType" list="frameNames" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Lens Power Details</label><input type="text" id="glassPower" placeholder="e.g. SPH -1.25 / CYL -0.50" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                        <div><label class="block text-xs text-slate-300 mb-1">Ref Doctor / Optometrist</label><input type="text" id="glassRef" placeholder="Dr. or Optometrist Name" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Sale Amount (BDT)</label><input type="number" id="glassAmount" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                        <div class="flex gap-2 justify-end">
-                            <button type="button" onclick="resetGlassesForm()" id="cancelGlassEditBtn" class="hidden bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold">Cancel</button>
-                            <button type="submit" id="saveGlassBtn" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all">Save Glasses Sale</button>
+                    <div class="border-t border-slate-700 pt-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div>
+                            <span class="text-sm text-slate-400">মোট দেও সর্বমোট:</span>
+                            <h3 class="text-3xl font-extrabold text-amber-400">৳ <span id="billGrandTotal">0</span></h3>
                         </div>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Customer</th><th class="p-3">Type/Frame</th><th class="p-3">Power</th><th class="p-3">Ref Doctor/Optom</th><th class="p-3">Amount</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="glassesTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. REPORTS TAB -->
-        <section id="reports" class="tab-content space-y-6">
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-column text-sky-400"></i> Overall Revenue & Activity Reports</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-slate-900/60 p-4 rounded-xl border border-blue-900/30">
-                    <div><label class="block text-xs text-slate-300 mb-1">Filter By Specific Date</label><input type="date" id="reportDateFilter" onchange="generateReport()" class="glass-input w-full rounded-xl px-3 py-2 text-sm"></div>
-                    <div class="flex items-end gap-2">
-                        <button onclick="resetReportFilter()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px] transition-all">Show All</button>
-                        <button onclick="printReport()" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px] flex items-center gap-2 transition-all"><i class="fa-solid fa-print"></i> Print Summary</button>
+                        <button onclick="createBill()" class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-solid fa-print"></i> বিল সেভ ও রসিদ প্রিন্ট
+                        </button>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-6 gap-4 mb-6">
-                    <div class="bg-slate-900/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Total Patients</p><h4 class="text-2xl font-black text-sky-400 mt-1" id="reportPatientCount">0</h4></div>
-                    <div class="bg-slate-900/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Bill Collections</p><h4 class="text-2xl font-black text-blue-400 mt-1" id="reportTotalIncome">৳ 0</h4></div>
-                    <div class="bg-slate-900/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Medicine</p><h4 class="text-2xl font-black text-emerald-400 mt-1" id="reportTotalMedicine">৳ 0</h4></div>
-                    <div class="bg-slate-900/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Glasses</p><h4 class="text-2xl font-black text-purple-400 mt-1" id="reportTotalGlasses">৳ 0</h4></div>
-                    <div class="bg-slate-900/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Expenses</p><h4 class="text-2xl font-black text-rose-400 mt-1" id="reportTotalExpense">৳ 0</h4></div>
-                    <div class="bg-slate-900/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Net Revenue</p><h4 class="text-2xl font-black text-amber-400 mt-1" id="reportNetIncome">৳ 0</h4></div>
-                </div>
+            </div>
+        </div>
+
+        <!-- PATIENTS TAB -->
+        <div id="tab-patients" class="tab-content">
+            <div class="glass-card p-6 rounded-2xl">
+                <h2 class="text-lg font-bold text-sky-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-users"></i> নিবন্ধিত সকল রোগী</h2>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Name</th><th class="p-3">Mobile / Age</th><th class="p-3">Services / Items</th><th class="p-3 text-right">Amount</th></tr></thead>
-                        <tbody id="reportTableBody" class="divide-y divide-blue-900/20"></tbody>
+                    <table class="w-full text-sm text-left text-slate-300">
+                        <thead class="text-xs text-slate-400 uppercase bg-slate-900/60">
+                            <tr>
+                                <th class="p-3">ID</th>
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Name</th>
+                                <th class="p-3">Phone</th>
+                                <th class="p-3">Age</th>
+                                <th class="p-3">Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientsTableBody">
+                            <tr><td colspan="6" class="text-center p-4 text-slate-500">Loading patients...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- 7. EXPENSES TAB -->
-        <section id="expense" class="tab-content space-y-6">
+        <!-- MEDICINE TAB -->
+        <div id="tab-medicine" class="tab-content">
             <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-wallet text-rose-400"></i> Hospital Operational Expenses</h3>
-                <form id="expenseForm" onsubmit="saveExpense(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
-                    <div><label class="block text-xs text-slate-300 mb-1">Date</label><input type="date" id="expDate" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Description / Head</label><input type="text" id="expReason" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Amount (BDT)</label><input type="number" id="expAmount" required class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick="resetExpenseForm()" id="cancelExpEditBtn" class="hidden bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold">Cancel</button>
-                        <button type="submit" id="saveExpBtn" class="w-full bg-rose-600 hover:bg-rose-500 text-white rounded-xl py-2.5 text-sm font-bold shadow-lg transition-all">Add Expense</button>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Description</th><th class="p-3">Amount</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="expenseTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
+                <h2 class="text-lg font-bold text-sky-400 mb-4"><i class="fa-solid fa-pills"></i> মেডিসিন বিক্রয়</h2>
+                <p class="text-sm text-slate-400">মেডিসিন ইনভেন্টরি কাউন্টার সিস্টেম যুক্ত করা হয়েছে।</p>
             </div>
-        </section>
+        </div>
 
-        <!-- 8. PATIENTS TAB -->
-        <section id="patients" class="tab-content space-y-6">
+        <!-- GLASSES TAB -->
+        <div id="tab-glasses" class="tab-content">
             <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-users text-sky-400"></i> Patient Database Search & History</h3>
-                <input id="patSearch" oninput="renderPatients()" placeholder="Search patient by name or phone number..." class="glass-input w-full rounded-xl p-3 text-sm">
-                <div id="patResults" class="mt-4 space-y-3"></div>
+                <h2 class="text-lg font-bold text-sky-400 mb-4"><i class="fa-solid fa-glasses"></i> চশমা ও ফ্রেম বিক্রয়</h2>
+                <p class="text-sm text-slate-400">চশমা ও লেন্স সংক্রান্ত ট্র্যাকিং সিস্টেম।</p>
             </div>
-        </section>
+        </div>
 
-        <!-- 9. CASH CLOSING TAB -->
-        <section id="cash" class="tab-content space-y-6">
+        <!-- REPORTS TAB -->
+        <div id="tab-reports" class="tab-content">
             <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-cash-register text-emerald-400"></i> Daily Cash Register Closing</h3>
-                <div class="max-w-xs mb-4">
-                    <label class="block text-xs text-slate-300 mb-1">Select Date</label>
-                    <input type="date" id="cashDate" onchange="renderCash()" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                </div>
-                <div id="cashSummary" class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4"></div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    <div><label class="block text-xs text-slate-300 mb-1">Physical Counted Cash</label><input type="number" id="cashCounted" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Closing Remarks/Note</label><input id="cashNote" class="glass-input w-full rounded-xl p-2.5 text-sm"></div>
-                    <button onclick="saveClosing()" class="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-4 py-2.5 text-sm font-bold shadow-lg transition-all">Save Register Closing</button>
-                </div>
-                <p id="cashSaved" class="text-xs text-amber-400 mt-3 font-semibold"></p>
+                <h2 class="text-lg font-bold text-sky-400 mb-4"><i class="fa-solid fa-chart-column"></i> রিপোর্ট ও হিসাব বিবরণী</h2>
+                <p class="text-sm text-slate-400">দৈনিক ও মাসিক আয়ের সংক্ষিপ্ত রিপোর্ট।</p>
             </div>
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-sm font-bold text-white mb-3">Historical Cash Closings</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Expected</th><th class="p-3">Counted</th><th class="p-3">Variance</th><th class="p-3">Note</th><th class="p-3">By</th></tr></thead>
-                        <tbody id="cashHistory" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- 10. PROFIT & LOSS & DOCTOR REPORT TAB -->
-        <section id="analysis" class="tab-content space-y-6">
-            <div class="glass-card p-6 rounded-2xl">
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-scale-balanced text-amber-400"></i> Financial Profit & Loss Statement</h3>
-                    <input type="month" id="anMonth" onchange="renderAnalysis()" class="glass-input rounded-xl p-2 text-sm">
-                </div>
-                <div id="anCards" class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4"></div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Bills Total</th><th class="p-3">Medicine</th><th class="p-3">Glasses</th><th class="p-3">Expense</th><th class="p-3">Net Profit</th></tr></thead>
-                        <tbody id="anDaily" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Doctor & Optometrist Performance Breakdown -->
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-sky-400"></i> Doctor & Optometrist Referral Report (Selected Month)</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Doctor / Ref Optom</th><th class="p-3">Role</th><th class="p-3">Patients</th><th class="p-3">Total Billed</th><th class="p-3">Discounts</th><th class="p-3">Collected</th><th class="p-3">Due</th></tr></thead>
-                        <tbody id="anDoctors" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- 11. SETTINGS & BACKUP TAB -->
-        <section id="settings" class="tab-content space-y-6">
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4">Security PIN Management</h3>
-                <div class="max-w-sm space-y-3">
-                    <input type="password" inputmode="numeric" id="setAdminPin" placeholder="New Admin PIN (4-8 digits)" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                    <input type="password" inputmode="numeric" id="setStaffPin" placeholder="New Staff PIN (4-8 digits)" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                    <label class="text-xs text-slate-300 flex items-center gap-2"><input type="checkbox" id="clearStaff" class="rounded border-blue-900"> Disable Staff PIN</label>
-                    <button onclick="savePins()" class="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-4 py-2.5 text-sm font-bold shadow-lg transition-all">Update Security PINs</button>
-                </div>
-            </div>
-            <div class="glass-card p-6 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-2">Data Backup & Local System Restore</h3>
-                <p class="text-xs text-slate-400 mb-4">Download complete hospital JSON backups for safety or restore onto local storage.</p>
-                <div class="flex flex-wrap gap-3">
-                    <button onclick="backupAll()" class="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-4 py-2.5 text-sm font-bold shadow-lg transition-all flex items-center gap-2"><i class="fa-solid fa-download"></i> Download Full Backup</button>
-                    <label class="bg-slate-700 hover:bg-slate-600 text-white rounded-xl px-4 py-2.5 text-sm font-bold cursor-pointer transition-all flex items-center gap-2"><i class="fa-solid fa-upload"></i> Restore Backup File<input type="file" accept=".json" class="hidden" onchange="restoreAll(this)"></label>
-                </div>
-            </div>
-        </section>
+        </div>
 
     </main>
 
-    <!-- Pin Lock Modal Overlay -->
-    <div id="lockScreen" class="fixed inset-0 z-[100] bg-[#070d1d] flex items-center justify-center p-4 no-print">
-        <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm space-y-4 border border-blue-500/30">
-            <div class="text-center">
-                <div class="w-12 h-12 bg-blue-600/20 border border-blue-500/40 rounded-full flex items-center justify-center mx-auto mb-2 text-blue-400">
-                    <i class="fa-solid fa-shield-halved text-2xl"></i>
-                </div>
-                <h2 id="lockTitle" class="text-xl font-extrabold text-white">System Security Login</h2>
-            </div>
-            <select id="lockRole" class="glass-input w-full rounded-xl p-2.5 text-sm">
-                <option value="admin">Admin</option>
-                <option value="staff">Staff</option>
-            </select>
-            <input id="lockPin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN Code" onkeydown="if(event.key==='Enter')submitLock()" class="glass-input w-full rounded-xl p-2.5 text-sm text-center tracking-widest text-lg font-bold">
-            <input id="lockPin2" type="password" inputmode="numeric" maxlength="8" placeholder="Confirm PIN Code" class="glass-input w-full rounded-xl p-2.5 text-sm text-center tracking-widest text-lg font-bold">
-            <p id="lockMsg" class="text-xs text-rose-400 font-bold text-center"></p>
-            <button onclick="submitLock()" class="w-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white rounded-xl px-4 py-2.5 text-sm font-bold shadow-lg transition-all">Unlock System</button>
-        </div>
-    </div>
-
-    <!-- Printable Dual Copy Payment Receipt Template -->
+    <!-- Printable Receipt Area Dual Copy -->
     <div id="printReceiptArea" class="print-receipt-container">
         <!-- Patient Copy -->
         <div style="width: 48%; border: 1.5px solid #0284c7; border-radius: 8px; padding: 14px; font-size: 10px; background: #fff; color: #1e293b; position: relative;">
@@ -619,6 +304,7 @@
                 <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 20px; font-weight: 700;">Patient Copy</span>
             </div>
             <div style="text-align: center; font-weight: 800; font-size: 15px; margin-bottom: 1px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
+            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 2px;">এম. রহমান কমপ্লেক্স সংলগ্ন, মক্কা কমপ্লেক্স (নিচ তলা), শ্রীনগর, মুন্সিগঞ্জ</div>
             <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px;">হটলাইন: 01935 212 357</div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span><strong>Date:</strong> <span class="r-date"></span></span><span><strong>ID:</strong> <span class="r-id" style="color: #0284c7;"></span></span></div>
@@ -645,6 +331,7 @@
                 <span style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 20px; font-weight: 700;">Counterfoil</span>
             </div>
             <div style="text-align: center; font-weight: 800; font-size: 15px; margin-bottom: 1px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
+            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 2px;">এম. রহমান কমপ্লেক্স সংলগ্ন, মক্কা কমপ্লেক্স (নিচ তলা), শ্রীনগর, মুন্সিগঞ্জ</div>
             <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px;">হটলাইন: 01935 212 357</div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span><strong>Date:</strong> <span class="r-date"></span></span><span><strong>ID:</strong> <span class="r-id" style="color: #d97706;"></span></span></div>
@@ -665,617 +352,215 @@
         </div>
     </div>
 
-    <!-- Printable Full Report Summary -->
-    <div id="printReportArea" class="print-report-container p-6">
-        <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 15px;">
-            <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h2>
-            <p style="font-size: 10px; color: #555; margin: 2px 0;">হটলাইন: 01935 212 357</p>
-            <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 10px; font-weight: bold; background: #f8fafc; padding: 6px; border: 1px solid #e2e8f0;">
-            <span>Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
-            <span>Collection: <span id="pRepIncome" style="color: #1e3a8a;">৳ 0</span></span>
-            <span>Medicine: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
-            <span>Glasses: <span id="pRepGlasses" style="color: #9333ea;">৳ 0</span></span>
-            <span>Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
-            <span>Net: <span id="pRepNetIncome" style="color: #d97706;">৳ 0</span></span>
-        </div>
-        <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
-            <thead><tr style="background: #1e3a8a; color: white;"><th style="border: 1px solid #cbd5e1; padding: 6px;">Date</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Name</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Mobile / Age</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Services</th><th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">Amount</th></tr></thead>
-            <tbody id="printReportTableBody"></tbody>
-        </table>
-        <div>
-            <h4 style="font-size: 12px; font-weight: bold; color: #dc2626; margin-bottom: 6px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">Expense Details</h4>
-            <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
-                <thead><tr style="background: #7f1d1d; color: white;"><th style="border: 1px solid #cbd5e1; padding: 6px;">Date</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Description</th><th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">Amount</th></tr></thead>
-                <tbody id="printExpenseTableBody"><tr><td colspan="3" style="border: 1px solid #cbd5e1; padding: 6px; text-align: center; color: #666;">No expenses recorded</td></tr></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Datalist Options -->
-    <datalist id="frameNames"></datalist>
-    <datalist id="stockNames"></datalist>
-
-    <!-- Core JavaScript Logic & Updated Firestore Integration -->
+    <!-- Core JavaScript & Firebase Realtime Logic -->
     <script>
-        let role = null;
         let db = null;
-        
-        // Updated Firebase Configuration - Replace with your actual Firebase Console keys
+        let bills = [];
+
+        // Exact Credentials from your Console Screenshot
         const firebaseConfig = {
-            apiKey: "AIzaSyYOUR_ACTUAL_API_KEY_HERE",
-            authDomain: "sreenagar-eye-hospital.firebaseapp.com",
-            projectId: "sreenagar-eye-hospital",
-            storageBucket: "sreenagar-eye-hospital.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef123456789"
+            apiKey: "AIzaSyA-N30pKueGfkk_y9D46NdTi8rhc0h0Md8",
+            authDomain: "sreenagar-islamiya-eye-h-39201.firebaseapp.com",
+            projectId: "sreenagar-islamiya-eye-h-39201",
+            storageBucket: "sreenagar-islamiya-eye-h-39201.firebasestorage.app",
+            messagingSenderId: "185210521477",
+            appId: "1:185210521477:web:7b62bf1deea8a71516a6ec"
         };
 
-        // Initialize Firebase with persistence and fallbacks
-        function initFirebase() {
+        function initFirebaseSync() {
             try {
-                if (typeof firebase !== "undefined" && !/YOUR_ACTUAL_API_KEY_HERE/.test(firebaseConfig.apiKey)) {
+                if (typeof firebase !== "undefined") {
                     if (!firebase.apps.length) {
                         firebase.initializeApp(firebaseConfig);
                     }
                     db = firebase.firestore();
-                    // Enable offline persistence for better UI responsiveness
-                    db.enablePersistence().catch(err => {
-                        if (err.code == 'failed-precondition') {
-                            console.warn('Multiple tabs open, persistence disabled');
-                        } else if (err.code == 'unimplemented') {
-                            console.warn('Browser does not support persistence');
-                        }
+
+                    db.settings({ experimentalForceLongPolling: true });
+
+                    // Realtime Database Sync across devices
+                    db.collection("bills").orderBy("id", "desc").onSnapshot(snapshot => {
+                        bills = snapshot.docs.map(doc => doc.data());
+                        renderBills();
+                        updateDashboard();
+                        updateSyncUI(true);
+                    }, err => {
+                        console.warn("Realtime sync issue:", err);
+                        updateSyncUI(false);
                     });
                 } else {
-                    console.warn("Firebase configuration keys need to be filled. Running on LocalStorage fallback mode.");
+                    updateSyncUI(false);
                 }
             } catch (e) {
-                console.warn("Firebase initialization fallback active.", e);
+                console.error("Firebase init failed: ", e);
+                updateSyncUI(false);
             }
-        }
-
-        // Initialize Dates
-        ['billDate', 'medDate', 'glassDate', 'expDate'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.valueAsDate = new Date();
-        });
-
-        // Services & Test Config
-        const visitList = [{ id: "v1", name: "Doctor Visit Fee", price: 100 }];
-        const testList = [
-            { id: 1, name: "SPT", price: 300 }, { id: 2, name: "Fluorescein Test", price: 200 },
-            { id: 3, name: "Schirmer Tear Test", price: 200 }, { id: 4, name: "NCT", price: 100 },
-            { id: 5, name: "IOP", price: 100 }, { id: 6, name: "Foreign Body Removal (Normal)", price: 200 },
-            { id: 7, name: "Foreign Body Removal (OT)", price: 1500 }, { id: 8, name: "Bandage", price: 150 },
-            { id: 9, name: "Others", price: 0 }
-        ];
-
-        function initServicesUI() {
-            const visitContainer = document.getElementById('visitCheckboxContainer');
-            const testContainer = document.getElementById('testCheckboxContainer');
-            const dashVisitContainer = document.getElementById('visitFeeContainer');
-            const dashTestContainer = document.getElementById('testListContainer');
-
-            if(visitContainer) visitContainer.innerHTML = '';
-            if(testContainer) testContainer.innerHTML = '';
-            if(dashVisitContainer) dashVisitContainer.innerHTML = '';
-            if(dashTestContainer) dashTestContainer.innerHTML = '';
-
-            visitList.forEach(item => {
-                if(visitContainer) visitContainer.innerHTML += `<div class="flex items-center justify-between gap-2 bg-[#080e1e] p-2.5 rounded-xl border border-blue-900/30"><label class="flex items-center space-x-2 text-sm cursor-pointer flex-grow"><input type="checkbox" name="service" value="${item.name}" data-index="${item.id}" onchange="calculateTotal()" class="rounded border-blue-900 text-blue-600 w-4 h-4"><span class="text-xs font-semibold">${item.name}</span></label><input type="number" id="price_${item.id}" value="${item.price}" oninput="calculateTotal()" class="w-24 bg-[#111c38] border border-blue-900/40 rounded-lg px-2 py-1 text-xs text-amber-400 font-bold outline-none text-right"></div>`;
-                if(dashVisitContainer) dashVisitContainer.innerHTML += `<div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between"><span class="text-xs"><i class="fa-solid fa-user-doctor text-sky-400"></i> ${item.name}</span><span class="font-bold text-amber-400 text-xs">৳${item.price}</span></div>`;
-            });
-
-            testList.forEach(item => {
-                if(testContainer) testContainer.innerHTML += `<div class="flex items-center justify-between gap-2 bg-[#080e1e] p-2.5 rounded-xl border border-blue-900/30"><label class="flex items-center space-x-2 text-sm cursor-pointer flex-grow"><input type="checkbox" name="service" value="${item.name}" data-index="${item.id}" onchange="calculateTotal()" class="rounded border-blue-900 text-blue-600 w-4 h-4"><span class="text-xs"><strong>${item.id}.</strong> ${item.name}</span></label><input type="number" id="price_${item.id}" value="${item.price}" oninput="calculateTotal()" class="w-24 bg-[#111c38] border border-blue-900/40 rounded-lg px-2 py-1 text-xs text-amber-400 font-bold outline-none text-right"></div>`;
-                if(item.name !== "Others" && dashTestContainer) {
-                    dashTestContainer.innerHTML += `<div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between"><span class="text-xs"><i class="fa-solid fa-circle-check text-blue-400"></i> ${item.id}. ${item.name}</span><span class="font-bold text-amber-400 text-xs">৳${item.price}</span></div>`;
-                }
-            });
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            const targetTab = document.getElementById(tabId);
-            if (targetTab) targetTab.classList.add('active');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.className = "nav-btn px-4 py-2 rounded-xl font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all");
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) activeBtn.className = "nav-btn px-4 py-2 rounded-xl font-semibold text-sm bg-gradient-to-r from-blue-600 to-sky-500 text-white whitespace-nowrap flex items-center gap-2 shadow-lg transition-all";
-            if(tabId === 'reports') generateReport();
-            if(tabId === 'analysis') renderAnalysis();
-            if(tabId === 'cash') renderCash();
-        }
-
-        let bills = [], stockMedicines = [], medicines = [], glasses = [], expenses = [], frames = [], closings = [];
-        let editingBillId = null, editingStockId = null, editingMedId = null, editingGlassId = null, editingExpId = null, editingFrameId = null;
-
-        function initFirebaseSync() {
-            initFirebase();
-            if (!db) {
-                const dot = document.getElementById('syncDot');
-                const txt = document.getElementById('syncText');
-                if(dot) dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
-                if(txt) txt.innerText = "Local Mode Active";
-                loadFromLocalStorageFallback();
-                return;
-            }
-
-            const txt = document.getElementById('syncText');
-            if(txt) txt.innerText = "Syncing Cloud...";
-
-            // Real-time Listeners across collections
-            db.collection("bills").orderBy("id", "desc").onSnapshot(s => { 
-                bills = s.docs.map(d => d.data()); 
-                renderBills(); 
-                updateDashboard(); 
-                updateSyncUI(true); 
-            }, () => updateSyncUI(false));
-
-            db.collection("stockMedicines").onSnapshot(s => { 
-                stockMedicines = s.docs.map(d => d.data()); 
-                renderStockMedicines(); 
-            });
-
-            db.collection("medicines").orderBy("id", "desc").onSnapshot(s => { 
-                medicines = s.docs.map(d => d.data()); 
-                renderMedicines(); 
-                updateDashboard(); 
-            });
-
-            db.collection("glasses").orderBy("id", "desc").onSnapshot(s => { 
-                glasses = s.docs.map(d => d.data()); 
-                renderGlasses(); 
-                updateDashboard(); 
-            });
-
-            db.collection("expenses").orderBy("id", "desc").onSnapshot(s => { 
-                expenses = s.docs.map(d => d.data()); 
-                renderExpenses(); 
-                updateDashboard(); 
-            });
-
-            db.collection("frames").onSnapshot(s => { 
-                frames = s.docs.map(d => d.data()); 
-                renderFrames(); 
-            });
-
-            db.collection("closings").onSnapshot(s => { 
-                closings = s.docs.map(d => d.data()); 
-            });
         }
 
         function updateSyncUI(isOnline) {
             const dot = document.getElementById('syncDot');
             const txt = document.getElementById('syncText');
             if(dot) dot.className = `w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-amber-500'}`;
-            if(txt) txt.innerText = isOnline ? "Cloud Live Synced" : "Offline Storage";
+            if(txt) txt.innerText = isOnline ? "Cloud Live Synced" : "Offline Storage Mode";
         }
 
-        function loadFromLocalStorageFallback() {
-            const g = k => JSON.parse(localStorage.getItem(k)) || [];
-            bills = g('max_bills'); 
-            stockMedicines = g('max_stock_medicines'); 
-            medicines = g('max_medicines'); 
-            glasses = g('max_glasses'); 
-            expenses = g('max_expenses'); 
-            frames = g('max_frames'); 
-            closings = g('max_closings');
-            renderAll();
-        }
-
-        const COLS = { bills: 'max_bills', stockMedicines: 'max_stock_medicines', medicines: 'max_medicines', glasses: 'max_glasses', expenses: 'max_expenses', frames: 'max_frames', closings: 'max_closings' };
-        const getArr = c => ({ bills, stockMedicines, medicines, glasses, expenses, frames, closings })[c];
-        
-        function renderAll() { 
-            renderBills(); 
-            renderStockMedicines(); 
-            renderMedicines(); 
-            renderGlasses(); 
-            renderExpenses(); 
-            renderFrames(); 
-            updateDashboard(); 
-        }
-
-        async function saveDataToFirestore(col, id, data) {
-            if (db) { 
-                try { 
-                    await db.collection(col).doc(String(id)).set(data, { merge: true }); 
-                } catch (e) { 
-                    console.error("Firestore Save Error: ", e); 
-                } 
-                return; 
-            }
-            const a = getArr(col), i = a.findIndex(x => x.id == id); 
-            if (i >= 0) a[i] = data; else a.unshift(data);
-            localStorage.setItem(COLS[col], JSON.stringify(a)); 
-            renderAll();
-        }
-
-        async function deleteDataFromFirestore(col, id) {
-            if (role !== 'admin') return alert('Only admin can delete records.');
-            if (!confirm('Delete this record?')) return;
-            if (db) { 
-                try { 
-                    await db.collection(col).doc(String(id)).delete(); 
-                } catch (e) { 
-                    console.error("Firestore Delete Error: ", e); 
-                } 
-                return; 
-            }
-            const a = getArr(col), i = a.findIndex(x => x.id == id); 
-            if (i >= 0) a.splice(i, 1);
-            localStorage.setItem(COLS[col], JSON.stringify(a)); 
-            renderAll();
-        }
-
-        function calculateTotal() {
-            let subtotal = 0;
-            document.querySelectorAll('input[name="service"]:checked').forEach(cb => {
-                const pInput = document.getElementById('price_' + cb.getAttribute('data-index'));
-                subtotal += pInput ? parseFloat(pInput.value) || 0 : 0;
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-sky-500', 'text-white', 'shadow-lg');
+                el.classList.add('text-slate-300');
             });
-            const total = Math.max(0, subtotal - (parseFloat(document.getElementById('discountAmount').value) || 0));
-            document.getElementById('billAmount').value = total;
+
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            const targetBtn = document.getElementById(`nav-${tabId}`);
+            if(targetBtn) {
+                targetBtn.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-sky-500', 'text-white', 'shadow-lg');
+                targetBtn.classList.remove('text-slate-300');
+            }
         }
 
-        function saveBill(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('billDate').value;
-            const services = [];
-            document.querySelectorAll('input[name="service"]:checked').forEach((cb, idx) => {
-                const id = cb.getAttribute('data-index');
-                services.push({ serial: idx + 1, id, name: cb.value, price: parseFloat(document.getElementById('price_' + id)?.value) || 0 });
+        function calculateBillTotal() {
+            let total = 0;
+            document.querySelectorAll('#serviceSelectionGrid input[type="checkbox"]:checked').forEach(cb => {
+                total += parseFloat(cb.value);
             });
-            if (services.length === 0) return alert('Please select at least a visit fee or a test!');
+            document.getElementById('billGrandTotal').innerText = total;
+            return total;
+        }
+
+        function createBill() {
+            const name = document.getElementById('patientName').value.trim();
+            const age = document.getElementById('patientAge').value.trim();
+            const phone = document.getElementById('patientPhone').value.trim();
+            const address = document.getElementById('patientAddress').value.trim() || 'N/A';
+            const doctor = document.getElementById('doctorName').value;
+
+            if(!name || !phone || !age) {
+                alert("রোগীর নাম, বয়স এবং মোবাইল নম্বর আবশ্যক!");
+                return;
+            }
+
+            const selectedServices = [];
+            document.querySelectorAll('#serviceSelectionGrid input[type="checkbox"]:checked').forEach(cb => {
+                selectedServices.push({
+                    name: cb.getAttribute('data-service'),
+                    fee: parseFloat(cb.value)
+                });
+            });
+
+            if(selectedServices.length === 0) {
+                alert("অন্তত একটি সেবা বা সার্ভিস সিলেক্ট করুন!");
+                return;
+            }
+
+            const totalAmount = calculateBillTotal();
+            const billId = "BILL-" + Math.floor(100000 + Math.random() * 900000);
+            const dateStr = new Date().toLocaleDateString('en-GB');
 
             const billData = {
-                id: editingBillId || Date.now(),
-                date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
-                rawDate, 
-                name: document.getElementById('patientName').value, 
-                age: document.getElementById('patientAge').value,
-                phone: document.getElementById('patientPhone').value, 
-                address: document.getElementById('patientAddress').value,
-                doctor: document.getElementById('doctorName').value, 
-                doctorType: document.getElementById('doctorType').value, 
-                reference: document.getElementById('refName').value, 
-                discount: parseFloat(document.getElementById('discountAmount').value) || 0,
-                services, 
-                amount: parseFloat(document.getElementById('billAmount').value)
+                id: billId,
+                date: dateStr,
+                timestamp: Date.now(),
+                patient: { name, age, phone, address },
+                doctor: doctor,
+                services: selectedServices,
+                total: totalAmount
             };
 
-            const old = bills.find(x => x.id == editingBillId);
-            const pv = document.getElementById('paidAmount').value;
-            let pays = old && old.payments ? [...old.payments] : []; 
-            const cur = pays.reduce((a, p) => a + p.amount, 0);
-            const want = pv === '' ? billData.amount : Math.min(Math.max(parseFloat(pv) || 0, 0), billData.amount);
-            const diff = want - cur;
-            if (diff) pays.push({ rawDate: old ? new Date().toISOString().split('T')[0] : (billData.rawDate || new Date().toISOString().split('T')[0]), amount: diff }); 
-            billData.payments = pays;
-
-            saveDataToFirestore("bills", billData.id, billData);
-            resetBillingForm();
+            if(db) {
+                db.collection("bills").doc(billId).set(billData).then(() => {
+                    printReceipt(billData);
+                    resetBillingForm();
+                }).catch(err => {
+                    alert("Error saving bill: " + err.message);
+                });
+            } else {
+                bills.unshift(billData);
+                renderBills();
+                updateDashboard();
+                printReceipt(billData);
+                resetBillingForm();
+            }
         }
 
         function resetBillingForm() {
-            editingBillId = null;
-            document.getElementById('billingForm').reset();
-            document.getElementById('billDate').valueAsDate = new Date();
-            document.getElementById('discountAmount').value = "0";
-            document.getElementById('billAmount').value = "";
-            document.querySelectorAll('input[name="service"]').forEach(cb => cb.checked = false);
-            initServicesUI();
-            document.getElementById('saveBillBtn').innerText = "Save Bill";
-            document.getElementById('cancelEditBtn').classList.add('hidden');
-        }
-
-        function billPaid(b) {
-            return (b.payments || []).reduce((sum, p) => sum + (p.amount || 0), 0);
-        }
-
-        function billDue(b) {
-            return Math.max(0, (b.amount || 0) - billPaid(b));
+            document.getElementById('patientName').value = '';
+            document.getElementById('patientAge').value = '';
+            document.getElementById('patientPhone').value = '';
+            document.getElementById('patientAddress').value = '';
+            document.querySelectorAll('#serviceSelectionGrid input[type="checkbox"]').forEach(cb => cb.checked = false);
+            calculateBillTotal();
         }
 
         function renderBills() {
-            const table = document.getElementById('billTableBody');
-            if(!table) return;
-            table.innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No billing records found</td></tr>` : 
-            bills.map(b => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${b.date}</td><td class="p-3 font-medium text-white">${b.name} <span class="text-amber-400 text-xs">(Age: ${b.age || '-'})</span><br><span class="text-xs text-slate-400">${b.address || ''}</span></td><td class="p-3 text-slate-300 text-xs">${b.doctor}${b.doctorType?`<br><span class="text-sky-400 font-semibold">${b.doctorType}</span>`:''}${b.reference?`<br><span class="text-amber-300">Ref: ${b.reference}</span>`:''}</td><td class="p-3 text-slate-300 text-xs">${b.services?.map(s => `${s.name} (৳${s.price})`).join(', ') || ''}</td><td class="p-3 font-bold text-sky-400">৳ ${b.amount}${billDue(b) > 0 ? `<span class="block text-amber-400 text-xs">Due ৳${billDue(b)}</span>` : ''}</td><td class="p-3 text-center">${billDue(b) > 0 ? `<button onclick="collectDue(${b.id})" class="text-emerald-400 hover:text-emerald-300 mr-2" title="Collect due"><i class="fa-solid fa-hand-holding-dollar"></i></button>` : ''}<button onclick="printBill(${b.id})" class="text-amber-400 hover:text-amber-300 mr-2"><i class="fa-solid fa-print"></i></button><button onclick="editBill(${b.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('bills', ${b.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
+            const tableBody = document.getElementById('recentBillsTable');
+            const patientsBody = document.getElementById('patientsTableBody');
 
-        function saveStockMedicine(e) {
-            e.preventDefault();
-            const data = { id: editingStockId || Date.now(), name: document.getElementById('stockName').value, category: document.getElementById('stockCategory').value, qty: parseInt(document.getElementById('stockQty').value) || 0, price: parseFloat(document.getElementById('stockPrice').value) || 0, cost: parseFloat(document.getElementById('stockCost').value) || 0, expiry: document.getElementById('stockExpiry').value, minQty: parseInt(document.getElementById('stockMin').value) || 10 };
-            saveDataToFirestore("stockMedicines", data.id, data);
-            resetStockForm();
-        }
-        function resetStockForm() {
-            editingStockId = null; document.getElementById('stockForm').reset();
-            document.getElementById('saveStockBtn').innerText = "Add"; document.getElementById('cancelStockEditBtn').classList.add('hidden');
-        }
-        
-        function pct(price, cost) {
-            if (!cost || cost <= 0) return '0%';
-            return Math.round(((price - cost) / cost) * 100) + '%';
-        }
-
-        function stockState(s) {
-            const low = s.qty <= (s.minQty || 10);
-            let exp = false, soon = false;
-            if (s.expiry) {
-                const exDate = new Date(s.expiry);
-                const today = new Date();
-                const diffDays = Math.ceil((exDate - today) / (1000 * 60 * 60 * 24));
-                if (diffDays <= 0) exp = true;
-                else if (diffDays <= 30) soon = true;
-            }
-            return { low, exp, soon };
-        }
-
-        function renderStockMedicines() {
-            const table = document.getElementById('stockTableBody');
-            if(!table) return;
-            table.innerHTML = stockMedicines.length === 0 ? `<tr><td colspan="8" class="p-6 text-center text-slate-500">No medicine stock added</td></tr>` :
-            stockMedicines.map(s => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 font-semibold text-white">${s.name}</td><td class="p-3 text-slate-300 text-xs">${s.category || '-'}</td><td class="p-3 font-bold ${stockState(s).low ? 'text-rose-400' : 'text-teal-400'}">${s.qty} Pcs${stockState(s).low ? ' (low)' : ''}</td><td class="p-3 text-slate-300 text-xs">${s.cost?'৳ '+s.cost:'-'}</td><td class="p-3 text-slate-200 text-xs">৳ ${s.price}</td><td class="p-3 text-xs font-bold ${s.cost&&s.price>=s.cost?'text-emerald-400':'text-rose-400'}">${pct(s.price,s.cost)}</td><td class="p-3 text-xs ${stockState(s).exp ? 'text-rose-400' : stockState(s).soon ? 'text-amber-400' : 'text-slate-300'}">${s.expiry || '-'}${stockState(s).exp ? ' (expired)' : stockState(s).soon ? ' (soon)' : ''}</td><td class="p-3 text-center"><button onclick="editStock(${s.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('stockMedicines', ${s.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-
-        function editStock(id) {
-            const s = stockMedicines.find(x => x.id == id);
-            if (!s) return; editingStockId = s.id;
-            document.getElementById('stockName').value = s.name; document.getElementById('stockCategory').value = s.category;
-            document.getElementById('stockQty').value = s.qty; document.getElementById('stockPrice').value = s.price; document.getElementById('stockCost').value = s.cost || ''; document.getElementById('stockExpiry').value = s.expiry || ''; document.getElementById('stockMin').value = s.minQty || '';
-            document.getElementById('saveStockBtn').innerText = "Update"; document.getElementById('cancelStockEditBtn').classList.remove('hidden');
-        }
-
-        function saveMedicineSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('medDate').value;
-            const data = { id: editingMedId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, customer: document.getElementById('medCustomer').value, medName: document.getElementById('medName').value, medQty: document.getElementById('medQty').value, amount: parseFloat(document.getElementById('medAmount').value) };
-            saveDataToFirestore("medicines", data.id, data);
-            resetMedicineForm();
-        }
-        function resetMedicineForm() {
-            editingMedId = null; document.getElementById('medicineForm').reset(); document.getElementById('medDate').valueAsDate = new Date();
-            document.getElementById('saveMedBtn').innerText = "Save Sale"; document.getElementById('cancelMedEditBtn').classList.add('hidden');
-        }
-        function renderMedicines() {
-            const table = document.getElementById('medicineTableBody');
-            if(!table) return;
-            table.innerHTML = medicines.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No medicine sales found</td></tr>` :
-            medicines.map(m => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${m.date}</td><td class="p-3 font-medium text-white">${m.customer}</td><td class="p-3 text-slate-200 text-xs">${m.medName}</td><td class="p-3 text-slate-300 text-xs">${m.medQty}</td><td class="p-3 font-bold text-emerald-400">৳ ${m.amount}</td><td class="p-3 text-center"><button onclick="editMed(${m.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('medicines', ${m.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editMed(id) {
-            const m = medicines.find(x => x.id == id); if (!m) return; editingMedId = m.id;
-            document.getElementById('medDate').value = m.rawDate || ''; document.getElementById('medCustomer').value = m.customer;
-            document.getElementById('medName').value = m.medName; document.getElementById('medQty').value = m.medQty; document.getElementById('medAmount').value = m.amount;
-            document.getElementById('saveMedBtn').innerText = "Update"; document.getElementById('cancelMedEditBtn').classList.remove('hidden');
-        }
-
-        // Glasses Sales Logic
-        function saveGlassesSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('glassDate').value;
-            const data = { 
-                id: editingGlassId || Date.now(), 
-                date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), 
-                rawDate, 
-                customer: document.getElementById('glassCustomer').value, 
-                glassType: document.getElementById('glassType').value, 
-                glassPower: document.getElementById('glassPower').value,
-                reference: document.getElementById('glassRef').value,
-                amount: parseFloat(document.getElementById('glassAmount').value) 
-            };
-            
-            // Stock Auto-deduction
-            if (!editingGlassId) {
-                const v = data.glassType.trim().toLowerCase();
-                const f = frames.find(x => (x.code + ' - ' + x.name).toLowerCase() === v || x.code.toLowerCase() === v);
-                if (f && f.qty > 0) saveDataToFirestore('frames', f.id, { ...f, qty: f.qty - 1 });
+            if(bills.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-slate-500">No records found.</td></tr>`;
+                patientsBody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-slate-500">No patients recorded.</td></tr>`;
+                return;
             }
 
-            saveDataToFirestore("glasses", data.id, data);
-            resetGlassesForm();
-        }
+            tableBody.innerHTML = bills.slice(0, 10).map(b => `
+                <tr class="border-b border-slate-800/60 hover:bg-slate-800/30">
+                    <td class="p-3 font-mono text-sky-400 font-bold">${b.id}</td>
+                    <td class="p-3 font-medium text-white">${b.patient.name}</td>
+                    <td class="p-3 text-slate-400">${b.patient.phone}</td>
+                    <td class="p-3 text-slate-300 text-xs">${b.services.map(s => s.name).join(', ')}</td>
+                    <td class="p-3 font-bold text-amber-400">৳${b.total}</td>
+                    <td class="p-3">
+                        <button onclick='printReceipt(${JSON.stringify(b)})' class="px-2.5 py-1 bg-blue-600/30 text-blue-300 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-semibold transition-all">
+                            <i class="fa-solid fa-print"></i> Print
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
 
-        function resetGlassesForm() {
-            editingGlassId = null; document.getElementById('glassesForm').reset(); document.getElementById('glassDate').valueAsDate = new Date();
-            document.getElementById('saveGlassBtn').innerText = "Save Glasses Sale"; document.getElementById('cancelGlassEditBtn').classList.add('hidden');
-        }
-
-        function renderGlasses() {
-            const table = document.getElementById('glassesTableBody');
-            if(!table) return;
-            table.innerHTML = glasses.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-slate-500">No glasses sales recorded</td></tr>` :
-            glasses.map(g => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${g.date}</td><td class="p-3 font-medium text-white">${g.customer}</td><td class="p-3 text-slate-200 text-xs font-semibold">${g.glassType}</td><td class="p-3 text-slate-300 text-xs">${g.glassPower || '-'}</td><td class="p-3 text-amber-300 text-xs font-medium">${g.reference || '-'}</td><td class="p-3 font-bold text-purple-400">৳ ${g.amount}</td><td class="p-3 text-center"><button onclick="editGlass(${g.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('glasses', ${g.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-
-        function editGlass(id) {
-            const g = glasses.find(x => x.id == id); if (!g) return; editingGlassId = g.id;
-            document.getElementById('glassDate').value = g.rawDate || ''; document.getElementById('glassCustomer').value = g.customer;
-            document.getElementById('glassType').value = g.glassType; document.getElementById('glassPower').value = g.glassPower || '';
-            document.getElementById('glassRef').value = g.reference || ''; document.getElementById('glassAmount').value = g.amount;
-            document.getElementById('saveGlassBtn').innerText = "Update"; document.getElementById('cancelGlassEditBtn').classList.remove('hidden');
-        }
-
-        function saveExpense(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('expDate').value;
-            const data = { id: editingExpId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, reason: document.getElementById('expReason').value, amount: parseFloat(document.getElementById('expAmount').value) };
-            saveDataToFirestore("expenses", data.id, data);
-            resetExpenseForm();
-        }
-        function resetExpenseForm() {
-            editingExpId = null; document.getElementById('expenseForm').reset(); document.getElementById('expDate').valueAsDate = new Date();
-            document.getElementById('saveExpBtn').innerText = "Add Expense"; document.getElementById('cancelExpEditBtn').classList.add('hidden');
-        }
-        function renderExpenses() {
-            const table = document.getElementById('expenseTableBody');
-            if(!table) return;
-            table.innerHTML = expenses.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-500">No expenses found</td></tr>` :
-            expenses.map(ex => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${ex.date}</td><td class="p-3 text-white">${ex.reason}</td><td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td><td class="p-3 text-center"><button onclick="editExp(${ex.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('expenses', ${ex.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editExp(id) {
-            const ex = expenses.find(x => x.id == id); if (!ex) return; editingExpId = ex.id;
-            document.getElementById('expDate').value = ex.rawDate || ''; document.getElementById('expReason').value = ex.reason; document.getElementById('expAmount').value = ex.amount;
-            document.getElementById('saveExpBtn').innerText = "Update"; document.getElementById('cancelExpEditBtn').classList.remove('hidden');
-        }
-
-        function saveFrame(e) {
-            e.preventDefault();
-            const data = { id: editingFrameId || Date.now(), code: document.getElementById('frameCode').value, name: document.getElementById('frameName').value, qty: parseInt(document.getElementById('frameQty').value) || 0, price: parseFloat(document.getElementById('framePrice').value) || 0, cost: parseFloat(document.getElementById('frameCost').value) || 0 };
-            saveDataToFirestore("frames", data.id, data);
-            resetFrameForm();
-        }
-        function resetFrameForm() {
-            editingFrameId = null; document.getElementById('frameForm').reset();
-            document.getElementById('saveFrameBtn').innerText = "Add Frame"; document.getElementById('cancelFrameBtn').classList.add('hidden');
-        }
-        function renderFrames() {
-            const table = document.getElementById('frameTableBody');
-            if(!table) return;
-            table.innerHTML = frames.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-slate-500">No optical frames added</td></tr>` :
-            frames.map(f => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 font-semibold text-sky-400">${f.code}</td><td class="p-3 text-white">${f.name}</td><td class="p-3 font-bold ${f.qty <= 3 ? 'text-rose-400' : 'text-purple-400'}">${f.qty} Pcs</td><td class="p-3 text-slate-300 text-xs">${f.cost?'৳ '+f.cost:'-'}</td><td class="p-3 text-slate-200 text-xs">৳ ${f.price}</td><td class="p-3 text-xs font-bold ${f.cost&&f.price>=f.cost?'text-emerald-400':'text-rose-400'}">${pct(f.price,f.cost)}</td><td class="p-3 text-center"><button onclick="editFrame(${f.id})" class="text-sky-400 hover:text-sky-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('frames', ${f.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editFrame(id) {
-            const f = frames.find(x => x.id == id); if (!f) return; editingFrameId = f.id;
-            document.getElementById('frameCode').value = f.code; document.getElementById('frameName').value = f.name;
-            document.getElementById('frameQty').value = f.qty; document.getElementById('frameCost').value = f.cost || ''; document.getElementById('framePrice').value = f.price;
-            document.getElementById('saveFrameBtn').innerText = "Update"; document.getElementById('cancelFrameBtn').classList.remove('hidden');
-        }
-
-        function generateReport() {
-            const dateFilter = document.getElementById('reportDateFilter').value;
-            let [fBills, fMeds, fGlasses, fExps] = [[...bills], [...medicines], [...glasses], [...expenses]];
-            if (dateFilter) {
-                const fd = new Date(dateFilter).toLocaleDateString('en-GB');
-                fBills = fBills.filter(b => b.date === fd); fMeds = fMeds.filter(m => m.date === fd);
-                fGlasses = fGlasses.filter(g => g.date === fd); fExps = fExps.filter(e => e.date === fd);
-                document.getElementById('printReportTitle').innerText = `Report - Date: ${fd}`;
-            } else { document.getElementById('printReportTitle').innerText = `Hospital Comprehensive Summary Report`; }
-
-            const tInc = fBills.reduce((s, b) => s + b.amount, 0);
-            const tMed = fMeds.reduce((s, m) => s + m.amount, 0);
-            const tGlass = fGlasses.reduce((s, g) => s + g.amount, 0);
-            const tExp = fExps.reduce((s, e) => s + e.amount, 0);
-            const net = (tInc + tMed + tGlass) - tExp;
-
-            ['PatientCount', 'TotalIncome', 'TotalMedicine', 'TotalGlasses', 'TotalExpense', 'NetIncome'].forEach((k, i) => {
-                const val = [fBills.length, '৳ ' + tInc, '৳ ' + tMed, '৳ ' + tGlass, '৳ ' + tExp, '৳ ' + net][i];
-                const el = document.getElementById('report' + k); if(el) el.innerText = val;
-                const pel = document.getElementById('pRep' + k); if(pel) pel.innerText = val;
-            });
-
-            let rows = [];
-            fBills.forEach(b => rows.push({ date: b.date, rawDate: b.rawDate, name: b.name, info: `${b.phone || '-'} / Age: ${b.age || '-'}`, services: 'Bill: ' + (b.services?.map(s => s.name).join(', ') || ''), amount: b.amount, type: 'Bill' }));
-            fMeds.forEach(m => rows.push({ date: m.date, rawDate: m.rawDate, name: m.customer, info: '-', services: `Medicine: ${m.medName} (${m.medQty})`, amount: m.amount, type: 'Medicine' }));
-            fGlasses.forEach(g => rows.push({ date: g.date, rawDate: g.rawDate, name: g.customer, info: '-', services: `Glasses: ${g.glassType}`, amount: g.amount, type: 'Glasses' }));
-            rows.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0));
-
-            document.getElementById('reportTableBody').innerHTML = rows.length === 0 ? `<tr><td colspan="5" class="p-6 text-center text-slate-500">No activity records found</td></tr>` :
-            rows.map(r => `<tr class="hover:bg-[#080e1e]/40 transition-colors"><td class="p-3 text-slate-400 text-xs">${r.date}</td><td class="p-3 font-semibold text-white">${r.name}</td><td class="p-3 text-slate-300 text-xs">${r.info}</td><td class="p-3 text-slate-300 text-xs">${r.services}</td><td class="p-3 text-right font-bold text-sky-400">৳ ${r.amount}</td></tr>`).join('');
-
-            document.getElementById('printReportTableBody').innerHTML = rows.length === 0 ? `<tr><td colspan="5" style="padding: 5px; text-align: center;">No records</td></tr>` :
-            rows.map(r => `<tr><td style="border:1px solid #cbd5e1;padding:5px;">${r.date}</td><td style="border:1px solid #cbd5e1;padding:5px;font-weight:bold;">${r.name}</td><td style="border:1px solid #cbd5e1;padding:5px;">${r.info}</td><td style="border:1px solid #cbd5e1;padding:5px;">${r.services}</td><td style="border:1px solid #cbd5e1;padding:5px;text-align:right;font-weight:bold;">${r.amount}</td></tr>`).join('');
-
-            document.getElementById('printExpenseTableBody').innerHTML = fExps.length === 0 ? `<tr><td colspan="3" style="border:1px solid #cbd5e1;padding:6px;text-align:center;">No expenses</td></tr>` :
-            fExps.map(ex => `<tr><td style="border:1px solid #cbd5e1;padding:5px;">${ex.date}</td><td style="border:1px solid #cbd5e1;padding:5px;">${ex.reason}</td><td style="border:1px solid #cbd5e1;padding:5px;text-align:right;font-weight:bold;color:#dc2626;">${ex.amount}</td></tr>`).join('');
+            patientsBody.innerHTML = bills.map(b => `
+                <tr class="border-b border-slate-800/60 hover:bg-slate-800/30">
+                    <td class="p-3 font-mono text-xs text-sky-400">${b.id}</td>
+                    <td class="p-3 text-xs text-slate-400">${b.date}</td>
+                    <td class="p-3 font-semibold text-white">${b.patient.name}</td>
+                    <td class="p-3 text-slate-300">${b.patient.phone}</td>
+                    <td class="p-3 text-slate-300">${b.patient.age} Yrs</td>
+                    <td class="p-3 text-slate-400 text-xs">${b.patient.address}</td>
+                </tr>
+            `).join('');
         }
 
         function updateDashboard() {
-            const pCount = bills.length;
-            const inc = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
-            const mInc = medicines.reduce((sum, m) => sum + (m.amount || 0), 0);
-            const gInc = glasses.reduce((sum, g) => sum + (g.amount || 0), 0);
-            const exp = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-            const net = (inc + mInc + gInc) - exp;
-            const totalDue = bills.reduce((sum, b) => sum + billDue(b), 0);
-
-            if(document.getElementById('dashPatientCount')) document.getElementById('dashPatientCount').innerText = pCount;
-            if(document.getElementById('dashIncome')) document.getElementById('dashIncome').innerText = '৳ ' + inc;
-            if(document.getElementById('dashMedicineIncome')) document.getElementById('dashMedicineIncome').innerText = '৳ ' + mInc;
-            if(document.getElementById('dashGlassesIncome')) document.getElementById('dashGlassesIncome').innerText = '৳ ' + gInc;
-            if(document.getElementById('dashExpense')) document.getElementById('dashExpense').innerText = '৳ ' + exp;
-            if(document.getElementById('dashBalance')) document.getElementById('dashBalance').innerText = '৳ ' + net;
-            if(document.getElementById('dashDue')) document.getElementById('dashDue').innerText = '৳ ' + totalDue;
+            document.getElementById('dashTotalPatients').innerText = bills.length;
+            const collection = bills.reduce((acc, curr) => acc + (curr.total || 0), 0);
+            document.getElementById('dashTotalCollection').innerText = collection;
         }
 
-        function resetReportFilter() { document.getElementById('reportDateFilter').value = ''; generateReport(); }
-        function printReport() { document.body.classList.remove('printing-receipt'); document.body.classList.add('printing-report'); window.print(); document.body.classList.remove('printing-report'); }
-        function exportAllBillsPDF() { switchTab('reports'); printReport(); }
-
-        function printBill(id) {
-            const b = bills.find(item => item.id == id); if (!b) return;
+        function printReceipt(b) {
             document.querySelectorAll('.r-date').forEach(el => el.innerText = b.date);
-            document.querySelectorAll('.r-id').forEach(el => el.innerText = '#' + String(b.id).slice(-6));
-            document.querySelectorAll('.r-name').forEach(el => el.innerText = b.name);
-            document.querySelectorAll('.r-age').forEach(el => el.innerText = b.age || '-');
-            document.querySelectorAll('.r-address').forEach(el => el.innerText = b.address || '-');
-            document.querySelectorAll('.r-phone').forEach(el => el.innerText = b.phone || '-');
-            document.querySelectorAll('.r-doctor').forEach(el => el.innerText = b.doctor + (b.doctorType ? ' (' + b.doctorType + ')' : '') + (b.reference ? ' | Ref: ' + b.reference : ''));
-            document.querySelectorAll('.r-amount-total').forEach(el => el.innerText = b.amount);
+            document.querySelectorAll('.r-id').forEach(el => el.innerText = b.id);
+            document.querySelectorAll('.r-name').forEach(el => el.innerText = b.patient.name);
+            document.querySelectorAll('.r-age').forEach(el => el.innerText = b.patient.age + " Yrs");
+            document.querySelectorAll('.r-phone').forEach(el => el.innerText = b.patient.phone);
+            document.querySelectorAll('.r-address').forEach(el => el.innerText = b.patient.address);
+            document.querySelectorAll('.r-doctor').forEach(el => el.innerText = b.doctor);
+            document.querySelectorAll('.r-amount-total').forEach(el => el.innerText = b.total);
 
-            const rowsHtml = (b.services || []).map((s, idx) => `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:6px;text-align:center;">${idx + 1}</td><td style="padding:6px;">${s.name}</td><td style="padding:6px;text-align:right;font-weight:700;">${s.price}</td></tr>`).join('');
-            document.querySelectorAll('.r-services-table-body').forEach(el => el.innerHTML = rowsHtml);
+            const tableRows = b.services.map((s, idx) => `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 4px; text-align: center;">${idx + 1}</td>
+                    <td style="padding: 4px; text-align: left;">${s.name}</td>
+                    <td style="padding: 4px; text-align: right;">৳${s.fee}</td>
+                </tr>
+            `).join('');
 
-            document.body.classList.remove('printing-report'); document.body.classList.add('printing-receipt');
-            window.print(); document.body.classList.remove('printing-receipt');
+            document.querySelectorAll('.r-services-table-body').forEach(el => el.innerHTML = tableRows);
+
+            document.body.classList.add('printing-receipt');
+            window.print();
+            document.body.classList.remove('printing-receipt');
         }
 
-        function editBill(id) {
-            const b = bills.find(item => item.id == id); if (!b) return; editingBillId = b.id;
-            document.getElementById('billDate').value = b.rawDate || ''; document.getElementById('patientName').value = b.name;
-            document.getElementById('patientAge').value = b.age || ''; document.getElementById('patientPhone').value = b.phone || '';
-            document.getElementById('patientAddress').value = b.address || ''; document.getElementById('doctorName').value = b.doctor; document.getElementById('doctorType').value = b.doctorType || 'Eye Specialist'; document.getElementById('refName').value = b.reference || '';
-            document.getElementById('discountAmount').value = b.discount || 0; document.getElementById('billAmount').value = b.amount; document.getElementById('paidAmount').value = billPaid(b);
-
-            const sNames = b.services?.map(s => s.name) || [];
-            const sPrices = {}; b.services?.forEach(s => sPrices[s.id] = s.price);
-            document.querySelectorAll('input[name="service"]').forEach(cb => {
-                const id = cb.getAttribute('data-index');
-                cb.checked = sNames.includes(cb.value);
-                if (cb.checked && sPrices[id] !== undefined) {
-                    const p = document.getElementById('price_' + id); if (p) p.value = sPrices[id];
-                }
-            });
-            document.getElementById('saveBillBtn').innerText = "Update Bill";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-            switchTab('billing');
-        }
-
-        // Security Lock Screen Initialization
-        function logout() {
-            role = null;
-            document.body.removeAttribute('data-role');
-            document.getElementById('lockScreen').classList.remove('hidden');
-        }
-
-        function submitLock() {
-            const pin = document.getElementById('lockPin').value;
-            const selectedRole = document.getElementById('lockRole').value;
-            
-            // Simple Client-side Admin Passcode Check
-            if (pin === "1234" || pin === "8888") {
-                role = selectedRole;
-                document.body.setAttribute('data-role', role);
-                document.getElementById('roleLabel').innerText = role.toUpperCase();
-                document.getElementById('lockScreen').classList.add('hidden');
-                document.getElementById('lockPin').value = '';
-                document.getElementById('lockMsg').innerText = '';
-            } else {
-                document.getElementById('lockMsg').innerText = 'Invalid Security PIN!';
-            }
-        }
-
-        // Window Startup Initialization
         window.addEventListener('DOMContentLoaded', () => {
-            initServicesUI();
             initFirebaseSync();
-            // Show lock screen on startup
-            logout();
         });
     </script>
 </body>
