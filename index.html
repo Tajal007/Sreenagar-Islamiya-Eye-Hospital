@@ -16,7 +16,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hover-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .hover-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 25px 30px -5px rgba(30, 144, 255, 0.2); border-color: rgba(30, 144, 255, 0.5); }
-        .smooth-transition { transition: all 0.25s ease-in-out; }
         .print-receipt-container, .print-report-container { display: none; }
         @media print { 
             .no-print { display: none !important; }
@@ -52,7 +51,7 @@
         <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2.5">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
             <button onclick="switchTab('billing')" id="nav-billing" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Fees</button>
-            <button onclick="switchTab('medStock')" id="nav-medStock" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-boxes-stacked"></i> Medicine Stock</button>
+            <button onclick="switchTab('medStock')" id="nav-medStock" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-boxes-stacked"></i> Stock Management</button>
             <button onclick="switchTab('medicine')" id="nav-medicine" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-pills"></i> Medicine Sales</button>
             <button onclick="switchTab('glasses')" id="nav-glasses" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-glasses"></i> Glasses Sales</button>
             <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all"><i class="fa-solid fa-chart-column"></i> Reports</button>
@@ -91,17 +90,6 @@
                     <h3 class="text-3xl font-extrabold text-amber-400 mt-2" id="dashBalance">৳ 0</h3>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-sky-400"></i> Visit Fee</h3>
-                    <div id="visitFeeContainer" class="space-y-3 text-sm text-slate-300"></div>
-                </div>
-                <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl hover-card">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-stethoscope text-amber-400"></i> Test & Service Fees</h3>
-                    <div id="testListContainer" class="space-y-3 text-sm text-slate-300"></div>
-                </div>
-            </div>
         </section>
 
         <!-- BILLING -->
@@ -132,11 +120,23 @@
                         </div>
                     </div>
 
+                    <!-- Doctor, Optom, Reference Fields -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 mb-1">Doctor Name</label>
                             <input type="text" id="doctorName" value="Dr. Specialist Surgeon" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white outline-none">
                         </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Optometrist (Optom)</label>
+                            <input type="text" id="optomName" placeholder="Enter Optom name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Reference</label>
+                            <input type="text" id="referenceName" placeholder="Enter reference name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 mb-1">Discount (BDT)</label>
                             <input type="number" id="discountAmount" value="0" min="0" oninput="calculateTotal()" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white outline-none">
@@ -147,609 +147,145 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
-                            <label class="block text-xs font-semibold text-sky-400 mb-2 uppercase">Visit Fee:</label>
-                            <div id="visitCheckboxContainer" class="space-y-3"></div>
-                        </div>
-                        <div class="p-4 bg-[#080e1e]/60 rounded-xl border border-blue-900/30">
-                            <label class="block text-xs font-semibold text-amber-400 mb-2 uppercase">Tests / Services:</label>
-                            <div id="testCheckboxContainer" class="space-y-3"></div>
-                        </div>
-                    </div>
-
                     <div class="flex justify-between items-center">
                         <button type="button" onclick="resetBillingForm()" id="cancelEditBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-medium px-4 py-2 rounded-xl text-sm">Cancel Edit</button>
                         <button type="submit" id="saveBillBtn" class="ml-auto bg-gradient-to-r from-blue-600 to-sky-500 text-white font-medium px-6 py-2.5 rounded-xl text-sm shadow-lg">Save Bill</button>
                     </div>
                 </form>
             </div>
+        </section>
 
+        <!-- STOCK MANAGEMENT (Medicine, Frame, Glasses + Cost/Sales/Profit %) -->
+        <section id="medStock" class="tab-content space-y-6">
             <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
-                    <h3 class="text-lg font-bold text-white">Patient Collection Records</h3>
-                    <div class="flex gap-2">
-                        <button onclick="exportToExcel()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
-                        <button onclick="exportAllBillsPDF()" class="bg-rose-600 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2"><i class="fa-solid fa-file-pdf"></i> Print All PDF</button>
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-boxes-stacked text-teal-400 mr-2"></i> Inventory & Stock Management (Medicine, Frame, Glasses)</h3>
+                
+                <form id="stockForm" onsubmit="saveStockItem(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-7 gap-4 mb-6 items-end">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Item Name</label>
+                        <input type="text" id="stockName" required placeholder="Name" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none">
                     </div>
-                </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Category</label>
+                        <select id="stockCategory" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none">
+                            <option value="Medicine">Medicine</option>
+                            <option value="Frame">Frame</option>
+                            <option value="Glasses">Glasses</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Qty</label>
+                        <input type="number" id="stockQty" required placeholder="Qty" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Cost Price</label>
+                        <input type="number" id="costPrice" required placeholder="Cost" oninput="calculateProfit()" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Sales Price</label>
+                        <input type="number" id="salesPrice" required placeholder="Sales" oninput="calculateProfit()" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Profit %</label>
+                        <input type="text" id="profitDisplay" readonly placeholder="0%" class="w-full bg-[#080e1e] border border-blue-900/40 rounded-xl p-2.5 text-sm text-amber-400 outline-none font-bold">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" id="saveStockBtn" class="w-full bg-teal-600 hover:bg-teal-500 text-white rounded-xl py-2.5 text-sm font-semibold shadow-lg">Add Item</button>
+                    </div>
+                </form>
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead>
                             <tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase">
-                                <th class="p-3">Date</th><th class="p-3">Patient Info</th><th class="p-3">Doctor</th><th class="p-3">Services</th><th class="p-3">Amount</th><th class="p-3 text-center">Action</th>
+                                <th class="p-3">Name</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3">Qty</th>
+                                <th class="p-3">Cost Price</th>
+                                <th class="p-3">Sales Price</th>
+                                <th class="p-3">Profit %</th>
+                                <th class="p-3 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="billTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- MEDICINE STOCK -->
-        <section id="medStock" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-boxes-stacked text-teal-400 mr-2"></i> Medicine Stock Management</h3>
-                <form id="stockForm" onsubmit="saveStockMedicine(event)" class="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-6 items-end">
-                    <div><label class="block text-xs text-slate-300 mb-1">Name</label><input type="text" id="stockName" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Category</label><input type="text" id="stockCategory" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Qty</label><input type="number" id="stockQty" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Price/Unit</label><input type="number" id="stockPrice" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick="resetStockForm()" id="cancelStockEditBtn" class="hidden bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold">Cancel</button>
-                        <button type="submit" id="saveStockBtn" class="w-full bg-teal-600 text-white rounded-xl py-2.5 text-sm font-semibold shadow-lg">Add</button>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Name</th><th class="p-3">Category</th><th class="p-3">Qty</th><th class="p-3">Price</th><th class="p-3 text-center">Action</th></tr></thead>
                         <tbody id="stockTableBody" class="divide-y divide-blue-900/20"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- MEDICINE SALES -->
-        <section id="medicine" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-pills text-emerald-400 mr-2"></i> Medicine Sales</h3>
-                <form id="medicineForm" onsubmit="saveMedicineSale(event)" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div><label class="block text-xs text-slate-300 mb-1">Date</label><input type="date" id="medDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Customer</label><input type="text" id="medCustomer" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Medicine(s)</label><input type="text" id="medName" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Quantity</label><input type="text" id="medQty" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                        <div><label class="block text-xs text-slate-300 mb-1">Amount</label><input type="number" id="medAmount" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div class="flex gap-2 md:col-span-2 justify-end">
-                            <button type="button" onclick="resetMedicineForm()" id="cancelMedEditBtn" class="hidden bg-slate-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold">Cancel</button>
-                            <button type="submit" id="saveMedBtn" class="bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg">Save</button>
-                        </div>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Customer</th><th class="p-3">Medicine</th><th class="p-3">Qty</th><th class="p-3">Amount</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="medicineTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- GLASSES SALES -->
-        <section id="glasses" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-glasses text-purple-400 mr-2"></i> Glasses Sales</h3>
-                <form id="glassesForm" onsubmit="saveGlassesSale(event)" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div><label class="block text-xs text-slate-300 mb-1">Date</label><input type="date" id="glassDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Customer</label><input type="text" id="glassCustomer" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Type</label><input type="text" id="glassType" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div><label class="block text-xs text-slate-300 mb-1">Power</label><input type="text" id="glassPower" class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                        <div><label class="block text-xs text-slate-300 mb-1">Amount</label><input type="number" id="glassAmount" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                        <div class="flex gap-2 md:col-span-2 justify-end">
-                            <button type="button" onclick="resetGlassesForm()" id="cancelGlassEditBtn" class="hidden bg-slate-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold">Cancel</button>
-                            <button type="submit" id="saveGlassBtn" class="bg-purple-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg">Save</button>
-                        </div>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Customer</th><th class="p-3">Type</th><th class="p-3">Power</th><th class="p-3">Amount</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="glassesTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- REPORTS -->
-        <section id="reports" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-chart-column text-sky-400 mr-2"></i> Revenue & Activity Report</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-[#080e1e]/60 p-4 rounded-xl border border-blue-900/30">
-                    <div><label class="block text-xs text-slate-300 mb-1">Filter By Date</label><input type="date" id="reportDateFilter" onchange="generateReport()" class="w-full bg-[#111c38] border border-blue-900/40 rounded-xl px-3 py-2 text-sm text-white outline-none"></div>
-                    <div class="flex items-end gap-2">
-                        <button onclick="resetReportFilter()" class="bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px]">Show All</button>
-                        <button onclick="printReport()" class="bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-semibold h-[38px] flex items-center gap-2"><i class="fa-solid fa-print"></i> Print</button>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-6 gap-4 mb-6">
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Patients</p><h4 class="text-2xl font-bold text-sky-400 mt-1" id="reportPatientCount">0</h4></div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Collection</p><h4 class="text-2xl font-bold text-blue-400 mt-1" id="reportTotalIncome">৳ 0</h4></div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Medicine</p><h4 class="text-2xl font-bold text-emerald-400 mt-1" id="reportTotalMedicine">৳ 0</h4></div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Glasses</p><h4 class="text-2xl font-bold text-purple-400 mt-1" id="reportTotalGlasses">৳ 0</h4></div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Expenses</p><h4 class="text-2xl font-bold text-rose-400 mt-1" id="reportTotalExpense">৳ 0</h4></div>
-                    <div class="bg-[#080e1e]/80 border border-blue-900/40 p-4 rounded-xl"><p class="text-xs text-slate-400">Net Income</p><h4 class="text-2xl font-bold text-amber-400 mt-1" id="reportNetIncome">৳ 0</h4></div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Name</th><th class="p-3">Mobile / Age</th><th class="p-3">Services</th><th class="p-3 text-right">Amount</th></tr></thead>
-                        <tbody id="reportTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- EXPENSES -->
-        <section id="expense" class="tab-content space-y-6">
-            <div class="bg-[#111c38]/80 border border-blue-900/40 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-wallet text-rose-400 mr-2"></i> Hospital Expenses</h3>
-                <form id="expenseForm" onsubmit="saveExpense(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
-                    <div><label class="block text-xs text-slate-300 mb-1">Date</label><input type="date" id="expDate" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Description</label><input type="text" id="expReason" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    <div><label class="block text-xs text-slate-300 mb-1">Amount</label><input type="number" id="expAmount" required class="w-full bg-[#080e1e]/80 border border-blue-900/40 rounded-xl p-2.5 text-sm text-white outline-none"></div>
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick="resetExpenseForm()" id="cancelExpEditBtn" class="hidden bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold">Cancel</button>
-                        <button type="submit" id="saveExpBtn" class="w-full bg-rose-600 text-white rounded-xl py-2.5 text-sm font-semibold shadow-lg">Add</button>
-                    </div>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b border-blue-900/40 text-slate-400 text-xs uppercase"><th class="p-3">Date</th><th class="p-3">Description</th><th class="p-3">Amount</th><th class="p-3 text-center">Action</th></tr></thead>
-                        <tbody id="expenseTableBody" class="divide-y divide-blue-900/20"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <!-- Printable Receipt Area -->
-    <div id="printReceiptArea" class="print-receipt-container">
-        <!-- Patient Copy -->
-        <div style="width: 48%; border: 1.5px solid #0284c7; border-radius: 8px; padding: 14px; font-size: 10px; background: #fff; color: #1e293b; position: relative;">
-            <div style="position: absolute; top: 75px; right: 30px; border: 2.5px solid #16a34a; color: #16a34a; font-size: 16px; font-weight: 900; padding: 3px 12px; border-radius: 6px; transform: rotate(-12deg);">PAID</div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 8px;">
-                <span style="font-weight: 800; color: #0284c7; text-transform: uppercase;">Islamia Eye Hospital</span>
-                <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 20px; font-weight: 700;">Patient Copy</span>
-            </div>
-            <div style="text-align: center; font-weight: 800; font-size: 15px; margin-bottom: 1px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
-            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px;">হটলাইন: 01935 212 357</div>
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span><strong>Date:</strong> <span class="r-date"></span></span><span><strong>ID:</strong> <span class="r-id" style="color: #0284c7;"></span></span></div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span><strong>Name:</strong> <span class="r-name"></span></span><span><strong>Age:</strong> <span class="r-age"></span></span></div>
-                <div><strong>Address:</strong> <span class="r-address"></span></div>
-                <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 2px;"><span><strong>Mobile:</strong> <span class="r-phone"></span></span><span><strong>Doctor:</strong> <span class="r-doctor"></span></span></div>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">
-                <thead><tr style="background: #0284c7; color: white; font-size: 8.5px;"><th style="padding: 5px; text-align: center;">SL</th><th style="padding: 5px; text-align: left;">Description</th><th style="padding: 5px; text-align: right;">Fee</th></tr></thead>
-                <tbody class="r-services-table-body"></tbody>
-            </table>
-            <div style="display: flex; justify-content: space-between; background: #eff6ff; padding: 6px 10px; border-radius: 6px; font-weight: bold; margin-bottom: 15px;">
-                <span>Total Payable:</span><span style="color: #0284c7;">৳ <span class="r-amount-total">0</span></span>
-            </div>
-            <div style="display: flex; justify-content: flex-end; text-align: center;">
-                <div style="border-top: 1.5px solid #0284c7; width: 150px; padding-top: 4px;"><div style="font-weight: 800;">Manager</div></div>
-            </div>
-        </div>
-        <!-- Hospital Counterfoil Copy -->
-        <div style="width: 48%; border: 1.5px solid #d97706; border-radius: 8px; padding: 14px; font-size: 10px; background: #fff; color: #1e293b; position: relative;">
-            <div style="position: absolute; top: 75px; right: 30px; border: 2.5px solid #16a34a; color: #16a34a; font-size: 16px; font-weight: 900; padding: 3px 12px; border-radius: 6px; transform: rotate(-12deg);">PAID</div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #d97706; padding-bottom: 6px; margin-bottom: 8px;">
-                <span style="font-weight: 800; color: #d97706; text-transform: uppercase;">Islamia Eye Hospital</span>
-                <span style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 20px; font-weight: 700;">Counterfoil</span>
-            </div>
-            <div style="text-align: center; font-weight: 800; font-size: 15px; margin-bottom: 1px;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</div>
-            <div style="text-align: center; font-size: 8px; color: #64748b; margin-bottom: 8px;">হটলাইন: 01935 212 357</div>
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span><strong>Date:</strong> <span class="r-date"></span></span><span><strong>ID:</strong> <span class="r-id" style="color: #d97706;"></span></span></div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span><strong>Name:</strong> <span class="r-name"></span></span><span><strong>Age:</strong> <span class="r-age"></span></span></div>
-                <div><strong>Address:</strong> <span class="r-address"></span></div>
-                <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 2px;"><span><strong>Mobile:</strong> <span class="r-phone"></span></span><span><strong>Doctor:</strong> <span class="r-doctor"></span></span></div>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">
-                <thead><tr style="background: #d97706; color: white; font-size: 8.5px;"><th style="padding: 5px; text-align: center;">SL</th><th style="padding: 5px; text-align: left;">Description</th><th style="padding: 5px; text-align: right;">Fee</th></tr></thead>
-                <tbody class="r-services-table-body"></tbody>
-            </table>
-            <div style="display: flex; justify-content: space-between; background: #fffbeb; padding: 6px 10px; border-radius: 6px; font-weight: bold; margin-bottom: 15px;">
-                <span>Total Payable:</span><span style="color: #d97706;">৳ <span class="r-amount-total">0</span></span>
-            </div>
-            <div style="display: flex; justify-content: flex-end; text-align: center;">
-                <div style="border-top: 1.5px solid #d97706; width: 150px; padding-top: 4px;"><div style="font-weight: 800;">Manager</div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Printable Full Report Area -->
-    <div id="printReportArea" class="print-report-container p-6">
-        <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 15px;">
-            <h2 style="font-size: 18px; font-weight: bold; color: #1e3a8a; margin: 0;">শ্রীনগর ইসলামীয়া চক্ষু হাসপাতাল</h2>
-            <p style="font-size: 10px; color: #555; margin: 2px 0;">হটলাইন: 01935 212 357</p>
-            <h3 style="font-size: 14px; font-weight: bold; color: #0284c7; margin-top: 5px;" id="printReportTitle">Hospital Summary Report</h3>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 10px; font-weight: bold; background: #f8fafc; padding: 6px; border: 1px solid #e2e8f0;">
-            <span>Patients: <span id="pRepCount" style="color: #0284c7;">0</span></span>
-            <span>Collection: <span id="pRepIncome" style="color: #1e3a8a;">৳ 0</span></span>
-            <span>Medicine: <span id="pRepMedicine" style="color: #16a34a;">৳ 0</span></span>
-            <span>Glasses: <span id="pRepGlasses" style="color: #9333ea;">৳ 0</span></span>
-            <span>Expense: <span id="pRepExpense" style="color: #dc2626;">৳ 0</span></span>
-            <span>Net: <span id="pRepNetIncome" style="color: #d97706;">৳ 0</span></span>
-        </div>
-        <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
-            <thead><tr style="background: #1e3a8a; color: white;"><th style="border: 1px solid #cbd5e1; padding: 6px;">Date</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Name</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Mobile / Age</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Services</th><th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">Amount</th></tr></thead>
-            <tbody id="printReportTableBody"></tbody>
-        </table>
-        <div>
-            <h4 style="font-size: 12px; font-weight: bold; color: #dc2626; margin-bottom: 6px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">Expense Details</h4>
-            <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
-                <thead><tr style="background: #7f1d1d; color: white;"><th style="border: 1px solid #cbd5e1; padding: 6px;">Date</th><th style="border: 1px solid #cbd5e1; padding: 6px;">Description</th><th style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">Amount</th></tr></thead>
-                <tbody id="printExpenseTableBody"><tr><td colspan="3" style="border: 1px solid #cbd5e1; padding: 6px; text-align: center; color: #666;">No expenses recorded</td></tr></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- JavaScript Script -->
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyYOUR_API_KEY_HERE",
-            authDomain: "sreenagar-eye-hospital.firebaseapp.com",
-            projectId: "sreenagar-eye-hospital",
-            storageBucket: "sreenagar-eye-hospital.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef123456789"
-        };
-
-        let db;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-        } catch (e) {
-            console.warn("Firebase initialization fallback active.", e);
-        }
-
-        ['billDate', 'medDate', 'glassDate', 'expDate'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.valueAsDate = new Date();
-        });
-
-        const visitList = [{ id: "v1", name: "Doctor Visit Fee", price: 100 }];
-        const testList = [
-            { id: 1, name: "SPT", price: 300 }, { id: 2, name: "Fluorescein Test", price: 200 },
-            { id: 3, name: "Schirmer Tear Test", price: 200 }, { id: 4, name: "NCT", price: 100 },
-            { id: 5, name: "IOP", price: 100 }, { id: 6, name: "Foreign Body Removal (Normal)", price: 200 },
-            { id: 7, name: "Foreign Body Removal (OT)", price: 1500 }, { id: 8, name: "Bandage", price: 150 },
-            { id: 9, name: "Others", price: 0 }
-        ];
-
-        function initServicesUI() {
-            const visitContainer = document.getElementById('visitCheckboxContainer');
-            const testContainer = document.getElementById('testCheckboxContainer');
-            const dashVisitContainer = document.getElementById('visitFeeContainer');
-            const dashTestContainer = document.getElementById('testListContainer');
-
-            if(visitContainer) visitContainer.innerHTML = '';
-            if(testContainer) testContainer.innerHTML = '';
-            if(dashVisitContainer) dashVisitContainer.innerHTML = '';
-            if(dashTestContainer) dashTestContainer.innerHTML = '';
-
-            visitList.forEach(item => {
-                if(visitContainer) visitContainer.innerHTML += `<div class="flex items-center justify-between gap-2 bg-[#080e1e] p-2.5 rounded-xl border border-blue-900/30"><label class="flex items-center space-x-2 text-sm cursor-pointer flex-grow"><input type="checkbox" name="service" value="${item.name}" data-index="${item.id}" onchange="calculateTotal()" class="rounded border-blue-900 text-blue-600 w-4 h-4"><span class="text-xs font-semibold">${item.name}</span></label><input type="number" id="price_${item.id}" value="${item.price}" oninput="calculateTotal()" class="w-24 bg-[#111c38] border border-blue-900/40 rounded-lg px-2 py-1 text-xs text-amber-400 font-bold outline-none text-right"></div>`;
-                if(dashVisitContainer) dashVisitContainer.innerHTML += `<div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between"><span class="text-xs"><i class="fa-solid fa-user-doctor text-sky-400"></i> ${item.name}</span><span class="font-bold text-amber-400 text-xs">৳${item.price}</span></div>`;
-            });
-
-            testList.forEach(item => {
-                if(testContainer) testContainer.innerHTML += `<div class="flex items-center justify-between gap-2 bg-[#080e1e] p-2.5 rounded-xl border border-blue-900/30"><label class="flex items-center space-x-2 text-sm cursor-pointer flex-grow"><input type="checkbox" name="service" value="${item.name}" data-index="${item.id}" onchange="calculateTotal()" class="rounded border-blue-900 text-blue-600 w-4 h-4"><span class="text-xs"><strong>${item.id}.</strong> ${item.name}</span></label><input type="number" id="price_${item.id}" value="${item.price}" oninput="calculateTotal()" class="w-24 bg-[#111c38] border border-blue-900/40 rounded-lg px-2 py-1 text-xs text-amber-400 font-bold outline-none text-right"></div>`;
-                if(item.name !== "Others" && dashTestContainer) {
-                    dashTestContainer.innerHTML += `<div class="p-3 bg-[#080e1e]/60 rounded-xl border border-blue-900/30 flex items-center justify-between"><span class="text-xs"><i class="fa-solid fa-circle-check text-blue-400"></i> ${item.id}. ${item.name}</span><span class="font-bold text-amber-400 text-xs">৳${item.price}</span></div>`;
-                }
-            });
-        }
-
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            const targetTab = document.getElementById(tabId);
-            if (targetTab) targetTab.classList.add('active');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-slate-300 hover:bg-blue-950/50 hover:text-white whitespace-nowrap flex items-center gap-2 transition-all");
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) activeBtn.className = "nav-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-600 text-white whitespace-nowrap flex items-center gap-2 transition-all";
-            if(tabId === 'reports') generateReport();
-        }
-
-        let bills = [], stockMedicines = [], medicines = [], glasses = [], expenses = [];
-        let editingBillId = null, editingStockId = null, editingMedId = null, editingGlassId = null, editingExpId = null;
-
-        function initFirebaseSync() {
-            if (!db) {
-                document.getElementById('syncDot').className = "w-2.5 h-2.5 rounded-full bg-rose-500";
-                document.getElementById('syncText').innerText = "Offline / Local Mode";
-                loadFromLocalStorageFallback();
-                return;
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-blue-600', 'text-white');
+                el.classList.add('text-slate-300');
+            });
+            document.getElementById(tabId).classList.add('active');
+            const activeNav = document.getElementById('nav-' + tabId);
+            if(activeNav) {
+                activeNav.classList.add('bg-blue-600', 'text-white');
+                activeNav.classList.remove('text-slate-300');
             }
-            document.getElementById('syncText').innerText = "Syncing Cloud...";
-
-            db.collection("bills").orderBy("id", "desc").onSnapshot(s => { bills = s.docs.map(d => d.data()); renderBills(); updateDashboard(); updateSyncUI(true); }, () => updateSyncUI(false));
-            db.collection("stockMedicines").onSnapshot(s => { stockMedicines = s.docs.map(d => d.data()); renderStockMedicines(); });
-            db.collection("medicines").orderBy("id", "desc").onSnapshot(s => { medicines = s.docs.map(d => d.data()); renderMedicines(); updateDashboard(); });
-            db.collection("glasses").orderBy("id", "desc").onSnapshot(s => { glasses = s.docs.map(d => d.data()); renderGlasses(); updateDashboard(); });
-            db.collection("expenses").orderBy("id", "desc").onSnapshot(s => { expenses = s.docs.map(d => d.data()); renderExpenses(); updateDashboard(); });
         }
 
-        function updateSyncUI(isOnline) {
-            document.getElementById('syncDot').className = `w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-amber-500'}`;
-            document.getElementById('syncText').innerText = isOnline ? "Cloud Live Synced" : "Sync Issue";
+        // Automatic Profit & Margin Calculation Logic
+        function calculateProfit() {
+            let cost = parseFloat(document.getElementById('costPrice').value) || 0;
+            let sales = parseFloat(document.getElementById('salesPrice').value) || 0;
+            
+            if (cost > 0 && sales >= cost) {
+                let profitAmount = sales - cost;
+                let profitPercent = ((profitAmount / cost) * 100).toFixed(1);
+                document.getElementById('profitDisplay').value = `${profitPercent}% (৳${profitAmount})`;
+            } else {
+                document.getElementById('profitDisplay').value = "0%";
+            }
         }
 
-        function loadFromLocalStorageFallback() {
-            ['bills', 'stock_medicines', 'medicines', 'glasses', 'expenses'].forEach(k => {
-                window[k === 'stock_medicines' ? 'stockMedicines' : k] = JSON.parse(localStorage.getItem('max_' + k)) || [];
-            });
-            renderBills(); renderStockMedicines(); renderMedicines(); renderGlasses(); renderExpenses(); updateDashboard();
-        }
-
-        async function saveDataToFirestore(col, id, data) {
-            if (db) try { await db.collection(col).doc(String(id)).set(data); } catch (e) { console.error(e); }
-        }
-
-        async function deleteDataFromFirestore(col, id) {
-            if (db) try { await db.collection(col).doc(String(id)).delete(); } catch (e) { console.error(e); }
-        }
-
-        function calculateTotal() {
-            let subtotal = 0;
-            document.querySelectorAll('input[name="service"]:checked').forEach(cb => {
-                const pInput = document.getElementById('price_' + cb.getAttribute('data-index'));
-                subtotal += pInput ? parseFloat(pInput.value) || 0 : 0;
-            });
-            const total = Math.max(0, subtotal - (parseFloat(document.getElementById('discountAmount').value) || 0));
-            document.getElementById('billAmount').value = total;
-        }
-
-        function saveBill(e) {
+        let stockList = [];
+        function saveStockItem(e) {
             e.preventDefault();
-            const rawDate = document.getElementById('billDate').value;
-            const services = [];
-            document.querySelectorAll('input[name="service"]:checked').forEach((cb, idx) => {
-                const id = cb.getAttribute('data-index');
-                services.push({ serial: idx + 1, id, name: cb.value, price: parseFloat(document.getElementById('price_' + id)?.value) || 0 });
-            });
-            if (services.length === 0) return alert('Please select at least a visit fee or a test!');
-
-            const billData = {
-                id: editingBillId || Date.now(),
-                date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
-                rawDate, name: document.getElementById('patientName').value, age: document.getElementById('patientAge').value,
-                phone: document.getElementById('patientPhone').value, address: document.getElementById('patientAddress').value,
-                doctor: document.getElementById('doctorName').value, discount: parseFloat(document.getElementById('discountAmount').value) || 0,
-                services, amount: parseFloat(document.getElementById('billAmount').value)
+            let item = {
+                id: Date.now(),
+                name: document.getElementById('stockName').value,
+                category: document.getElementById('stockCategory').value,
+                qty: document.getElementById('stockQty').value,
+                cost: document.getElementById('costPrice').value,
+                sales: document.getElementById('salesPrice').value,
+                profit: document.getElementById('profitDisplay').value
             };
-
-            saveDataToFirestore("bills", billData.id, billData);
-            resetBillingForm();
+            stockList.push(item);
+            renderStockTable();
+            document.getElementById('stockForm').reset();
+            document.getElementById('profitDisplay').value = '';
         }
 
-        function resetBillingForm() {
-            editingBillId = null;
-            document.getElementById('billingForm').reset();
-            document.getElementById('billDate').valueAsDate = new Date();
-            document.getElementById('discountAmount').value = "0";
-            document.getElementById('billAmount').value = "";
-            document.querySelectorAll('input[name="service"]').forEach(cb => cb.checked = false);
-            initServicesUI();
-            document.getElementById('saveBillBtn').innerText = "Save Bill";
-            document.getElementById('cancelEditBtn').classList.add('hidden');
-        }
-
-        function renderBills() {
-            document.getElementById('billTableBody').innerHTML = bills.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No records found</td></tr>` : 
-            bills.map(b => `<tr class="hover:bg-[#080e1e]/40"><td class="p-3 text-slate-400 text-xs">${b.date}</td><td class="p-3 font-medium text-white">${b.name} <span class="text-amber-400 text-xs">(Age: ${b.age || '-'})</span><br><span class="text-xs text-slate-400">${b.address || ''}</span></td><td class="p-3 text-slate-300 text-xs">${b.doctor}</td><td class="p-3 text-slate-300 text-xs">${b.services?.map(s => `${s.name} (৳${s.price})`).join(', ') || ''}</td><td class="p-3 font-bold text-sky-400">৳ ${b.amount}</td><td class="p-3 text-center"><button onclick="printBill(${b.id})" class="text-amber-400 mr-2"><i class="fa-solid fa-print"></i></button><button onclick="editBill(${b.id})" class="text-sky-400 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('bills', ${b.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-
-        function saveStockMedicine(e) {
-            e.preventDefault();
-            const data = { id: editingStockId || Date.now(), name: document.getElementById('stockName').value, category: document.getElementById('stockCategory').value, qty: parseInt(document.getElementById('stockQty').value) || 0, price: parseFloat(document.getElementById('stockPrice').value) || 0 };
-            saveDataToFirestore("stockMedicines", data.id, data);
-            resetStockForm();
-        }
-        function resetStockForm() {
-            editingStockId = null; document.getElementById('stockForm').reset();
-            document.getElementById('saveStockBtn').innerText = "Add"; document.getElementById('cancelStockEditBtn').classList.add('hidden');
-        }
-        function renderStockMedicines() {
-            document.getElementById('stockTableBody').innerHTML = stockMedicines.length === 0 ? `<tr><td colspan="5" class="p-6 text-center text-slate-500">No stock added</td></tr>` :
-            stockMedicines.map(s => `<tr class="hover:bg-[#080e1e]/40"><td class="p-3 font-semibold text-white">${s.name}</td><td class="p-3 text-slate-300 text-xs">${s.category || '-'}</td><td class="p-3 font-bold text-teal-400">${s.qty} Pcs</td><td class="p-3 text-slate-200 text-xs">৳ ${s.price}</td><td class="p-3 text-center"><button onclick="editStock(${s.id})" class="text-sky-400 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('stockMedicines', ${s.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editStock(id) {
-            const s = stockMedicines.find(x => x.id == id);
-            if (!s) return; editingStockId = s.id;
-            document.getElementById('stockName').value = s.name; document.getElementById('stockCategory').value = s.category;
-            document.getElementById('stockQty').value = s.qty; document.getElementById('stockPrice').value = s.price;
-            document.getElementById('saveStockBtn').innerText = "Update"; document.getElementById('cancelStockEditBtn').classList.remove('hidden');
-        }
-
-        function saveMedicineSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('medDate').value;
-            const data = { id: editingMedId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, customer: document.getElementById('medCustomer').value, medName: document.getElementById('medName').value, medQty: document.getElementById('medQty').value, amount: parseFloat(document.getElementById('medAmount').value) };
-            saveDataToFirestore("medicines", data.id, data);
-            resetMedicineForm();
-        }
-        function resetMedicineForm() {
-            editingMedId = null; document.getElementById('medicineForm').reset(); document.getElementById('medDate').valueAsDate = new Date();
-            document.getElementById('saveMedBtn').innerText = "Save"; document.getElementById('cancelMedEditBtn').classList.add('hidden');
-        }
-        function renderMedicines() {
-            document.getElementById('medicineTableBody').innerHTML = medicines.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No sales found</td></tr>` :
-            medicines.map(m => `<tr class="hover:bg-[#080e1e]/40"><td class="p-3 text-slate-400 text-xs">${m.date}</td><td class="p-3 font-medium text-white">${m.customer}</td><td class="p-3 text-slate-200 text-xs">${m.medName}</td><td class="p-3 text-slate-300 text-xs">${m.medQty}</td><td class="p-3 font-bold text-emerald-400">৳ ${m.amount}</td><td class="p-3 text-center"><button onclick="editMed(${m.id})" class="text-sky-400 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('medicines', ${m.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editMed(id) {
-            const m = medicines.find(x => x.id == id); if (!m) return; editingMedId = m.id;
-            document.getElementById('medDate').value = m.rawDate || ''; document.getElementById('medCustomer').value = m.customer;
-            document.getElementById('medName').value = m.medName; document.getElementById('medQty').value = m.medQty; document.getElementById('medAmount').value = m.amount;
-            document.getElementById('saveMedBtn').innerText = "Update"; document.getElementById('cancelMedEditBtn').classList.remove('hidden');
-        }
-
-        function saveGlassesSale(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('glassDate').value;
-            const data = { id: editingGlassId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, customer: document.getElementById('glassCustomer').value, glassType: document.getElementById('glassType').value, glassPower: document.getElementById('glassPower').value, amount: parseFloat(document.getElementById('glassAmount').value) };
-            saveDataToFirestore("glasses", data.id, data);
-            resetGlassesForm();
-        }
-        function resetGlassesForm() {
-            editingGlassId = null; document.getElementById('glassesForm').reset(); document.getElementById('glassDate').valueAsDate = new Date();
-            document.getElementById('saveGlassBtn').innerText = "Save"; document.getElementById('cancelGlassEditBtn').classList.add('hidden');
-        }
-        function renderGlasses() {
-            document.getElementById('glassesTableBody').innerHTML = glasses.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-500">No glasses sales</td></tr>` :
-            glasses.map(g => `<tr class="hover:bg-[#080e1e]/40"><td class="p-3 text-slate-400 text-xs">${g.date}</td><td class="p-3 font-medium text-white">${g.customer}</td><td class="p-3 text-slate-200 text-xs">${g.glassType}</td><td class="p-3 text-slate-300 text-xs">${g.glassPower || '-'}</td><td class="p-3 font-bold text-purple-400">৳ ${g.amount}</td><td class="p-3 text-center"><button onclick="editGlass(${g.id})" class="text-sky-400 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('glasses', ${g.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editGlass(id) {
-            const g = glasses.find(x => x.id == id); if (!g) return; editingGlassId = g.id;
-            document.getElementById('glassDate').value = g.rawDate || ''; document.getElementById('glassCustomer').value = g.customer;
-            document.getElementById('glassType').value = g.glassType; document.getElementById('glassPower').value = g.glassPower; document.getElementById('glassAmount').value = g.amount;
-            document.getElementById('saveGlassBtn').innerText = "Update"; document.getElementById('cancelGlassEditBtn').classList.remove('hidden');
-        }
-
-        function saveExpense(e) {
-            e.preventDefault();
-            const rawDate = document.getElementById('expDate').value;
-            const data = { id: editingExpId || Date.now(), date: rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'), rawDate, reason: document.getElementById('expReason').value, amount: parseFloat(document.getElementById('expAmount').value) };
-            saveDataToFirestore("expenses", data.id, data);
-            resetExpenseForm();
-        }
-        function resetExpenseForm() {
-            editingExpId = null; document.getElementById('expenseForm').reset(); document.getElementById('expDate').valueAsDate = new Date();
-            document.getElementById('saveExpBtn').innerText = "Add"; document.getElementById('cancelExpEditBtn').classList.add('hidden');
-        }
-        function renderExpenses() {
-            document.getElementById('expenseTableBody').innerHTML = expenses.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-500">No expenses found</td></tr>` :
-            expenses.map(ex => `<tr class="hover:bg-[#080e1e]/40"><td class="p-3 text-slate-400 text-xs">${ex.date}</td><td class="p-3 text-white">${ex.reason}</td><td class="p-3 font-bold text-rose-400">৳ ${ex.amount}</td><td class="p-3 text-center"><button onclick="editExp(${ex.id})" class="text-sky-400 mr-2"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteDataFromFirestore('expenses', ${ex.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-        }
-        function editExp(id) {
-            const ex = expenses.find(x => x.id == id); if (!ex) return; editingExpId = ex.id;
-            document.getElementById('expDate').value = ex.rawDate || ''; document.getElementById('expReason').value = ex.reason; document.getElementById('expAmount').value = ex.amount;
-            document.getElementById('saveExpBtn').innerText = "Update"; document.getElementById('cancelExpEditBtn').classList.remove('hidden');
-        }
-
-        function generateReport() {
-            const dateFilter = document.getElementById('reportDateFilter').value;
-            let [fBills, fMeds, fGlasses, fExps] = [[...bills], [...medicines], [...glasses], [...expenses]];
-            if (dateFilter) {
-                const fd = new Date(dateFilter).toLocaleDateString('en-GB');
-                fBills = fBills.filter(b => b.date === fd); fMeds = fMeds.filter(m => m.date === fd);
-                fGlasses = fGlasses.filter(g => g.date === fd); fExps = fExps.filter(e => e.date === fd);
-                document.getElementById('printReportTitle').innerText = `Report - Date: ${fd}`;
-            } else { document.getElementById('printReportTitle').innerText = `Hospital Comprehensive Summary Report`; }
-
-            const tInc = fBills.reduce((s, b) => s + b.amount, 0);
-            const tMed = fMeds.reduce((s, m) => s + m.amount, 0);
-            const tGlass = fGlasses.reduce((s, g) => s + g.amount, 0);
-            const tExp = fExps.reduce((s, e) => s + e.amount, 0);
-            const net = (tInc + tMed + tGlass) - tExp;
-
-            ['PatientCount', 'TotalIncome', 'TotalMedicine', 'TotalGlasses', 'TotalExpense', 'NetIncome'].forEach((k, i) => {
-                const val = [fBills.length, '৳ ' + tInc, '৳ ' + tMed, '৳ ' + tGlass, '৳ ' + tExp, '৳ ' + net][i];
-                const el = document.getElementById('report' + k); if(el) el.innerText = val;
-                const pel = document.getElementById('pRep' + k); if(pel) pel.innerText = val;
+        function renderStockTable() {
+            let tbody = document.getElementById('stockTableBody');
+            tbody.innerHTML = '';
+            stockList.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-blue-950/30">
+                        <td class="p-3 font-semibold">${item.name}</td>
+                        <td class="p-3"><span class="px-2 py-1 rounded-md text-xs bg-blue-900/50 text-sky-300">${item.category}</span></td>
+                        <td class="p-3">${item.qty}</td>
+                        <td class="p-3">৳${item.cost}</td>
+                        <td class="p-3">৳${item.sales}</td>
+                        <td class="p-3 text-emerald-400 font-semibold">${item.profit}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteStock(${index})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
             });
-
-            let rows = [];
-            fBills.forEach(b => rows.push({ date: b.date, rawDate: b.rawDate, name: b.name, info: `${b.phone || '-'} / Age: ${b.age || '-'}`, services: 'Bill: ' + (b.services?.map(s => s.name).join(', ') || ''), amount: b.amount, type: 'Bill' }));
-            fMeds.forEach(m => rows.push({ date: m.date, rawDate: m.rawDate, name: m.customer, info: '-', services: `Medicine: ${m.medName} (${m.medQty})`, amount: m.amount, type: 'Medicine' }));
-            fGlasses.forEach(g => rows.push({ date: g.date, rawDate: g.rawDate, name: g.customer, info: '-', services: `Glasses: ${g.glassType}`, amount: g.amount, type: 'Glasses' }));
-            rows.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0));
-
-            document.getElementById('reportTableBody').innerHTML = rows.length === 0 ? `<tr><td colspan="5" class="p-6 text-center text-slate-500">No records found</td></tr>` :
-            rows.map(r => `<tr class="hover:bg-[#080e1e]/40"><td class="p-3 text-slate-400 text-xs">${r.date}</td><td class="p-3 font-semibold text-white">${r.name}</td><td class="p-3 text-slate-300 text-xs">${r.info}</td><td class="p-3 text-slate-300 text-xs">${r.services}</td><td class="p-3 text-right font-bold text-sky-400">৳ ${r.amount}</td></tr>`).join('');
-
-            document.getElementById('printReportTableBody').innerHTML = rows.length === 0 ? `<tr><td colspan="5" style="padding: 5px; text-align: center;">No records</td></tr>` :
-            rows.map(r => `<tr><td style="border:1px solid #cbd5e1;padding:5px;">${r.date}</td><td style="border:1px solid #cbd5e1;padding:5px;font-weight:bold;">${r.name}</td><td style="border:1px solid #cbd5e1;padding:5px;">${r.info}</td><td style="border:1px solid #cbd5e1;padding:5px;">${r.services}</td><td style="border:1px solid #cbd5e1;padding:5px;text-align:right;font-weight:bold;">${r.amount}</td></tr>`).join('');
-
-            document.getElementById('printExpenseTableBody').innerHTML = fExps.length === 0 ? `<tr><td colspan="3" style="border:1px solid #cbd5e1;padding:6px;text-align:center;">No expenses</td></tr>` :
-            fExps.map(ex => `<tr><td style="border:1px solid #cbd5e1;padding:5px;">${ex.date}</td><td style="border:1px solid #cbd5e1;padding:5px;">${ex.reason}</td><td style="border:1px solid #cbd5e1;padding:5px;text-align:right;font-weight:bold;color:#dc2626;">${ex.amount}</td></tr>`).join('');
         }
 
-        function resetReportFilter() { document.getElementById('reportDateFilter').value = ''; generateReport(); }
-        function printReport() { document.body.classList.remove('printing-receipt'); document.body.classList.add('printing-report'); window.print(); document.body.classList.remove('printing-report'); }
-        function exportAllBillsPDF() { switchTab('reports'); printReport(); }
-
-        function printBill(id) {
-            const b = bills.find(item => item.id == id); if (!b) return;
-            document.querySelectorAll('.r-date').forEach(el => el.innerText = b.date);
-            document.querySelectorAll('.r-id').forEach(el => el.innerText = '#' + String(b.id).slice(-6));
-            document.querySelectorAll('.r-name').forEach(el => el.innerText = b.name);
-            document.querySelectorAll('.r-age').forEach(el => el.innerText = b.age || '-');
-            document.querySelectorAll('.r-address').forEach(el => el.innerText = b.address || '-');
-            document.querySelectorAll('.r-phone').forEach(el => el.innerText = b.phone || '-');
-            document.querySelectorAll('.r-doctor').forEach(el => el.innerText = b.doctor);
-            document.querySelectorAll('.r-amount-total').forEach(el => el.innerText = b.amount);
-
-            const rowsHtml = (b.services || []).map((s, idx) => `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:6px;text-align:center;">${idx + 1}</td><td style="padding:6px;">${s.name}</td><td style="padding:6px;text-align:right;font-weight:700;">${s.price}</td></tr>`).join('');
-            document.querySelectorAll('.r-services-table-body').forEach(el => el.innerHTML = rowsHtml);
-
-            document.body.classList.remove('printing-report'); document.body.classList.add('printing-receipt');
-            window.print(); document.body.classList.remove('printing-receipt');
+        function deleteStock(index) {
+            stockList.splice(index, 1);
+            renderStockTable();
         }
-
-        function editBill(id) {
-            const b = bills.find(item => item.id == id); if (!b) return; editingBillId = b.id;
-            document.getElementById('billDate').value = b.rawDate || ''; document.getElementById('patientName').value = b.name;
-            document.getElementById('patientAge').value = b.age || ''; document.getElementById('patientPhone').value = b.phone || '';
-            document.getElementById('patientAddress').value = b.address || ''; document.getElementById('doctorName').value = b.doctor;
-            document.getElementById('discountAmount').value = b.discount || 0; document.getElementById('billAmount').value = b.amount;
-
-            const sNames = b.services?.map(s => s.name) || [];
-            const sPrices = {}; b.services?.forEach(s => sPrices[s.id] = s.price);
-            document.querySelectorAll('input[name="service"]').forEach(cb => {
-                const id = cb.getAttribute('data-index');
-                cb.checked = sNames.includes(cb.value);
-                if (cb.checked && sPrices[id] !== undefined) {
-                    const p = document.getElementById('price_' + id); if (p) p.value = sPrices[id];
-                }
-            });
-            document.getElementById('saveBillBtn').innerText = "Update Bill";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-            switchTab('billing');
-        }
-
-        function exportToExcel() {
-            if (bills.length === 0 && medicines.length === 0 && glasses.length === 0) return alert('No data available!');
-            let csv = "data:text/csv;charset=utf-8,\uFEFFType,Date,Name,Details,Amount\n";
-            bills.forEach(b => csv += `"Bill",${b.date},"${b.name}","${b.doctor}",${b.amount}\n`);
-            medicines.forEach(m => csv += `"Medicine",${m.date},"${m.customer}","${m.medName}",${m.amount}\n`);
-            glasses.forEach(g => csv += `"Glasses",${g.date},"${g.customer}","${g.glassType}",${g.amount}\n`);
-            const link = document.createElement("a"); link.href = encodeURI(csv); link.download = "hospital_records.csv";
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        }
-
-        function updateDashboard() {
-            const tInc = bills.reduce((s, b) => s + b.amount, 0);
-            const tMed = medicines.reduce((s, m) => s + m.amount, 0);
-            const tGlass = glasses.reduce((s, g) => s + g.amount, 0);
-            const tExp = expenses.reduce((s, e) => s + e.amount, 0);
-            document.getElementById('dashPatientCount').innerText = bills.length;
-            document.getElementById('dashIncome').innerText = '৳ ' + tInc;
-            document.getElementById('dashMedicineIncome').innerText = '৳ ' + tMed;
-            document.getElementById('dashGlassesIncome').innerText = '৳ ' + tGlass;
-            document.getElementById('dashExpense').innerText = '৳ ' + tExp;
-            document.getElementById('dashBalance').innerText = '৳ ' + ((tInc + tMed + tGlass) - tExp);
-        }
-
-        initServicesUI();
-        initFirebaseSync();
     </script>
 </body>
 </html>
